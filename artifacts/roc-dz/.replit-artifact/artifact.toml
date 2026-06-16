@@ -1,0 +1,31 @@
+kind = "web"
+previewPath = "/"
+title = "ROC DZ — Laptop Store"
+version = "1.0.0"
+id = "artifacts/roc-dz"
+router = "path"
+
+[[integratedSkills]]
+name = "react-vite"
+version = "1.0.0"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 25263
+
+[services.development]
+run = "pnpm --filter @workspace/roc-dz run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/roc-dz", "run", "build" ]
+publicDir = "artifacts/roc-dz/dist/public"
+serve = "static"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "25263"
+BASE_PATH = "/"

@@ -1,0 +1,14 @@
+uploads = []
+outputs = []
+
+[[generated]]
+id = "ZdsMyAPEan3OIQ9UlcosU"
+uri = "file://artifacts/roc-dz/public/hero-laptop.png"
+type = "image"
+title = "high tech laptop floating"
+
+[[generated]]
+id = "gFrb9XVQ9m2SHm_hNMqra"
+uri = "file://artifacts/roc-dz/public/featured-laptop.png"
+type = "image"
+title = "laptop for pick of the day"

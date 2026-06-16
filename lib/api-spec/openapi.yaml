@@ -1,22 +1,27 @@
 openapi: 3.1.0
 info:
-  # Do not change the title, if the title changes, the import paths will be broken
   title: Api
   version: 0.1.0
-  description: API specification
+  description: ROC DZ Laptop Store API
 servers:
   - url: /api
     description: Base API path
 tags:
   - name: health
     description: Health operations
+  - name: laptops
+    description: Laptop product operations
+  - name: accessories
+    description: Accessory product operations
+  - name: brands
+    description: Brand operations
+
 paths:
   /healthz:
     get:
       operationId: healthCheck
       tags: [health]
       summary: Health check
-      description: Returns server health status
       responses:
         "200":
           description: Healthy
@@ -24,6 +29,210 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+
+  /laptops:
+    get:
+      operationId: listLaptops
+      tags: [laptops]
+      summary: List all laptops
+      parameters:
+        - name: brand
+          in: query
+          schema:
+            type: string
+        - name: condition
+          in: query
+          schema:
+            type: string
+            enum: [new, refurbished]
+        - name: minPrice
+          in: query
+          schema:
+            type: integer
+        - name: maxPrice
+          in: query
+          schema:
+            type: integer
+        - name: ram
+          in: query
+          schema:
+            type: integer
+        - name: search
+          in: query
+          schema:
+            type: string
+        - name: inStock
+          in: query
+          schema:
+            type: boolean
+      responses:
+        "200":
+          description: List of laptops
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Laptop"
+
+    post:
+      operationId: createLaptop
+      tags: [laptops]
+      summary: Create a new laptop product
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LaptopInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Laptop"
+
+  /laptops/featured:
+    get:
+      operationId: getFeaturedLaptop
+      tags: [laptops]
+      summary: Get the featured laptop of the day
+      responses:
+        "200":
+          description: Featured laptop
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Laptop"
+        "404":
+          description: No featured laptop
+
+  /laptops/stats:
+    get:
+      operationId: getLaptopStats
+      tags: [laptops]
+      summary: Get laptop inventory stats
+      responses:
+        "200":
+          description: Stats
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LaptopStats"
+
+  /laptops/{id}:
+    get:
+      operationId: getLaptop
+      tags: [laptops]
+      summary: Get a laptop by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Laptop details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Laptop"
+        "404":
+          description: Not found
+
+    patch:
+      operationId: updateLaptop
+      tags: [laptops]
+      summary: Update a laptop
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LaptopUpdate"
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Laptop"
+
+    delete:
+      operationId: deleteLaptop
+      tags: [laptops]
+      summary: Delete a laptop
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+
+  /accessories:
+    get:
+      operationId: listAccessories
+      tags: [accessories]
+      summary: List all accessories
+      parameters:
+        - name: category
+          in: query
+          schema:
+            type: string
+      responses:
+        "200":
+          description: List of accessories
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Accessory"
+
+    post:
+      operationId: createAccessory
+      tags: [accessories]
+      summary: Create an accessory
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AccessoryInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Accessory"
+
+  /brands:
+    get:
+      operationId: listBrands
+      tags: [brands]
+      summary: List all brands with laptop counts
+      responses:
+        "200":
+          description: Brand list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/BrandSummary"
+
 components:
   schemas:
     HealthStatus:
@@ -34,3 +243,259 @@ components:
       required:
         - status
 
+    Laptop:
+      type: object
+      required:
+        - id
+        - brand
+        - model
+        - title
+        - price
+        - stockQuantity
+        - condition
+        - createdAt
+      properties:
+        id:
+          type: integer
+        sku:
+          type: ["string", "null"]
+        brand:
+          type: string
+        model:
+          type: string
+        title:
+          type: string
+        processor:
+          type: ["string", "null"]
+        processorSpeedMin:
+          type: ["string", "null"]
+        processorSpeedMax:
+          type: ["string", "null"]
+        cores:
+          type: ["integer", "null"]
+        threads:
+          type: ["integer", "null"]
+        ram:
+          type: ["integer", "null"]
+        ramType:
+          type: ["string", "null"]
+        storage:
+          type: ["integer", "null"]
+        storageType:
+          type: ["string", "null"]
+        gpu:
+          type: ["string", "null"]
+        operatingSystem:
+          type: ["string", "null"]
+        screenSize:
+          type: ["string", "null"]
+        screenResolution:
+          type: ["string", "null"]
+        touchscreen:
+          type: ["boolean", "null"]
+        batteryEstimation:
+          type: ["string", "null"]
+        weight:
+          type: ["string", "null"]
+        conditionScore:
+          type: ["integer", "null"]
+        conditionDescription:
+          type: ["string", "null"]
+        warrantyMonths:
+          type: ["integer", "null"]
+        price:
+          type: integer
+        stockQuantity:
+          type: integer
+        condition:
+          type: string
+          enum: [new, refurbished]
+        description:
+          type: ["string", "null"]
+        imageUrl:
+          type: ["string", "null"]
+        featured:
+          type: boolean
+        createdAt:
+          type: string
+
+    LaptopInput:
+      type: object
+      required:
+        - brand
+        - model
+        - title
+        - price
+        - stockQuantity
+        - condition
+      properties:
+        sku:
+          type: string
+        brand:
+          type: string
+        model:
+          type: string
+        title:
+          type: string
+        processor:
+          type: string
+        processorSpeedMin:
+          type: string
+        processorSpeedMax:
+          type: string
+        cores:
+          type: integer
+        threads:
+          type: integer
+        ram:
+          type: integer
+        ramType:
+          type: string
+        storage:
+          type: integer
+        storageType:
+          type: string
+        gpu:
+          type: string
+        operatingSystem:
+          type: string
+        screenSize:
+          type: string
+        screenResolution:
+          type: string
+        touchscreen:
+          type: boolean
+        batteryEstimation:
+          type: string
+        weight:
+          type: string
+        conditionScore:
+          type: integer
+        conditionDescription:
+          type: string
+        warrantyMonths:
+          type: integer
+        price:
+          type: integer
+        stockQuantity:
+          type: integer
+        condition:
+          type: string
+          enum: [new, refurbished]
+        description:
+          type: string
+        imageUrl:
+          type: string
+        featured:
+          type: boolean
+
+    LaptopUpdate:
+      type: object
+      properties:
+        brand:
+          type: string
+        model:
+          type: string
+        title:
+          type: string
+        processor:
+          type: string
+        price:
+          type: integer
+        stockQuantity:
+          type: integer
+        condition:
+          type: string
+          enum: [new, refurbished]
+        description:
+          type: string
+        imageUrl:
+          type: string
+        featured:
+          type: boolean
+        conditionScore:
+          type: integer
+        warrantyMonths:
+          type: integer
+
+    LaptopStats:
+      type: object
+      required:
+        - totalLaptops
+        - inStock
+        - newCount
+        - refurbishedCount
+        - brands
+      properties:
+        totalLaptops:
+          type: integer
+        inStock:
+          type: integer
+        newCount:
+          type: integer
+        refurbishedCount:
+          type: integer
+        brands:
+          type: integer
+
+    Accessory:
+      type: object
+      required:
+        - id
+        - name
+        - category
+        - price
+        - stock
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        category:
+          type: string
+        description:
+          type: ["string", "null"]
+        price:
+          type: integer
+        stock:
+          type: integer
+        imageUrl:
+          type: ["string", "null"]
+
+    AccessoryInput:
+      type: object
+      required:
+        - name
+        - category
+        - price
+        - stock
+      properties:
+        name:
+          type: string
+        category:
+          type: string
+        description:
+          type: string
+        price:
+          type: integer
+        stock:
+          type: integer
+        imageUrl:
+          type: string
+
+    BrandSummary:
+      type: object
+      required:
+        - brand
+        - count
+        - imageUrl
+        - tag
+      properties:
+        brand:
+          type: string
+        count:
+          type: integer
+        imageUrl:
+          type: string
+        tag:
+          type: string

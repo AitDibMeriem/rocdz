@@ -1,0 +1,352 @@
+Create a complete multilingual e-commerce website (French + Arabic) for selling laptops and accessories.
+
+TECHNOLOGY:
+- Frontend: Next.js + Tailwind CSS
+- Backend: Node.js + Express
+- Database: PostgreSQL
+- Authentication: JWT
+- Storage: Local uploads or Cloudinary
+- Responsive design
+- SEO optimized
+
+DATABASE DESIGN
+
+1. USERS TABLE
+
+Fields:
+- id
+- first_name
+- last_name
+- username
+- email
+- password_hash
+- phone
+- address
+- role
+
+Roles:
+- SUPER_ADMIN
+- ADMIN
+- USER
+
+Permissions:
+
+SUPER_ADMIN:
+- Full access
+- Manage admins
+- Manage products
+- Manage orders
+- Manage users
+- View statistics
+
+ADMIN:
+- Manage products
+- Manage orders
+- Manage promo codes
+
+USER:
+- Purchase products
+- Manage profile
+- View order history
+
+------------------------------------------------
+
+2. LAPTOPS TABLE
+
+Fields:
+
+- id
+- sku
+- brand
+- model
+- title
+- processor
+- processor_speed_min
+- processor_speed_max
+- cores
+- threads
+- ram
+- ram_type
+- ram_speed
+- storage
+- storage_type
+- gpu
+- operating_system
+- keyboard_layout
+- fingerprint_sensor
+- face_id
+- screen_size
+- screen_resolution
+- touchscreen
+- battery_estimation
+- weight
+- condition_score
+- condition_description
+- warranty_months
+- price
+- stock_quantity
+- description
+- created_at
+
+------------------------------------------------
+
+3. PRODUCT_IMAGES TABLE
+
+Fields:
+- id
+- laptop_id
+- image_url
+- is_main
+
+Unlimited photos per laptop.
+
+------------------------------------------------
+
+4. PRODUCT_VIDEOS TABLE
+
+Fields:
+- id
+- laptop_id
+- video_url
+- title
+
+Videos showing:
+- Laptop condition
+- Screen
+- Keyboard
+- Battery
+- Exterior
+
+------------------------------------------------
+
+5. ACCESSORIES TABLE
+
+Fields:
+- id
+- name
+- category
+- description
+- price
+- stock
+- image
+
+Examples:
+- Mouse
+- Backpack
+- Laptop Bag
+- Charger
+- Headset
+- SSD
+- RAM
+
+------------------------------------------------
+
+6. PROMO_CODES TABLE
+
+Fields:
+- id
+- code
+- discount_type
+- discount_value
+- start_date
+- end_date
+- usage_limit
+- active
+
+Examples:
+WELCOME10
+RAMADAN15
+SUMMER20
+
+------------------------------------------------
+
+7. ORDERS TABLE
+
+Fields:
+- id
+- customer_id
+- order_number
+- total_price
+- delivery_address
+- city
+- phone
+- payment_method
+- status
+- created_at
+
+Order Status:
+
+- Reserved
+- Confirmed
+- Prepared
+- Shipped
+- Delivered
+- Cancelled
+
+------------------------------------------------
+
+8. ORDER_ITEMS TABLE
+
+Fields:
+- id
+- order_id
+- product_id
+- quantity
+- unit_price
+
+------------------------------------------------
+
+9. REVIEWS TABLE
+
+Fields:
+- id
+- user_id
+- product_id
+- rating
+- comment
+- created_at
+
+------------------------------------------------
+
+SAMPLE LAPTOP DATA
+
+Product Name:
+Dell Latitude 7340
+
+Processor:
+Intel Core i7-1365U
+
+Min Frequency:
+1.8 GHz
+
+Max Frequency:
+5.2 GHz
+
+Cores:
+10
+
+Threads:
+12
+
+RAM:
+16 GB
+
+RAM Type:
+DDR5
+
+RAM Speed:
+4800 MT/s
+
+Storage:
+256 GB SSD
+
+Keyboard:
+QWERTY
+
+Fingerprint:
+Yes
+
+Face ID:
+Yes
+
+GPU:
+Intel Iris Xe Graphics
+
+Operating System:
+Windows 11
+
+Weight:
+1.35 Kg
+
+Condition:
+8/10
+
+Condition Notes:
+Small white marks on screen, not disturbing usage.
+
+Battery:
+More than 3 hours
+
+Display:
+13.3 inches FHD Touchscreen
+
+Included:
+Original Charger
+Protective Sleeve
+
+Price:
+98500 DA
+
+Warranty:
+3 Months
+
+------------------------------------------------
+
+CUSTOMER WEBSITE PAGES
+
+- Home
+- Shop
+- Laptop Details
+- Accessories
+- Promotions
+- Cart
+- Checkout
+- Login
+- Register
+- Profile
+- Order Tracking
+- Contact
+
+------------------------------------------------
+
+ADMIN DASHBOARD
+
+Statistics:
+- Total Sales
+- Orders Today
+- Revenue
+- Top Products
+
+Products:
+- Add Product
+- Edit Product
+- Delete Product
+- Upload Photos
+- Upload Videos
+
+Orders:
+- View Orders
+- Change Status
+- Print Invoice
+
+Users:
+- Manage Users
+- Manage Admins
+
+Promo Codes:
+- Create Promo Code
+- Activate/Deactivate
+
+Reports:
+- Sales Report
+- Product Report
+- Inventory Report
+
+------------------------------------------------
+
+ADDITIONAL FEATURES
+
+- Advanced Search
+- Filter by Brand
+- Filter by RAM
+- Filter by Processor
+- Filter by Price
+- Wishlist
+- Compare Products
+- WhatsApp Contact Button
+- Dark Mode
+- Multi-language French/Arabic
+- Email Notifications
+- PDF Invoice Generation
+
+Generate complete database schema, API, frontend pages, admin dashboard, authentication system, sample data, and deployment-ready source code.
