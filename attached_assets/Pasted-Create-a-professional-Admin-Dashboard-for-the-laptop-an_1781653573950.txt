@@ -1,0 +1,309 @@
+Create a professional Admin Dashboard for the laptop and accessories e-commerce website.
+
+========================
+ADMIN DASHBOARD
+========================
+
+LEFT SIDEBAR MENU
+
+🏠 Dashboard
+💻 Laptops
+🎧 Accessories
+📦 Orders
+👥 Customers
+🎟 Promo Codes
+⭐ Reviews
+📊 Reports
+⚙ Settings
+🔒 Administrators
+
+========================
+DASHBOARD HOME
+========================
+
+Display KPI cards:
+
+- Total Products
+- Total Orders
+- Orders Today
+- Revenue Today
+- Revenue This Month
+- Pending Orders
+- Delivered Orders
+- Total Customers
+
+Charts:
+
+- Sales by Month
+- Orders by Status
+- Top Selling Products
+
+Latest Orders Table:
+- Order Number
+- Customer
+- Total
+- Status
+- Date
+- Action
+
+========================
+LAPTOP MANAGEMENT
+========================
+
+Button:
++ Add Laptop
+
+Laptop Form:
+
+Basic Information:
+- Brand
+- Model
+- SKU
+- Product Title
+- Description
+
+Technical Specifications:
+- Processor
+- CPU Frequency Min
+- CPU Frequency Max
+- Cores
+- Threads
+- RAM
+- RAM Type
+- RAM Speed
+- SSD Capacity
+- GPU
+- Operating System
+
+Physical:
+- Weight
+- Screen Size
+- Resolution
+- Touch Screen
+- Keyboard Layout
+- Fingerprint
+- Face ID
+
+Condition:
+- Condition Score
+- Condition Description
+
+Commercial:
+- Price
+- Stock
+- Warranty
+
+Media:
+- Upload Images
+- Upload Videos
+
+Buttons:
+- Save
+- Save Draft
+- Delete
+
+Laptop List Table:
+- Photo
+- Product Name
+- Price
+- Stock
+- Status
+- Edit
+- Delete
+
+========================
+ACCESSORIES MANAGEMENT
+========================
+
+Add/Edit/Delete accessories
+
+Fields:
+- Name
+- Category
+- Description
+- Price
+- Stock
+- Images
+
+========================
+ORDER MANAGEMENT
+========================
+
+Orders Table:
+
+- Order Number
+- Customer
+- Phone
+- City
+- Total
+- Status
+- Date
+
+Order Status Workflow:
+
+🟡 Reserved
+🔵 Confirmed
+🟠 Prepared
+🚚 Shipped
+🟢 Delivered
+🔴 Cancelled
+
+Order Details:
+
+Customer Information
+Shipping Address
+Products Ordered
+Order History
+
+Buttons:
+
+- Confirm Order
+- Mark Prepared
+- Mark Shipped
+- Mark Delivered
+- Cancel Order
+- Print Invoice
+
+========================
+CUSTOMER MANAGEMENT
+========================
+
+Customer Table:
+
+- Name
+- Phone
+- Email
+- Orders Count
+- Total Purchases
+
+Actions:
+- View
+- Edit
+- Block
+- Delete
+
+========================
+PROMO CODE MANAGEMENT
+========================
+
+Create Promo Code
+
+Fields:
+- Code
+- Discount %
+- Start Date
+- End Date
+- Usage Limit
+
+Actions:
+- Activate
+- Deactivate
+- Delete
+
+========================
+ADMIN MANAGEMENT
+========================
+
+Roles:
+
+SUPER_ADMIN
+ADMIN
+SALES_MANAGER
+
+SUPER_ADMIN can:
+
+- Create Admin
+- Delete Admin
+- Change Roles
+- View Logs
+
+Admin Form:
+
+- Name
+- Email
+- Password
+- Role
+
+========================
+INVENTORY MANAGEMENT
+========================
+
+Stock Alerts:
+
+Show products below minimum stock.
+
+Buttons:
+- Increase Stock
+- Decrease Stock
+
+========================
+REPORTS
+========================
+
+Generate:
+
+- Daily Sales Report
+- Monthly Sales Report
+- Product Sales Report
+- Inventory Report
+
+Export:
+- PDF
+- Excel
+
+========================
+SETTINGS
+========================
+
+Store Name
+Store Logo
+Phone
+WhatsApp
+Email
+Address
+
+Social Media:
+- Facebook
+- Instagram
+- TikTok
+
+Payment Settings
+
+Delivery Settings
+
+========================
+SECURITY
+========================
+
+JWT Authentication
+
+Role-Based Access Control
+
+Activity Logs
+
+Track:
+
+- Login
+- Product Creation
+- Product Modification
+- Order Modification
+- Admin Actions
+
+========================
+DESIGN
+========================
+
+Modern admin panel inspired by:
+- Shopify Admin
+- Amazon Seller Central
+- Odoo ERP
+
+Theme:
+White + Blue
+
+Responsive:
+Desktop
+Tablet
+Mobile
+
+Generate complete frontend and backend code.
