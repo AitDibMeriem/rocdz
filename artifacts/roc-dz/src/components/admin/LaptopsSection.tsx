@@ -4,8 +4,10 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { useListLaptops, useCreateLaptop, useUpdateLaptop, useDeleteLaptop, getListLaptopsQueryKey, getGetLaptopStatsQueryKey } from "@workspace/api-client-react";
 import { useQueryClient } from "@tanstack/react-query";
-import { Plus, Search, Edit, Trash2, Laptop, Star } from "lucide-react";
+import { Plus, Search, Edit, Trash2, Laptop, Star, X as XIcon, ImagePlus } from "lucide-react";
 import { ImageUpload } from "@/components/ImageUpload";
+
+const BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -65,6 +67,7 @@ export function LaptopsSection() {
   const [inStockOnly, setInStockOnly] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
   const [editingLaptopId, setEditingLaptopId] = useState<number | null>(null);
+  const [mediaUrls, setMediaUrls] = useState<string[]>([]);
 
   const queryClient = useQueryClient();
   const { toast } = useToast();
@@ -115,6 +118,7 @@ export function LaptopsSection() {
   const openAddModal = () => {
     setEditingLaptopId(null);
     form.reset();
+    setMediaUrls([]);
     setModalOpen(true);
   };
 
@@ -146,27 +150,32 @@ export function LaptopsSection() {
       imageUrl: laptop.imageUrl || undefined,
       featured: laptop.featured || false,
     });
+    setMediaUrls((laptop as any).mediaUrls || []);
     setModalOpen(true);
   };
 
+  const saveMedia = async (laptopId: number) => {
+    if (mediaUrls.length > 0) {
+      await fetch(`${BASE}/api/laptops/${laptopId}/media`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ urls: mediaUrls }),
+      });
+    }
+  };
+
   const onSubmit = (data: FormValues) => {
-    const action = editingLaptopId 
-      ? updateLaptop.mutateAsync({ id: editingLaptopId, data })
-      : createLaptop.mutateAsync({ data });
+    const action = editingLaptopId
+      ? updateLaptop.mutateAsync({ id: editingLaptopId, data }).then(async (res: any) => { await saveMedia(editingLaptopId); return res; })
+      : createLaptop.mutateAsync({ data }).then(async (res: any) => { if (res?.id) await saveMedia(res.id); return res; });
 
     action.then(() => {
       queryClient.invalidateQueries({ queryKey: getListLaptopsQueryKey() });
       queryClient.invalidateQueries({ queryKey: getGetLaptopStatsQueryKey() });
       setModalOpen(false);
-      toast({
-        title: `Laptop ${editingLaptopId ? 'updated' : 'added'} successfully`,
-      });
+      toast({ title: `Laptop ${editingLaptopId ? 'updated' : 'added'} successfully` });
     }).catch((err) => {
-      toast({
-        title: "Error saving laptop",
-        description: err.message || "An unexpected error occurred",
-        variant: "destructive",
-      });
+      toast({ title: "Error saving laptop", description: err.message || "An unexpected error occurred", variant: "destructive" });
     });
   };
 
@@ -502,13 +511,50 @@ export function LaptopsSection() {
                   <h3 className="text-lg font-semibold text-primary border-b border-border pb-2">Media</h3>
                   <FormField control={form.control} name="imageUrl" render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Product Image / Video</FormLabel>
+                      <FormLabel>Main Product Image</FormLabel>
                       <FormControl>
-                        <ImageUpload value={field.value ?? ""} onChange={field.onChange} label="product image or video" />
+                        <ImageUpload value={field.value ?? ""} onChange={field.onChange} label="main product image" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
                   )} />
+
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <p className="text-sm font-medium text-foreground">Additional Photos / Videos</p>
+                      <span className="text-xs text-muted-foreground">{mediaUrls.length} file{mediaUrls.length !== 1 ? "s" : ""}</span>
+                    </div>
+
+                    {mediaUrls.length > 0 && (
+                      <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
+                        {mediaUrls.map((url, idx) => (
+                          <div key={idx} className="relative group rounded-lg overflow-hidden border border-border bg-background aspect-square">
+                            {url.match(/\.(mp4|webm|mov)$/i) ? (
+                              <video src={url} className="w-full h-full object-cover" muted />
+                            ) : (
+                              <img src={url} alt={`Media ${idx + 1}`} className="w-full h-full object-contain p-1" />
+                            )}
+                            <button
+                              type="button"
+                              onClick={() => setMediaUrls(prev => prev.filter((_, i) => i !== idx))}
+                              className="absolute top-1 right-1 w-5 h-5 rounded-full bg-destructive text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                            >
+                              <XIcon className="w-3 h-3" />
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+
+                    <div className="border-2 border-dashed border-border rounded-lg p-4">
+                      <ImageUpload
+                        value=""
+                        onChange={(url) => { if (url) setMediaUrls(prev => [...prev, url]); }}
+                        label="additional photo or video"
+                      />
+                    </div>
+                    <p className="text-xs text-muted-foreground">Click the upload above repeatedly to add multiple images or videos to the gallery.</p>
+                  </div>
                 </div>
 
                 <div className="h-10" /> {/* Bottom padding for scroll */}

@@ -69,21 +69,37 @@ function BgCanvas() {
       ctx.stroke();
     }
 
+    const mouse = { x: -9999, y: -9999 };
+    const onMouseMove = (e: MouseEvent) => { mouse.x = e.clientX; mouse.y = e.clientY; };
+    const onMouseLeave = () => { mouse.x = -9999; mouse.y = -9999; };
+    window.addEventListener("mousemove", onMouseMove);
+    window.addEventListener("mouseleave", onMouseLeave);
+
     function animate(time: number) {
       ctx.clearRect(0, 0, width, height);
 
       waves.forEach(w => drawWave(w, time * 0.001));
 
       particles.forEach(p => {
+        const dx = p.x - mouse.x;
+        const dy = p.y - mouse.y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        const repelRadius = 120;
+        if (dist < repelRadius && dist > 0) {
+          const force = (repelRadius - dist) / repelRadius;
+          p.x += (dx / dist) * force * 3;
+          p.y += (dy / dist) * force * 3;
+        }
         p.x += p.speedX;
         p.y += p.speedY;
         if (p.x < 0) p.x = width;
         if (p.x > width) p.x = 0;
         if (p.y < 0) p.y = height;
         if (p.y > height) p.y = 0;
+        const nearMouse = dist < repelRadius;
         ctx.beginPath();
-        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(233,30,140,${p.opacity})`;
+        ctx.arc(p.x, p.y, nearMouse ? p.size * 1.8 : p.size, 0, Math.PI * 2);
+        ctx.fillStyle = nearMouse ? `rgba(233,30,140,${Math.min(1, p.opacity * 2)})` : `rgba(233,30,140,${p.opacity})`;
         ctx.fill();
       });
 
@@ -111,6 +127,8 @@ function BgCanvas() {
     return () => {
       cancelAnimationFrame(animId);
       window.removeEventListener("resize", init);
+      window.removeEventListener("mousemove", onMouseMove);
+      window.removeEventListener("mouseleave", onMouseLeave);
     };
   }, []);
 

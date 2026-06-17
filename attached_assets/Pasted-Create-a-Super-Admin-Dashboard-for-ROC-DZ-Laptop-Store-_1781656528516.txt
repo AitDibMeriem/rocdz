@@ -1,0 +1,344 @@
+Create a Super Admin Dashboard for ROC DZ Laptop Store.
+
+==================================
+SUPER ADMIN DASHBOARD
+==================================
+
+Access Level:
+FULL SYSTEM ACCESS
+
+Only SUPER_ADMIN can access this dashboard.
+
+==================================
+MAIN DASHBOARD
+==================================
+
+Statistics Cards:
+
+- Total Revenue
+- Revenue Today
+- Revenue This Month
+- Total Orders
+- Total Customers
+- Total Products
+- Total Admins
+- Total Visitors
+
+Charts:
+
+- Monthly Revenue
+- Monthly Orders
+- Product Categories
+- Sales Performance
+
+==================================
+ADMIN MANAGEMENT
+==================================
+
+Create Admin
+
+Fields:
+- Full Name
+- Username
+- Email
+- Password
+- Phone
+- Role
+
+Roles:
+- SUPER_ADMIN
+- ADMIN
+- SALES_MANAGER
+- INVENTORY_MANAGER
+- CUSTOMER_SUPPORT
+
+Actions:
+- Create Admin
+- Edit Admin
+- Delete Admin
+- Disable Admin
+- Reset Password
+
+Admin Activity Log:
+
+- Login Time
+- IP Address
+- Actions Performed
+
+==================================
+USER MANAGEMENT
+==================================
+
+Users List
+
+Fields:
+- ID
+- Name
+- Email
+- Phone
+- Registration Date
+- Total Orders
+- Total Spending
+
+Actions:
+- View
+- Edit
+- Suspend
+- Delete
+
+==================================
+PRODUCT MANAGEMENT
+==================================
+
+Add Laptop
+
+Fields:
+
+Basic:
+- Brand
+- Model
+- Title
+- SKU
+
+Specifications:
+- Processor
+- RAM
+- SSD
+- GPU
+- Display
+- Battery
+- Weight
+- OS
+
+Sales:
+- Price
+- Stock
+- Warranty
+
+Media:
+- Upload Unlimited Images
+- Upload Unlimited Videos
+
+Actions:
+- Create
+- Edit
+- Delete
+- Archive
+
+==================================
+ACCESSORIES MANAGEMENT
+==================================
+
+Categories:
+
+- Mouse
+- Keyboard
+- Headphones
+- Charger
+- Laptop Bag
+- SSD
+- RAM
+- Webcam
+- Monitor
+
+CRUD operations.
+
+==================================
+ORDER MANAGEMENT
+==================================
+
+Order Status:
+
+1. Reserved
+2. Confirmed
+3. Prepared
+4. Shipped
+5. Delivered
+6. Cancelled
+7. Returned
+
+Order Details:
+
+Customer Information
+Address
+Phone
+Products
+Payment Method
+Delivery Information
+
+Actions:
+
+- Confirm
+- Prepare
+- Ship
+- Deliver
+- Cancel
+- Refund
+
+==================================
+PROMO CODE MANAGEMENT
+==================================
+
+Create Promo Code
+
+Fields:
+- Code
+- Discount Type
+- Discount Value
+- Expiry Date
+- Usage Limit
+
+Examples:
+ROC10
+ROC20
+WELCOME15
+
+==================================
+INVENTORY MANAGEMENT
+==================================
+
+Warehouse Management
+
+Fields:
+- Product
+- Current Stock
+- Minimum Stock
+- Incoming Stock
+
+Alerts:
+
+Low Stock Warning
+Out Of Stock Warning
+
+==================================
+WEBSITE MANAGEMENT
+==================================
+
+Edit Homepage
+
+Manage:
+- Hero Banner
+- Promotions
+- Featured Products
+- Categories
+- Footer
+
+Upload:
+- Slider Images
+- Videos
+- Logos
+
+==================================
+ANALYTICS
+==================================
+
+Reports:
+
+- Daily Sales
+- Weekly Sales
+- Monthly Sales
+- Yearly Sales
+
+Top Products
+Top Customers
+Best Categories
+
+Export:
+- PDF
+- Excel
+
+==================================
+SYSTEM SETTINGS
+==================================
+
+Store Information:
+
+- Store Name
+- Logo
+- Phone
+- WhatsApp
+- Email
+- Address
+
+Social Media:
+
+- Facebook
+- Instagram
+- TikTok
+- YouTube
+
+==================================
+SECURITY CENTER
+==================================
+
+Manage:
+
+- User Permissions
+- Admin Permissions
+- Login Logs
+- Activity Logs
+- Backup Database
+- Restore Database
+
+==================================
+DATABASE MANAGEMENT
+==================================
+
+View Tables
+
+- Users
+- Admins
+- Products
+- Orders
+- Accessories
+- Reviews
+- Promo Codes
+
+Actions:
+
+- Backup Database
+- Export SQL
+- Import SQL
+- Restore Backup
+
+==================================
+DEFAULT ACCOUNTS
+==================================
+
+SUPER_ADMIN
+
+Username: superadmin
+Password: ********
+
+ADMIN
+
+Username: admin
+Password: ********
+
+ROC
+
+Username: roc
+Password: ********
+
+==================================
+DESIGN
+==================================
+
+Professional ERP Style
+
+Inspired by:
+- Shopify Admin
+- Odoo ERP
+- Amazon Seller
+
+Colors:
+- White
+- Blue
+- Dark Gray
+
+Responsive:
+Desktop
+Tablet
+Mobile
+
+Modern cards, charts, tables, notifications and activity logs.

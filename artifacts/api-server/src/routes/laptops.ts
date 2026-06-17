@@ -123,6 +123,23 @@ router.post("/", async (req, res) => {
   }
 });
 
+router.patch("/:id/media", async (req, res) => {
+  try {
+    const id = Number(req.params.id);
+    const { urls } = req.body as { urls: string[] };
+    const [updated] = await db
+      .update(laptopsTable)
+      .set({ mediaUrls: urls })
+      .where(eq(laptopsTable.id, id))
+      .returning();
+    if (!updated) { res.status(404).json({ error: "Laptop not found" }); return; }
+    res.json(updated);
+  } catch (err) {
+    req.log.error(err);
+    res.status(400).json({ error: "Invalid data" });
+  }
+});
+
 router.patch("/:id", async (req, res) => {
   try {
     const { id } = UpdateLaptopParams.parse({ id: Number(req.params.id) });

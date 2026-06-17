@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useListLaptops, ListLaptopsCondition } from "@workspace/api-client-react";
 import { ProductCard } from "@/components/ProductCard";
 import { Input } from "@/components/ui/input";
@@ -10,12 +10,27 @@ import { Slider } from "@/components/ui/slider";
 import { Search, Filter } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 
+function getURLParam(key: string): string {
+  const params = new URLSearchParams(window.location.search);
+  return params.get(key) || "";
+}
+
 export default function Models() {
-  const [search, setSearch] = useState("");
-  const [condition, setCondition] = useState<ListLaptopsCondition | "all">("all");
+  const [search, setSearch] = useState(() => getURLParam("search"));
+  const [condition, setCondition] = useState<ListLaptopsCondition | "all">(() => {
+    const c = getURLParam("condition");
+    return (c === "new" || c === "refurbished") ? c : "all";
+  });
   const [inStock, setInStock] = useState(false);
-  const [brand, setBrand] = useState("all");
+  const [brand, setBrand] = useState(() => getURLParam("brand") || "all");
   const [priceRange, setPriceRange] = useState([0, 1000000]);
+
+  useEffect(() => {
+    const b = getURLParam("brand");
+    const c = getURLParam("condition");
+    if (b) setBrand(b);
+    if (c === "new" || c === "refurbished") setCondition(c);
+  }, []);
 
   const queryParams = {
     ...(search ? { search } : {}),
@@ -28,9 +43,10 @@ export default function Models() {
 
   const { data: laptops, isLoading } = useListLaptops(queryParams);
 
+  const BRANDS = ["HP", "Dell", "Lenovo", "ASUS", "MSI", "Apple", "Acer"];
+
   return (
     <div className="container mx-auto px-4 py-12">
-
       <div className="flex flex-col lg:flex-row gap-8">
         {/* Sidebar Filters */}
         <aside className="w-full lg:w-72 flex-shrink-0">
@@ -39,15 +55,36 @@ export default function Models() {
               <h3 className="font-bold text-lg mb-4 flex items-center gap-2">
                 <Filter className="w-5 h-5 text-primary" /> Filters
               </h3>
-              
+
               <div className="relative mb-6">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                <Input 
-                  placeholder="Search models..." 
+                <Input
+                  placeholder="Search models..."
                   className="pl-9 bg-black/50 border-white/10 focus-visible:ring-primary"
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
                 />
+              </div>
+            </div>
+
+            <div>
+              <Label className="text-base font-semibold mb-3 block">Brand</Label>
+              <div className="flex flex-wrap gap-2">
+                <button
+                  onClick={() => setBrand("all")}
+                  className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors border ${brand === "all" ? "bg-primary/20 border-primary/50 text-primary" : "border-white/10 text-muted-foreground hover:border-primary/30"}`}
+                >
+                  All
+                </button>
+                {BRANDS.map(b => (
+                  <button
+                    key={b}
+                    onClick={() => setBrand(brand === b ? "all" : b)}
+                    className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors border ${brand === b ? "bg-primary/20 border-primary/50 text-primary" : "border-white/10 text-muted-foreground hover:border-primary/30"}`}
+                  >
+                    {b}
+                  </button>
+                ))}
               </div>
             </div>
 
@@ -72,9 +109,9 @@ export default function Models() {
             <div>
               <Label className="text-base font-semibold mb-3 block">Availability</Label>
               <div className="flex items-center space-x-2">
-                <Checkbox 
-                  id="in-stock" 
-                  checked={inStock} 
+                <Checkbox
+                  id="in-stock"
+                  checked={inStock}
                   onCheckedChange={(checked) => setInStock(checked as boolean)}
                 />
                 <Label htmlFor="in-stock">In Stock Only</Label>
@@ -96,9 +133,9 @@ export default function Models() {
                 <span>{priceRange[1].toLocaleString()} DA</span>
               </div>
             </div>
-            
-            <Button 
-              variant="outline" 
+
+            <Button
+              variant="outline"
               className="w-full border-white/10 hover:bg-white/5"
               onClick={() => {
                 setSearch("");
@@ -115,6 +152,16 @@ export default function Models() {
 
         {/* Product Grid */}
         <div className="flex-1">
+          {brand !== "all" && (
+            <div className="mb-6 flex items-center gap-3">
+              <span className="text-2xl font-black">{brand}</span>
+              <span className="text-muted-foreground">— {laptops?.length ?? 0} model{laptops?.length !== 1 ? "s" : ""}</span>
+              <button onClick={() => setBrand("all")} className="ml-auto text-xs text-muted-foreground hover:text-primary transition-colors border border-white/10 rounded-full px-3 py-1">
+                Clear ✕
+              </button>
+            </div>
+          )}
+
           {isLoading ? (
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
               {[1, 2, 3, 4, 5, 6].map((i) => (
@@ -145,16 +192,10 @@ export default function Models() {
               <p className="text-muted-foreground max-w-md">
                 We couldn't find any laptops matching your current filters. Try adjusting your search criteria or resetting filters.
               </p>
-              <Button 
-                variant="outline" 
+              <Button
+                variant="outline"
                 className="mt-6 border-primary/50 text-primary hover:bg-primary/20"
-                onClick={() => {
-                  setSearch("");
-                  setCondition("all");
-                  setInStock(false);
-                  setBrand("all");
-                  setPriceRange([0, 1000000]);
-                }}
+                onClick={() => { setSearch(""); setCondition("all"); setInStock(false); setBrand("all"); setPriceRange([0, 1000000]); }}
               >
                 Reset Filters
               </Button>
