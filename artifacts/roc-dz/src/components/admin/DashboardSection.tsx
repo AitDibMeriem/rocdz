@@ -40,7 +40,12 @@ const STATUS_LABELS: Record<string, string> = {
 function useOrders() {
   return useQuery({
     queryKey: ["orders"],
-    queryFn: async () => { const r = await fetch(`${BASE}/api/orders`); return r.json() as Promise<any[]>; },
+    queryFn: async (): Promise<any[]> => {
+      const r = await fetch(`${BASE}/api/orders`);
+      if (!r.ok) return [];
+      const data = await r.json();
+      return Array.isArray(data) ? data : [];
+    },
   });
 }
 
