@@ -20,7 +20,6 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { Skeleton } from "@/components/ui/skeleton";
 
 const formatPrice = (price: number) => {
@@ -359,7 +358,7 @@ export function LaptopsSection() {
             <DialogTitle>{editingLaptopId ? 'Edit Laptop' : 'Add New Laptop'}</DialogTitle>
           </DialogHeader>
           
-          <ScrollArea className="flex-1 min-h-0 px-6 py-4">
+          <div className="flex-1 min-h-0 overflow-y-auto px-6 py-4">
             <Form {...form}>
               <form id="laptop-form" onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
                 
@@ -571,7 +570,7 @@ export function LaptopsSection() {
                 <div className="h-10" /> {/* Bottom padding for scroll */}
               </form>
             </Form>
-          </ScrollArea>
+          </div>
           
           <DialogFooter className="p-4 border-t border-border bg-muted/20 flex-shrink-0">
             <Button variant="outline" onClick={() => setModalOpen(false)}>Cancel</Button>

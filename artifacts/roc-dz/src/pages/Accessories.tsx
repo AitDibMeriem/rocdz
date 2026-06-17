@@ -1,8 +1,9 @@
 import { useState } from "react";
 import { useListAccessories } from "@workspace/api-client-react";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Search } from "lucide-react";
+import { Search, ShoppingCart, Check } from "lucide-react";
 import { Input } from "@/components/ui/input";
+import { useCart } from "@/context/CartContext";
 
 const CATEGORIES = ["Tous", "Keyboards", "Mice", "Headsets", "Monitors", "Controllers", "Bags", "Chargers", "Hubs & Adapters", "Other"];
 
@@ -20,6 +21,14 @@ const FALLBACK_IMAGES: Record<string, string> = {
 export default function Accessories() {
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("Tous");
+  const [addedIds, setAddedIds] = useState<Set<number>>(new Set());
+  const { addItem } = useCart();
+
+  const handleAddToCart = (acc: { id: number; name: string; price: number; imageUrl?: string | null; category: string }) => {
+    addItem({ laptopId: acc.id + 100000, title: acc.name, price: acc.price, advance: 0, qty: 1, imageUrl: acc.imageUrl, brand: acc.category, isLaptop: false });
+    setAddedIds(prev => new Set(prev).add(acc.id));
+    setTimeout(() => setAddedIds(prev => { const n = new Set(prev); n.delete(acc.id); return n; }), 2000);
+  };
 
   const { data: accessories, isLoading } = useListAccessories(
     category !== "Tous" ? { category } : {}
@@ -110,12 +119,25 @@ export default function Accessories() {
                 <div className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-1">{acc.category}</div>
                 <h3 className="font-bold text-base mb-2 line-clamp-2">{acc.name}</h3>
                 {acc.description && <p className="text-xs text-muted-foreground mb-3 line-clamp-2">{acc.description}</p>}
-                <div className="flex items-center justify-between">
+                <div className="flex items-center justify-between mb-3">
                   <span className="text-primary font-black text-lg">{acc.price.toLocaleString("fr-DZ")} DA</span>
                   <span className={`text-xs font-semibold px-2 py-1 rounded-full ${acc.stock > 0 ? "bg-green-500/20 text-green-400" : "bg-red-500/20 text-red-400"}`}>
                     {acc.stock > 0 ? `${acc.stock} en stock` : "Rupture"}
                   </span>
                 </div>
+                <button
+                  onClick={() => handleAddToCart(acc)}
+                  disabled={acc.stock === 0}
+                  className={`w-full flex items-center justify-center gap-2 py-2.5 rounded-xl font-bold text-sm transition-all duration-300 ${
+                    addedIds.has(acc.id)
+                      ? "bg-green-500/20 text-green-400 border border-green-500/30"
+                      : acc.stock === 0
+                      ? "bg-white/5 text-white/30 cursor-not-allowed border border-white/5"
+                      : "bg-primary/90 hover:bg-primary text-white border border-primary/50 hover:shadow-[0_0_20px_rgba(233,30,140,0.3)]"
+                  }`}
+                >
+                  {addedIds.has(acc.id) ? <><Check className="w-4 h-4" /> Ajouté !</> : <><ShoppingCart className="w-4 h-4" /> Ajouter au panier</>}
+                </button>
               </div>
             </div>
           ))}

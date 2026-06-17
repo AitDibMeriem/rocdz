@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useAuth } from "@/context/AuthContext";
-import { useLocation } from "wouter";
+import { useLocation, Link } from "wouter";
 
 export default function AdminLogin() {
   const { login } = useAuth();
@@ -135,9 +135,26 @@ export default function AdminLogin() {
           </button>
         </form>
 
-        <p style={{ textAlign: "center", marginTop: "24px", color: "rgba(255,255,255,0.3)", fontSize: "0.75rem" }}>
-          ROC DZ © 2026 — Accès restreint
-        </p>
+        <div style={{ textAlign: "center", marginTop: "24px" }}>
+          <Link href="/" style={{
+            display: "inline-flex",
+            alignItems: "center",
+            gap: "6px",
+            color: "rgba(255,255,255,0.5)",
+            fontSize: "0.8rem",
+            textDecoration: "none",
+            padding: "8px 20px",
+            border: "1px solid rgba(255,255,255,0.1)",
+            borderRadius: "50px",
+            transition: "all 0.3s",
+          }}
+          onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = "#fff"; (e.currentTarget as HTMLElement).style.borderColor = "rgba(255,255,255,0.3)"; }}
+          onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = "rgba(255,255,255,0.5)"; (e.currentTarget as HTMLElement).style.borderColor = "rgba(255,255,255,0.1)"; }}
+          >
+            ← Retour à l'accueil
+          </Link>
+          <p style={{ marginTop: "16px", color: "rgba(255,255,255,0.2)", fontSize: "0.7rem" }}>ROC DZ © 2026 — Accès restreint</p>
+        </div>
       </div>
     </div>
   );
