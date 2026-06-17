@@ -15,17 +15,21 @@ import { useToast } from "@/hooks/use-toast";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { Skeleton } from "@/components/ui/skeleton";
 
 const BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 const fmt = (p: number) => new Intl.NumberFormat("fr-DZ").format(p) + " DA";
 
+const CATEGORIES = ["Keyboards", "Mice", "Headsets", "Monitors", "Controllers", "Bags", "Chargers", "Hubs & Adapters", "Other"];
+
 const formSchema = z.object({
-  name: z.string().min(1, "Name is required"),
-  category: z.string().min(1, "Category is required"),
+  name: z.string().min(1, "Le nom est requis"),
+  category: z.string().min(1, "La catégorie est requise"),
+  color: z.string().optional(),
   description: z.string().optional(),
-  price: z.number().int().min(0, "Price is required"),
+  price: z.number().int().min(0, "Le prix est requis"),
   stock: z.number().int().min(0),
   imageUrl: z.string().optional(),
 });
@@ -55,9 +59,9 @@ export function AccessoriesSection() {
       setModalOpen(false);
       form.reset();
       setEditingId(null);
-      toast({ title: "Accessory updated" });
+      toast({ title: "Accessoire modifié" });
     },
-    onError: () => toast({ title: "Error updating", variant: "destructive" }),
+    onError: () => toast({ title: "Erreur lors de la modification", variant: "destructive" }),
   });
 
   const deleteAccessory = useMutation({
@@ -67,19 +71,19 @@ export function AccessoriesSection() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: getListAccessoriesQueryKey() });
-      toast({ title: "Accessory deleted" });
+      toast({ title: "Accessoire supprimé" });
     },
-    onError: () => toast({ title: "Error deleting", variant: "destructive" }),
+    onError: () => toast({ title: "Erreur lors de la suppression", variant: "destructive" }),
   });
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
-    defaultValues: { name: "", category: "", description: "", price: 0, stock: 1, imageUrl: "" },
+    defaultValues: { name: "", category: "", color: "", description: "", price: 0, stock: 1, imageUrl: "" },
   });
 
   const openAdd = () => {
     setEditingId(null);
-    form.reset({ name: "", category: "", description: "", price: 0, stock: 1, imageUrl: "" });
+    form.reset({ name: "", category: "", color: "", description: "", price: 0, stock: 1, imageUrl: "" });
     setModalOpen(true);
   };
 
@@ -88,6 +92,7 @@ export function AccessoriesSection() {
     form.reset({
       name: item.name,
       category: item.category,
+      color: item.color || "",
       description: item.description || "",
       price: item.price,
       stock: item.stock,
@@ -105,9 +110,9 @@ export function AccessoriesSection() {
           queryClient.invalidateQueries({ queryKey: getListAccessoriesQueryKey() });
           setModalOpen(false);
           form.reset();
-          toast({ title: "Accessory added" });
+          toast({ title: "Accessoire ajouté" });
         },
-        onError: (err: any) => toast({ title: "Error adding", description: err.message, variant: "destructive" }),
+        onError: (err: any) => toast({ title: "Erreur lors de l'ajout", description: err.message, variant: "destructive" }),
       });
     }
   };
@@ -118,11 +123,11 @@ export function AccessoriesSection() {
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <div>
-          <h2 className="text-3xl font-bold tracking-tight">Accessories</h2>
-          <p className="text-muted-foreground text-sm mt-1">{accessories?.length ?? 0} items</p>
+          <h2 className="text-3xl font-bold tracking-tight">Accessoires</h2>
+          <p className="text-muted-foreground text-sm mt-1">{accessories?.length ?? 0} articles</p>
         </div>
         <Button onClick={openAdd} className="gap-2 bg-primary text-primary-foreground hover:bg-primary/90">
-          <Plus className="w-4 h-4" /> Add Accessory
+          <Plus className="w-4 h-4" /> Ajouter un accessoire
         </Button>
       </div>
 
@@ -131,9 +136,10 @@ export function AccessoriesSection() {
           <TableHeader>
             <TableRow className="hover:bg-transparent bg-muted/50">
               <TableHead className="w-[60px]">Photo</TableHead>
-              <TableHead>Name</TableHead>
-              <TableHead>Category</TableHead>
-              <TableHead className="text-right">Price</TableHead>
+              <TableHead>Nom</TableHead>
+              <TableHead>Catégorie</TableHead>
+              <TableHead>Couleur</TableHead>
+              <TableHead className="text-right">Prix</TableHead>
               <TableHead className="text-center">Stock</TableHead>
               <TableHead className="text-right">Actions</TableHead>
             </TableRow>
@@ -145,6 +151,7 @@ export function AccessoriesSection() {
                   <TableCell><Skeleton className="w-10 h-10 rounded" /></TableCell>
                   <TableCell><Skeleton className="h-5 w-[200px]" /></TableCell>
                   <TableCell><Skeleton className="h-5 w-[100px]" /></TableCell>
+                  <TableCell><Skeleton className="h-5 w-[80px]" /></TableCell>
                   <TableCell className="text-right"><Skeleton className="h-5 w-[80px] ml-auto" /></TableCell>
                   <TableCell className="text-center"><Skeleton className="h-5 w-[40px] mx-auto" /></TableCell>
                   <TableCell className="text-right"><Skeleton className="h-8 w-[80px] ml-auto" /></TableCell>
@@ -152,8 +159,8 @@ export function AccessoriesSection() {
               ))
             ) : accessories?.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={6} className="h-32 text-center text-muted-foreground">
-                  No accessories yet. Add one!
+                <TableCell colSpan={7} className="h-32 text-center text-muted-foreground">
+                  Aucun accessoire. Ajoutez-en un !
                 </TableCell>
               </TableRow>
             ) : (
@@ -172,6 +179,7 @@ export function AccessoriesSection() {
                   <TableCell>
                     <Badge variant="outline" className="text-xs bg-muted/50">{item.category}</Badge>
                   </TableCell>
+                  <TableCell className="text-sm text-muted-foreground">{(item as any).color || "—"}</TableCell>
                   <TableCell className="text-right font-semibold text-primary">{fmt(item.price)}</TableCell>
                   <TableCell className="text-center">
                     <Badge variant={item.stock > 0 ? "secondary" : "destructive"}>{item.stock}</Badge>
@@ -189,7 +197,7 @@ export function AccessoriesSection() {
                         </AlertDialogTrigger>
                         <AlertDialogContent>
                           <AlertDialogHeader>
-                            <AlertDialogTitle>Supprimer "{item.name}"?</AlertDialogTitle>
+                            <AlertDialogTitle>Supprimer "{item.name}" ?</AlertDialogTitle>
                             <AlertDialogDescription>Cette action est irréversible.</AlertDialogDescription>
                           </AlertDialogHeader>
                           <AlertDialogFooter>
@@ -219,18 +227,29 @@ export function AccessoriesSection() {
               <form id="accessory-form" onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 py-2">
                 <div className="grid grid-cols-2 gap-4">
                   <FormField control={form.control} name="name" render={({ field }) => (
-                    <FormItem><FormLabel>Name *</FormLabel><FormControl><Input {...field} className="bg-background" /></FormControl><FormMessage /></FormItem>
+                    <FormItem><FormLabel>Nom *</FormLabel><FormControl><Input {...field} className="bg-background" /></FormControl><FormMessage /></FormItem>
                   )} />
                   <FormField control={form.control} name="category" render={({ field }) => (
-                    <FormItem><FormLabel>Category *</FormLabel><FormControl><Input {...field} placeholder="e.g. Bag, Mouse..." className="bg-background" /></FormControl><FormMessage /></FormItem>
+                    <FormItem><FormLabel>Catégorie *</FormLabel>
+                      <Select onValueChange={field.onChange} value={field.value}>
+                        <FormControl><SelectTrigger className="bg-background"><SelectValue placeholder="Choisir..." /></SelectTrigger></FormControl>
+                        <SelectContent>
+                          {CATEGORIES.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
                   )} />
                 </div>
+                <FormField control={form.control} name="color" render={({ field }) => (
+                  <FormItem><FormLabel>Couleur</FormLabel><FormControl><Input {...field} placeholder="ex: Noir, Silver, Rouge..." className="bg-background" /></FormControl><FormMessage /></FormItem>
+                )} />
                 <FormField control={form.control} name="description" render={({ field }) => (
                   <FormItem><FormLabel>Description</FormLabel><FormControl><Textarea {...field} className="bg-background" /></FormControl><FormMessage /></FormItem>
                 )} />
                 <div className="grid grid-cols-2 gap-4">
                   <FormField control={form.control} name="price" render={({ field }) => (
-                    <FormItem><FormLabel>Price (DA) *</FormLabel><FormControl><Input type="number" {...field} onChange={e => field.onChange(Number(e.target.value))} className="bg-background" /></FormControl><FormMessage /></FormItem>
+                    <FormItem><FormLabel>Prix (DA) *</FormLabel><FormControl><Input type="number" {...field} onChange={e => field.onChange(Number(e.target.value))} className="bg-background" /></FormControl><FormMessage /></FormItem>
                   )} />
                   <FormField control={form.control} name="stock" render={({ field }) => (
                     <FormItem><FormLabel>Stock *</FormLabel><FormControl><Input type="number" {...field} onChange={e => field.onChange(Number(e.target.value))} className="bg-background" /></FormControl><FormMessage /></FormItem>
@@ -238,7 +257,7 @@ export function AccessoriesSection() {
                 </div>
                 <FormField control={form.control} name="imageUrl" render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Product Image</FormLabel>
+                    <FormLabel>Image du produit</FormLabel>
                     <FormControl>
                       <ImageUpload value={field.value ?? ""} onChange={field.onChange} label="product image" />
                     </FormControl>
@@ -251,7 +270,7 @@ export function AccessoriesSection() {
           <DialogFooter className="flex-shrink-0 pt-4 border-t border-border">
             <Button variant="outline" onClick={() => { setModalOpen(false); setEditingId(null); form.reset(); }}>Annuler</Button>
             <Button type="submit" form="accessory-form" disabled={isPending} className="bg-primary text-primary-foreground hover:bg-primary/90">
-              {isPending ? "Saving..." : editingId ? "Enregistrer" : "Ajouter"}
+              {isPending ? "Enregistrement..." : editingId ? "Enregistrer" : "Ajouter"}
             </Button>
           </DialogFooter>
         </DialogContent>

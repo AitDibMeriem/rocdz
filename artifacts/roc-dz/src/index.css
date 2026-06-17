@@ -1052,52 +1052,51 @@ section { position: relative; z-index: 2; }
     min-height: 100svh;
     padding: 0 4% 0;
     overflow: hidden;
-    position: relative;
-    display: flex;
-    align-items: stretch;
   }
   .hero-content {
-    grid-template-columns: 1fr;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
+    grid-template-columns: 58% 42%;
+    display: grid;
+    align-items: center;
     padding-top: 68px;
-    padding-bottom: 60px;
+    padding-bottom: 40px;
     gap: 0;
-    position: relative;
-    z-index: 2;
-    width: 100%;
+    min-height: calc(100svh - 68px);
   }
   .hero-text {
     position: relative;
     z-index: 2;
-    width: 72%;
-    margin-top: 38%;
+    width: 100%;
+    margin-top: 0;
   }
-  .hero h1 { font-size: clamp(1.6rem, 8vw, 2.4rem); margin-bottom: 0.8rem; letter-spacing: -1px; }
-  .hero-label { margin-bottom: 0.8rem; }
+  .hero h1 { font-size: clamp(1.4rem, 7vw, 2rem); margin-bottom: 0.6rem; letter-spacing: -1px; }
+  .hero-label { margin-bottom: 0.6rem; }
   .hero-desc {
     display: block !important;
-    font-size: 0.72rem;
-    line-height: 1.55;
-    margin-bottom: 1.2rem;
-    max-width: 92%;
+    font-size: 0.68rem;
+    line-height: 1.5;
+    margin-bottom: 1rem;
+    max-width: 100%;
   }
   .hero-image {
-    position: absolute !important;
-    right: -45px;
-    top: 55px;
-    width: 72%;
+    position: relative !important;
+    right: auto;
+    top: auto;
+    width: 100%;
     min-height: unset;
-    z-index: 3;
-    opacity: 0.9;
+    z-index: 2;
+    opacity: 1;
     pointer-events: none;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    overflow: visible;
   }
   .hero-image img {
-    max-height: unset;
-    width: 100%;
-    max-width: 100%;
-    margin-left: 0;
+    max-height: 280px;
+    width: 130%;
+    max-width: 130%;
+    margin-left: -30%;
+    transform: translateX(10%);
   }
   .hero-glow, .hero-glow-2 { display: none; }
   .brand-marquee { display: none; }

@@ -53,13 +53,13 @@ export default function Models() {
           <div className="sticky top-24 space-y-8 bg-card/30 p-6 rounded-2xl border border-white/5 backdrop-blur-md">
             <div>
               <h3 className="font-bold text-lg mb-4 flex items-center gap-2">
-                <Filter className="w-5 h-5 text-primary" /> Filters
+                <Filter className="w-5 h-5 text-primary" /> Filtres
               </h3>
 
               <div className="relative mb-6">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                 <Input
-                  placeholder="Search models..."
+                  placeholder="Rechercher un modèle..."
                   className="pl-9 bg-black/50 border-white/10 focus-visible:ring-primary"
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
@@ -68,13 +68,13 @@ export default function Models() {
             </div>
 
             <div>
-              <Label className="text-base font-semibold mb-3 block">Brand</Label>
+              <Label className="text-base font-semibold mb-3 block">Marque</Label>
               <div className="flex flex-wrap gap-2">
                 <button
                   onClick={() => setBrand("all")}
                   className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors border ${brand === "all" ? "bg-primary/20 border-primary/50 text-primary" : "border-white/10 text-muted-foreground hover:border-primary/30"}`}
                 >
-                  All
+                  Tous
                 </button>
                 {BRANDS.map(b => (
                   <button
@@ -89,37 +89,37 @@ export default function Models() {
             </div>
 
             <div>
-              <Label className="text-base font-semibold mb-3 block">Condition</Label>
+              <Label className="text-base font-semibold mb-3 block">État</Label>
               <RadioGroup value={condition} onValueChange={(val) => setCondition(val as any)} className="space-y-2">
                 <div className="flex items-center space-x-2">
                   <RadioGroupItem value="all" id="cond-all" />
-                  <Label htmlFor="cond-all">All</Label>
+                  <Label htmlFor="cond-all">Tous</Label>
                 </div>
                 <div className="flex items-center space-x-2">
                   <RadioGroupItem value="new" id="cond-new" />
-                  <Label htmlFor="cond-new" className="text-green-400">Brand New</Label>
+                  <Label htmlFor="cond-new" className="text-green-400">Neuf</Label>
                 </div>
                 <div className="flex items-center space-x-2">
                   <RadioGroupItem value="refurbished" id="cond-refurb" />
-                  <Label htmlFor="cond-refurb" className="text-orange-400">Refurbished</Label>
+                  <Label htmlFor="cond-refurb" className="text-orange-400">Occasion</Label>
                 </div>
               </RadioGroup>
             </div>
 
             <div>
-              <Label className="text-base font-semibold mb-3 block">Availability</Label>
+              <Label className="text-base font-semibold mb-3 block">Disponibilité</Label>
               <div className="flex items-center space-x-2">
                 <Checkbox
                   id="in-stock"
                   checked={inStock}
                   onCheckedChange={(checked) => setInStock(checked as boolean)}
                 />
-                <Label htmlFor="in-stock">In Stock Only</Label>
+                <Label htmlFor="in-stock">En stock uniquement</Label>
               </div>
             </div>
 
             <div>
-              <Label className="text-base font-semibold mb-3 block">Price Range (DA)</Label>
+              <Label className="text-base font-semibold mb-3 block">Fourchette de prix (DA)</Label>
               <Slider
                 min={0}
                 max={1000000}
@@ -145,7 +145,7 @@ export default function Models() {
                 setPriceRange([0, 1000000]);
               }}
             >
-              Reset Filters
+              Réinitialiser
             </Button>
           </div>
         </aside>
@@ -155,7 +155,7 @@ export default function Models() {
           {brand !== "all" && (
             <div className="mb-6 flex items-center gap-3">
               <span className="text-2xl font-black">{brand}</span>
-              <span className="text-muted-foreground">— {laptops?.length ?? 0} model{laptops?.length !== 1 ? "s" : ""}</span>
+              <span className="text-muted-foreground">— {laptops?.length ?? 0} modèle{laptops?.length !== 1 ? "s" : ""}</span>
               <button onClick={() => setBrand("all")} className="ml-auto text-xs text-muted-foreground hover:text-primary transition-colors border border-white/10 rounded-full px-3 py-1">
                 Clear ✕
               </button>
@@ -163,22 +163,22 @@ export default function Models() {
           )}
 
           {isLoading ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+            <div className="grid grid-cols-2 md:grid-cols-2 xl:grid-cols-3 gap-3 sm:gap-6">
               {[1, 2, 3, 4, 5, 6].map((i) => (
-                <div key={i} className="bg-card/30 rounded-xl p-4 border border-white/5">
-                  <Skeleton className="w-full aspect-[4/3] rounded-lg mb-4" />
-                  <Skeleton className="h-6 w-3/4 mb-2" />
-                  <Skeleton className="h-4 w-1/2 mb-4" />
-                  <div className="grid grid-cols-2 gap-2 mb-4">
-                    <Skeleton className="h-8 w-full" />
-                    <Skeleton className="h-8 w-full" />
+                <div key={i} className="bg-card/30 rounded-xl p-3 sm:p-4 border border-white/5">
+                  <Skeleton className="w-full aspect-[4/3] rounded-lg mb-3" />
+                  <Skeleton className="h-5 w-3/4 mb-2" />
+                  <Skeleton className="h-4 w-1/2 mb-3" />
+                  <div className="grid grid-cols-2 gap-2 mb-3">
+                    <Skeleton className="h-7 w-full" />
+                    <Skeleton className="h-7 w-full" />
                   </div>
-                  <Skeleton className="h-10 w-full mt-4" />
+                  <Skeleton className="h-8 w-full mt-3" />
                 </div>
               ))}
             </div>
           ) : laptops && laptops.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+            <div className="grid grid-cols-2 md:grid-cols-2 xl:grid-cols-3 gap-3 sm:gap-6">
               {laptops.map((laptop) => (
                 <ProductCard key={laptop.id} laptop={laptop} />
               ))}
@@ -188,16 +188,16 @@ export default function Models() {
               <div className="w-20 h-20 bg-black rounded-full flex items-center justify-center mb-6">
                 <Search className="w-8 h-8 text-primary" />
               </div>
-              <h3 className="text-2xl font-bold mb-2">No models found</h3>
+              <h3 className="text-2xl font-bold mb-2">Aucun modèle trouvé</h3>
               <p className="text-muted-foreground max-w-md">
-                We couldn't find any laptops matching your current filters. Try adjusting your search criteria or resetting filters.
+                Aucun laptop ne correspond à vos filtres. Essayez de modifier vos critères ou réinitialisez les filtres.
               </p>
               <Button
                 variant="outline"
                 className="mt-6 border-primary/50 text-primary hover:bg-primary/20"
                 onClick={() => { setSearch(""); setCondition("all"); setInStock(false); setBrand("all"); setPriceRange([0, 1000000]); }}
               >
-                Reset Filters
+                Réinitialiser
               </Button>
             </div>
           )}

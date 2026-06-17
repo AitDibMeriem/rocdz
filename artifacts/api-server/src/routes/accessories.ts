@@ -33,7 +33,7 @@ router.post("/", async (req, res) => {
 router.patch("/:id", async (req, res) => {
   try {
     const id = Number(req.params.id);
-    const { name, category, description, price, stock, imageUrl } = req.body;
+    const { name, category, description, price, stock, imageUrl, color } = req.body;
     const updates: Record<string, any> = {};
     if (name !== undefined) updates.name = name;
     if (category !== undefined) updates.category = category;
@@ -41,6 +41,7 @@ router.patch("/:id", async (req, res) => {
     if (price !== undefined) updates.price = Number(price);
     if (stock !== undefined) updates.stock = Number(stock);
     if (imageUrl !== undefined) updates.imageUrl = imageUrl;
+    if (color !== undefined) updates.color = color;
     const [updated] = await db.update(accessoriesTable).set(updates).where(eq(accessoriesTable.id, id)).returning();
     if (!updated) { res.status(404).json({ error: "Accessory not found" }); return; }
     res.json(updated);

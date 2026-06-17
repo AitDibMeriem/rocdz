@@ -82,7 +82,7 @@ export default function Accessories() {
       </div>
 
       {isLoading ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6">
+        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-6">
           {[1,2,3,4,5,6,7,8].map(i => (
             <div key={i} className="bg-card/30 rounded-xl p-4 border border-white/5">
               <Skeleton className="w-full aspect-square rounded-lg mb-4" />
@@ -105,9 +105,10 @@ export default function Accessories() {
           </p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6">
+        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-6">
           {filtered.map(acc => (
-            <div key={acc.id} className="bg-card/30 border border-white/10 rounded-2xl overflow-hidden hover:border-primary/30 transition-all hover:shadow-[0_0_30px_rgba(233,30,140,0.1)] group">
+            <div key={acc.id} className="bg-card/30 border border-white/10 rounded-2xl overflow-hidden hover:border-primary/30 transition-all hover:shadow-[0_0_30px_rgba(233,30,140,0.1)] group cursor-pointer" onClick={() => {}}>
+
               <div className="aspect-square overflow-hidden bg-black/30">
                 <img
                   src={acc.imageUrl || FALLBACK_IMAGES[acc.category] || "https://placehold.co/400x400/1a1a1a/e91e8c?text=ROC+DZ"}

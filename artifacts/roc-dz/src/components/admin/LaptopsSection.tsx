@@ -27,10 +27,11 @@ const formatPrice = (price: number) => {
 };
 
 const formSchema = z.object({
-  brand: z.string().min(1, "Brand is required"),
-  model: z.string().min(1, "Model is required"),
-  title: z.string().min(1, "Title is required"),
+  brand: z.string().min(1, "La marque est requise"),
+  model: z.string().min(1, "Le modèle est requis"),
+  title: z.string().min(1, "Le titre est requis"),
   sku: z.string().optional(),
+  color: z.string().optional(),
   description: z.string().optional(),
   processor: z.string().optional(),
   processorSpeedMin: z.string().optional(),
@@ -84,6 +85,7 @@ export function LaptopsSection() {
       model: "",
       title: "",
       sku: "",
+      color: "",
       description: "",
       processor: "",
       processorSpeedMin: "",
@@ -128,6 +130,7 @@ export function LaptopsSection() {
     form.reset({
       ...laptop,
       sku: laptop.sku || undefined,
+      color: (laptop as any).color || undefined,
       description: laptop.description || undefined,
       processor: laptop.processor || undefined,
       processorSpeedMin: laptop.processorSpeedMin || undefined,
@@ -364,23 +367,36 @@ export function LaptopsSection() {
                 
                 {/* Basic Info */}
                 <div className="space-y-4">
-                  <h3 className="text-lg font-semibold text-primary border-b border-border pb-2">Basic Info</h3>
+                  <h3 className="text-lg font-semibold text-primary border-b border-border pb-2">Informations de base</h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <FormField control={form.control} name="brand" render={({ field }) => (
-                      <FormItem><FormLabel>Brand *</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
+                      <FormItem><FormLabel>Marque *</FormLabel>
+                        <Select onValueChange={field.onChange} value={field.value}>
+                          <FormControl><SelectTrigger className="bg-background"><SelectValue placeholder="Choisir une marque" /></SelectTrigger></FormControl>
+                          <SelectContent>
+                            {["HP", "Dell", "Lenovo", "ASUS", "MSI", "Apple", "Acer", "Samsung", "Toshiba", "Autre"].map(b => (
+                              <SelectItem key={b} value={b}>{b}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
                     )} />
                     <FormField control={form.control} name="model" render={({ field }) => (
-                      <FormItem><FormLabel>Model *</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
+                      <FormItem><FormLabel>Modèle *</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
                     )} />
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <FormField control={form.control} name="title" render={({ field }) => (
-                      <FormItem><FormLabel>Title *</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
+                      <FormItem><FormLabel>Titre *</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
                     )} />
                     <FormField control={form.control} name="sku" render={({ field }) => (
-                      <FormItem><FormLabel>SKU (Optional)</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
+                      <FormItem><FormLabel>SKU (Optionnel)</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
                     )} />
                   </div>
+                  <FormField control={form.control} name="color" render={({ field }) => (
+                    <FormItem><FormLabel>Couleur</FormLabel><FormControl><Input {...field} placeholder="ex: Noir, Silver, Rouge..." /></FormControl><FormMessage /></FormItem>
+                  )} />
                   <FormField control={form.control} name="description" render={({ field }) => (
                     <FormItem><FormLabel>Description</FormLabel><FormControl><Textarea {...field} className="min-h-[100px]" /></FormControl><FormMessage /></FormItem>
                   )} />

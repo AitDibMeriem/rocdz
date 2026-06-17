@@ -10,6 +10,7 @@ export const accessoriesTable = pgTable("accessories", {
   price: integer("price").notNull(),
   stock: integer("stock").notNull().default(0),
   imageUrl: text("image_url"),
+  color: text("color"),
 });
 
 export const insertAccessorySchema = createInsertSchema(accessoriesTable).omit({ id: true });
