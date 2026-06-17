@@ -47,15 +47,9 @@ export function Navbar() {
         <button
           onClick={toggleLang}
           title={lang === "fr" ? "Switch to Arabic" : "Switch to French"}
-          style={{
-            background: "none", border: "1px solid rgba(255,255,255,0.15)",
-            borderRadius: "6px", cursor: "pointer", padding: "3px 7px",
-            fontSize: "0.7rem", fontWeight: 700, color: "var(--text)",
-            letterSpacing: "0.5px", lineHeight: 1.4,
-            display: "flex", alignItems: "center", gap: "4px",
-          }}
+          className="lang-btn"
         >
-          {lang === "fr" ? "🇫🇷 FR" : "🇩🇿 AR"}
+          {lang === "fr" ? <><span className="lang-flag">🇫🇷</span><span className="lang-label">FR</span></> : <><span className="lang-flag">🇩🇿</span><span className="lang-label">AR</span></>}
         </button>
 
         <div className="nav-cart-wrap" onClick={() => navigate("/cart")} style={{ position: "relative", cursor: "pointer" }}>
