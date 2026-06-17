@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useListLaptops, useGetLaptopStats, ListLaptopsCondition } from "@workspace/api-client-react";
+import { useListLaptops, ListLaptopsCondition } from "@workspace/api-client-react";
 import { ProductCard } from "@/components/ProductCard";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Slider } from "@/components/ui/slider";
-import { Search, Filter, Laptop as LaptopIcon } from "lucide-react";
+import { Search, Filter } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export default function Models() {
@@ -17,7 +17,6 @@ export default function Models() {
   const [brand, setBrand] = useState("all");
   const [priceRange, setPriceRange] = useState([0, 1000000]);
 
-  // Construct query params
   const queryParams = {
     ...(search ? { search } : {}),
     ...(condition !== "all" ? { condition: condition as ListLaptopsCondition } : {}),
@@ -28,40 +27,9 @@ export default function Models() {
   };
 
   const { data: laptops, isLoading } = useListLaptops(queryParams);
-  const { data: stats } = useGetLaptopStats();
 
   return (
     <div className="container mx-auto px-4 py-12">
-      {/* Stats Bar */}
-      {stats && (
-        <div className="bg-card/50 backdrop-blur-md border border-white/10 rounded-2xl p-6 mb-8 flex flex-wrap gap-8 items-center justify-between shadow-xl">
-          <div className="flex items-center gap-4">
-            <div className="p-3 bg-primary/20 rounded-xl">
-              <LaptopIcon className="w-6 h-6 text-primary" />
-            </div>
-            <div>
-              <div className="text-2xl font-black">{stats.totalLaptops}</div>
-              <div className="text-xs text-muted-foreground uppercase tracking-wider">Total Models</div>
-            </div>
-          </div>
-          <div className="flex gap-8">
-            <div className="text-center">
-              <div className="text-xl font-bold text-green-400">{stats.inStock}</div>
-              <div className="text-xs text-muted-foreground uppercase">In Stock</div>
-            </div>
-            <div className="w-px bg-white/10" />
-            <div className="text-center">
-              <div className="text-xl font-bold">{stats.newCount}</div>
-              <div className="text-xs text-muted-foreground uppercase">New</div>
-            </div>
-            <div className="w-px bg-white/10" />
-            <div className="text-center">
-              <div className="text-xl font-bold text-orange-400">{stats.refurbishedCount}</div>
-              <div className="text-xs text-muted-foreground uppercase">Refurbished</div>
-            </div>
-          </div>
-        </div>
-      )}
 
       <div className="flex flex-col lg:flex-row gap-8">
         {/* Sidebar Filters */}
