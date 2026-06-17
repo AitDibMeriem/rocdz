@@ -1,19 +1,18 @@
+import { useState } from "react";
 import { useRoute } from "wouter";
 import { useGetLaptop } from "@workspace/api-client-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { CheckCircle2, ShieldAlert, Cpu, HardDrive, MemoryStick as Memory, Monitor, Battery, Weight, AlertCircle } from "lucide-react";
+import { CheckCircle2, ShieldAlert, Cpu, HardDrive, MemoryStick as Memory, Monitor, ChevronLeft, ChevronRight, Play, AlertCircle } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export default function LaptopDetail() {
   const [, params] = useRoute("/laptop/:id");
   const id = params?.id ? parseInt(params.id, 10) : 0;
+  const [activeIdx, setActiveIdx] = useState(0);
 
   const { data: laptop, isLoading, error } = useGetLaptop(id, {
-    query: {
-      enabled: !!id,
-      queryKey: ["/api/laptops", id] // Simplified query key for standard usage
-    }
+    query: { enabled: !!id, queryKey: ["/api/laptops", id] }
   });
 
   if (isLoading) {
@@ -41,27 +40,104 @@ export default function LaptopDetail() {
     );
   }
 
+  const extraMedia: string[] = (laptop as any).mediaUrls || [];
+  const allMedia: string[] = [
+    ...(laptop.imageUrl ? [laptop.imageUrl] : []),
+    ...extraMedia,
+  ];
+  if (allMedia.length === 0) allMedia.push("https://placehold.co/800x600/1a1a1a/e91e8c?text=ROC+DZ");
+
+  const currentMedia = allMedia[activeIdx] ?? allMedia[0];
+  const isVideo = /\.(mp4|webm|mov|avi)$/i.test(currentMedia);
+
+  const prev = () => setActiveIdx(i => (i - 1 + allMedia.length) % allMedia.length);
+  const next = () => setActiveIdx(i => (i + 1) % allMedia.length);
+
   return (
     <div className="container mx-auto px-4 py-12">
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-16">
-        {/* Image Section */}
-        <div className="relative">
-          <div className="absolute inset-0 bg-gradient-to-tr from-primary/10 to-accent/10 blur-3xl -z-10 rounded-full" />
-          <div className="bg-black/60 rounded-3xl overflow-hidden border border-white/10 aspect-[4/3] flex items-center justify-center relative">
-            <img 
-              src={laptop.imageUrl || "https://placehold.co/800x600/1a1a1a/e91e8c?text=ROC+DZ"} 
-              alt={laptop.title}
-              className="w-full h-full object-cover"
-            />
-            
-            <div className="absolute top-4 left-4 flex flex-col gap-2">
-              {laptop.condition === "new" ? (
-                <Badge className="bg-green-500/20 text-green-400 border-green-500/50 px-3 py-1 text-sm backdrop-blur-md">Brand New</Badge>
+        {/* Gallery Section */}
+        <div className="space-y-3">
+          <div className="relative group">
+            <div className="absolute inset-0 bg-gradient-to-tr from-primary/10 to-accent/10 blur-3xl -z-10 rounded-full" />
+            <div className="bg-black/60 rounded-3xl overflow-hidden border border-white/10 aspect-[4/3] flex items-center justify-center relative">
+              {isVideo ? (
+                <video
+                  key={currentMedia}
+                  src={currentMedia}
+                  className="w-full h-full object-cover"
+                  controls
+                  autoPlay
+                  loop
+                  muted
+                />
               ) : (
-                <Badge className="bg-orange-500/20 text-orange-400 border-orange-500/50 px-3 py-1 text-sm backdrop-blur-md">Refurbished</Badge>
+                <img
+                  src={currentMedia}
+                  alt={laptop.title}
+                  className="w-full h-full object-cover transition-opacity duration-300"
+                />
+              )}
+
+              <div className="absolute top-4 left-4 flex flex-col gap-2">
+                {laptop.condition === "new" ? (
+                  <Badge className="bg-green-500/20 text-green-400 border-green-500/50 px-3 py-1 text-sm backdrop-blur-md">Brand New</Badge>
+                ) : (
+                  <Badge className="bg-orange-500/20 text-orange-400 border-orange-500/50 px-3 py-1 text-sm backdrop-blur-md">Refurbished</Badge>
+                )}
+              </div>
+
+              {allMedia.length > 1 && (
+                <>
+                  <button
+                    onClick={prev}
+                    className="absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-black/60 backdrop-blur-sm border border-white/10 flex items-center justify-center text-white hover:bg-black/80 transition-all opacity-0 group-hover:opacity-100"
+                  >
+                    <ChevronLeft className="w-5 h-5" />
+                  </button>
+                  <button
+                    onClick={next}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-black/60 backdrop-blur-sm border border-white/10 flex items-center justify-center text-white hover:bg-black/80 transition-all opacity-0 group-hover:opacity-100"
+                  >
+                    <ChevronRight className="w-5 h-5" />
+                  </button>
+                  <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5">
+                    {allMedia.map((_, i) => (
+                      <button
+                        key={i}
+                        onClick={() => setActiveIdx(i)}
+                        className={`h-1.5 rounded-full transition-all ${i === activeIdx ? "w-6 bg-primary" : "w-1.5 bg-white/40"}`}
+                      />
+                    ))}
+                  </div>
+                </>
               )}
             </div>
           </div>
+
+          {/* Thumbnail strip */}
+          {allMedia.length > 1 && (
+            <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide">
+              {allMedia.map((url, i) => {
+                const isVid = /\.(mp4|webm|mov|avi)$/i.test(url);
+                return (
+                  <button
+                    key={i}
+                    onClick={() => setActiveIdx(i)}
+                    className={`relative flex-shrink-0 w-16 h-16 rounded-xl overflow-hidden border-2 transition-all ${i === activeIdx ? "border-primary scale-105" : "border-white/10 opacity-60 hover:opacity-100 hover:border-white/30"}`}
+                  >
+                    {isVid ? (
+                      <div className="w-full h-full bg-black/60 flex items-center justify-center">
+                        <Play className="w-5 h-5 text-white" />
+                      </div>
+                    ) : (
+                      <img src={url} alt={`Photo ${i + 1}`} className="w-full h-full object-cover" />
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+          )}
         </div>
 
         {/* Info Section */}
@@ -71,14 +147,13 @@ export default function LaptopDetail() {
             <span className="text-muted-foreground">•</span>
             <span className="text-sm text-muted-foreground">{laptop.model}</span>
           </div>
-          
+
           <h1 className="text-3xl md:text-5xl font-black mb-6 text-foreground">{laptop.title}</h1>
-          
+
           <div className="flex items-center gap-6 mb-8">
             <div className="text-4xl font-black text-gradient-roc">
               {laptop.price.toLocaleString("fr-DZ")} DA
             </div>
-            
             <div className="flex items-center gap-2">
               {laptop.stockQuantity > 0 ? (
                 <Badge variant="outline" className="bg-green-500/10 text-green-400 border-green-500/50">
@@ -144,94 +219,27 @@ export default function LaptopDetail() {
         <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
           <ShieldAlert className="w-6 h-6 text-primary" /> Detailed Specifications
         </h2>
-        
         <div className="bg-card/30 border border-white/10 rounded-2xl overflow-hidden">
           <table className="w-full text-left text-sm">
             <tbody>
-              {/* Performance */}
-              <tr className="bg-primary/5">
-                <th colSpan={2} className="p-4 font-bold text-primary">Performance</th>
-              </tr>
-              <tr className="border-b border-white/5">
-                <th className="p-4 w-1/3 text-muted-foreground font-normal">Processor</th>
-                <td className="p-4 font-medium">{laptop.processor}</td>
-              </tr>
-              {laptop.cores && (
-                <tr className="border-b border-white/5">
-                  <th className="p-4 w-1/3 text-muted-foreground font-normal">Cores / Threads</th>
-                  <td className="p-4 font-medium">{laptop.cores} Cores / {laptop.threads} Threads</td>
-                </tr>
-              )}
-              {(laptop.processorSpeedMin || laptop.processorSpeedMax) && (
-                <tr className="border-b border-white/5">
-                  <th className="p-4 w-1/3 text-muted-foreground font-normal">Clock Speed</th>
-                  <td className="p-4 font-medium">{laptop.processorSpeedMin} - {laptop.processorSpeedMax}</td>
-                </tr>
-              )}
-              <tr className="border-b border-white/5">
-                <th className="p-4 w-1/3 text-muted-foreground font-normal">Memory (RAM)</th>
-                <td className="p-4 font-medium">{laptop.ram}GB {laptop.ramType}</td>
-              </tr>
-              <tr className="border-b border-white/5">
-                <th className="p-4 w-1/3 text-muted-foreground font-normal">Graphics (GPU)</th>
-                <td className="p-4 font-medium">{laptop.gpu || "Integrated Graphics"}</td>
-              </tr>
-
-              {/* Storage & Display */}
-              <tr className="bg-primary/5 border-y border-white/5">
-                <th colSpan={2} className="p-4 font-bold text-primary">Storage & Display</th>
-              </tr>
-              <tr className="border-b border-white/5">
-                <th className="p-4 w-1/3 text-muted-foreground font-normal">Storage Capacity</th>
-                <td className="p-4 font-medium">{laptop.storage}GB {laptop.storageType}</td>
-              </tr>
-              <tr className="border-b border-white/5">
-                <th className="p-4 w-1/3 text-muted-foreground font-normal">Screen Size</th>
-                <td className="p-4 font-medium">{laptop.screenSize}"</td>
-              </tr>
-              <tr className="border-b border-white/5">
-                <th className="p-4 w-1/3 text-muted-foreground font-normal">Resolution</th>
-                <td className="p-4 font-medium">{laptop.screenResolution}</td>
-              </tr>
-              <tr className="border-b border-white/5">
-                <th className="p-4 w-1/3 text-muted-foreground font-normal">Touchscreen</th>
-                <td className="p-4 font-medium">{laptop.touchscreen ? "Yes" : "No"}</td>
-              </tr>
-
-              {/* Physical & Extras */}
-              <tr className="bg-primary/5 border-y border-white/5">
-                <th colSpan={2} className="p-4 font-bold text-primary">Physical & Warranty</th>
-              </tr>
-              <tr className="border-b border-white/5">
-                <th className="p-4 w-1/3 text-muted-foreground font-normal">Operating System</th>
-                <td className="p-4 font-medium">{laptop.operatingSystem || "Not specified"}</td>
-              </tr>
-              {laptop.weight && (
-                <tr className="border-b border-white/5">
-                  <th className="p-4 w-1/3 text-muted-foreground font-normal">Weight</th>
-                  <td className="p-4 font-medium">{laptop.weight}</td>
-                </tr>
-              )}
-              {laptop.batteryEstimation && (
-                <tr className="border-b border-white/5">
-                  <th className="p-4 w-1/3 text-muted-foreground font-normal">Battery Life</th>
-                  <td className="p-4 font-medium">{laptop.batteryEstimation}</td>
-                </tr>
-              )}
-              <tr className="border-b border-white/5">
-                <th className="p-4 w-1/3 text-muted-foreground font-normal">Warranty</th>
-                <td className="p-4 font-medium">{laptop.warrantyMonths} Months</td>
-              </tr>
+              <tr className="bg-primary/5"><th colSpan={2} className="p-4 font-bold text-primary">Performance</th></tr>
+              <tr className="border-b border-white/5"><th className="p-4 w-1/3 text-muted-foreground font-normal">Processor</th><td className="p-4 font-medium">{laptop.processor}</td></tr>
+              {laptop.cores && <tr className="border-b border-white/5"><th className="p-4 w-1/3 text-muted-foreground font-normal">Cores / Threads</th><td className="p-4 font-medium">{laptop.cores} Cores / {laptop.threads} Threads</td></tr>}
+              {(laptop.processorSpeedMin || laptop.processorSpeedMax) && <tr className="border-b border-white/5"><th className="p-4 w-1/3 text-muted-foreground font-normal">Clock Speed</th><td className="p-4 font-medium">{laptop.processorSpeedMin} - {laptop.processorSpeedMax}</td></tr>}
+              <tr className="border-b border-white/5"><th className="p-4 w-1/3 text-muted-foreground font-normal">Memory (RAM)</th><td className="p-4 font-medium">{laptop.ram}GB {laptop.ramType}</td></tr>
+              <tr className="border-b border-white/5"><th className="p-4 w-1/3 text-muted-foreground font-normal">Graphics (GPU)</th><td className="p-4 font-medium">{laptop.gpu || "Integrated Graphics"}</td></tr>
+              <tr className="bg-primary/5 border-y border-white/5"><th colSpan={2} className="p-4 font-bold text-primary">Storage & Display</th></tr>
+              <tr className="border-b border-white/5"><th className="p-4 w-1/3 text-muted-foreground font-normal">Storage Capacity</th><td className="p-4 font-medium">{laptop.storage}GB {laptop.storageType}</td></tr>
+              <tr className="border-b border-white/5"><th className="p-4 w-1/3 text-muted-foreground font-normal">Screen Size</th><td className="p-4 font-medium">{laptop.screenSize}"</td></tr>
+              <tr className="border-b border-white/5"><th className="p-4 w-1/3 text-muted-foreground font-normal">Resolution</th><td className="p-4 font-medium">{laptop.screenResolution}</td></tr>
+              <tr className="border-b border-white/5"><th className="p-4 w-1/3 text-muted-foreground font-normal">Touchscreen</th><td className="p-4 font-medium">{laptop.touchscreen ? "Yes" : "No"}</td></tr>
+              <tr className="bg-primary/5 border-y border-white/5"><th colSpan={2} className="p-4 font-bold text-primary">Physical & Warranty</th></tr>
+              <tr className="border-b border-white/5"><th className="p-4 w-1/3 text-muted-foreground font-normal">Operating System</th><td className="p-4 font-medium">{laptop.operatingSystem || "Not specified"}</td></tr>
+              {laptop.weight && <tr className="border-b border-white/5"><th className="p-4 w-1/3 text-muted-foreground font-normal">Weight</th><td className="p-4 font-medium">{laptop.weight}</td></tr>}
+              {laptop.batteryEstimation && <tr className="border-b border-white/5"><th className="p-4 w-1/3 text-muted-foreground font-normal">Battery Life</th><td className="p-4 font-medium">{laptop.batteryEstimation}</td></tr>}
+              <tr className="border-b border-white/5"><th className="p-4 w-1/3 text-muted-foreground font-normal">Warranty</th><td className="p-4 font-medium">{laptop.warrantyMonths} Months</td></tr>
               {laptop.condition === "refurbished" && laptop.conditionScore && (
-                <tr>
-                  <th className="p-4 w-1/3 text-muted-foreground font-normal">Condition Score</th>
-                  <td className="p-4 font-medium">
-                    <div className="flex items-center gap-2">
-                      <div className="font-bold text-orange-400">{laptop.conditionScore}/10</div>
-                      <div className="text-xs text-muted-foreground">({laptop.conditionDescription})</div>
-                    </div>
-                  </td>
-                </tr>
+                <tr><th className="p-4 w-1/3 text-muted-foreground font-normal">Condition Score</th><td className="p-4 font-medium"><span className="font-bold text-orange-400">{laptop.conditionScore}/10</span> <span className="text-xs text-muted-foreground">({laptop.conditionDescription})</span></td></tr>
               )}
             </tbody>
           </table>

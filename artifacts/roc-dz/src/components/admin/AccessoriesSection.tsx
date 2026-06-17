@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { useListAccessories, useCreateAccessory, getListAccessoriesQueryKey } from "@workspace/api-client-react";
-import { useQueryClient } from "@tanstack/react-query";
+import { useQueryClient, useMutation } from "@tanstack/react-query";
 import { Plus, Edit, Trash2, Package } from "lucide-react";
 import { ImageUpload } from "@/components/ImageUpload";
 
@@ -12,16 +12,14 @@ import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Textarea } from "@/components/ui/textarea";
 import { Skeleton } from "@/components/ui/skeleton";
-import { ScrollArea } from "@/components/ui/scroll-area";
 
-const formatPrice = (price: number) => {
-  return new Intl.NumberFormat('fr-DZ').format(price) + ' DA';
-};
+const BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
+const fmt = (p: number) => new Intl.NumberFormat("fr-DZ").format(p) + " DA";
 
 const formSchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -35,67 +33,104 @@ type FormValues = z.infer<typeof formSchema>;
 
 export function AccessoriesSection() {
   const [modalOpen, setModalOpen] = useState(false);
+  const [editingId, setEditingId] = useState<number | null>(null);
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
   const { data: accessories, isLoading } = useListAccessories();
   const createAccessory = useCreateAccessory();
 
-  const form = useForm<FormValues>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      name: "",
-      category: "",
-      description: "",
-      price: 0,
-      stock: 1,
-      imageUrl: "",
+  const updateAccessory = useMutation({
+    mutationFn: async ({ id, data }: { id: number; data: Partial<FormValues> }) => {
+      const r = await fetch(`${BASE}/api/accessories/${id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+      if (!r.ok) throw new Error("Failed to update");
+      return r.json();
     },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: getListAccessoriesQueryKey() });
+      setModalOpen(false);
+      form.reset();
+      setEditingId(null);
+      toast({ title: "Accessory updated" });
+    },
+    onError: () => toast({ title: "Error updating", variant: "destructive" }),
   });
 
+  const deleteAccessory = useMutation({
+    mutationFn: async (id: number) => {
+      const r = await fetch(`${BASE}/api/accessories/${id}`, { method: "DELETE" });
+      if (!r.ok && r.status !== 204) throw new Error("Failed to delete");
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: getListAccessoriesQueryKey() });
+      toast({ title: "Accessory deleted" });
+    },
+    onError: () => toast({ title: "Error deleting", variant: "destructive" }),
+  });
+
+  const form = useForm<FormValues>({
+    resolver: zodResolver(formSchema),
+    defaultValues: { name: "", category: "", description: "", price: 0, stock: 1, imageUrl: "" },
+  });
+
+  const openAdd = () => {
+    setEditingId(null);
+    form.reset({ name: "", category: "", description: "", price: 0, stock: 1, imageUrl: "" });
+    setModalOpen(true);
+  };
+
+  const openEdit = (item: any) => {
+    setEditingId(item.id);
+    form.reset({
+      name: item.name,
+      category: item.category,
+      description: item.description || "",
+      price: item.price,
+      stock: item.stock,
+      imageUrl: item.imageUrl || "",
+    });
+    setModalOpen(true);
+  };
+
   const onSubmit = (data: FormValues) => {
-    createAccessory.mutate(
-      { data },
-      {
+    if (editingId) {
+      updateAccessory.mutate({ id: editingId, data });
+    } else {
+      createAccessory.mutate({ data }, {
         onSuccess: () => {
           queryClient.invalidateQueries({ queryKey: getListAccessoriesQueryKey() });
           setModalOpen(false);
           form.reset();
-          toast({ title: "Accessory added successfully" });
+          toast({ title: "Accessory added" });
         },
-        onError: (err: any) => {
-          toast({
-            title: "Error adding accessory",
-            description: err.message,
-            variant: "destructive",
-          });
-        }
-      }
-    );
+        onError: (err: any) => toast({ title: "Error adding", description: err.message, variant: "destructive" }),
+      });
+    }
   };
 
-  const handleDelete = (id: number) => {
-    // Optimistic delete since there is no delete endpoint provided
-    const previous = queryClient.getQueryData<any[]>(getListAccessoriesQueryKey()) || [];
-    queryClient.setQueryData(getListAccessoriesQueryKey(), previous.filter(a => a.id !== id));
-    toast({ title: "Accessory removed (optimistic)" });
-  };
+  const isPending = createAccessory.isPending || updateAccessory.isPending;
 
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <h2 className="text-3xl font-bold tracking-tight">Accessories</h2>
-        <Button onClick={() => setModalOpen(true)} className="gap-2 bg-primary text-primary-foreground hover:bg-primary/90">
-          <Plus className="w-4 h-4" />
-          Add Accessory
+        <div>
+          <h2 className="text-3xl font-bold tracking-tight">Accessories</h2>
+          <p className="text-muted-foreground text-sm mt-1">{accessories?.length ?? 0} items</p>
+        </div>
+        <Button onClick={openAdd} className="gap-2 bg-primary text-primary-foreground hover:bg-primary/90">
+          <Plus className="w-4 h-4" /> Add Accessory
         </Button>
       </div>
 
-      <div className="border border-border rounded-lg bg-card overflow-hidden">
+      <div className="border border-border rounded-xl bg-card overflow-hidden">
         <Table>
           <TableHeader>
             <TableRow className="hover:bg-transparent bg-muted/50">
-              <TableHead className="w-[60px]"></TableHead>
+              <TableHead className="w-[60px]">Photo</TableHead>
               <TableHead>Name</TableHead>
               <TableHead>Category</TableHead>
               <TableHead className="text-right">Price</TableHead>
@@ -118,14 +153,14 @@ export function AccessoriesSection() {
             ) : accessories?.length === 0 ? (
               <TableRow>
                 <TableCell colSpan={6} className="h-32 text-center text-muted-foreground">
-                  No accessories found.
+                  No accessories yet. Add one!
                 </TableCell>
               </TableRow>
             ) : (
               accessories?.map((item) => (
-                <TableRow key={item.id}>
+                <TableRow key={item.id} className="hover:bg-muted/30">
                   <TableCell>
-                    <div className="w-10 h-10 rounded bg-background border border-border flex items-center justify-center overflow-hidden">
+                    <div className="w-10 h-10 rounded-lg bg-background border border-border flex items-center justify-center overflow-hidden">
                       {item.imageUrl ? (
                         <img src={item.imageUrl} alt={item.name} className="w-full h-full object-cover" />
                       ) : (
@@ -135,21 +170,15 @@ export function AccessoriesSection() {
                   </TableCell>
                   <TableCell className="font-medium">{item.name}</TableCell>
                   <TableCell>
-                    <Badge variant="outline" className="text-xs bg-muted/50">
-                      {item.category}
-                    </Badge>
+                    <Badge variant="outline" className="text-xs bg-muted/50">{item.category}</Badge>
                   </TableCell>
-                  <TableCell className="text-right font-semibold text-primary">
-                    {formatPrice(item.price)}
-                  </TableCell>
+                  <TableCell className="text-right font-semibold text-primary">{fmt(item.price)}</TableCell>
                   <TableCell className="text-center">
-                    <Badge variant={item.stock > 0 ? "secondary" : "destructive"}>
-                      {item.stock}
-                    </Badge>
+                    <Badge variant={item.stock > 0 ? "secondary" : "destructive"}>{item.stock}</Badge>
                   </TableCell>
                   <TableCell className="text-right">
                     <div className="flex justify-end gap-2">
-                      <Button variant="outline" size="icon" disabled>
+                      <Button variant="outline" size="icon" onClick={() => openEdit(item)}>
                         <Edit className="w-4 h-4" />
                       </Button>
                       <AlertDialog>
@@ -160,15 +189,13 @@ export function AccessoriesSection() {
                         </AlertDialogTrigger>
                         <AlertDialogContent>
                           <AlertDialogHeader>
-                            <AlertDialogTitle>Delete Accessory?</AlertDialogTitle>
-                            <AlertDialogDescription>
-                              Are you sure you want to delete {item.name}? This action cannot be undone.
-                            </AlertDialogDescription>
+                            <AlertDialogTitle>Supprimer "{item.name}"?</AlertDialogTitle>
+                            <AlertDialogDescription>Cette action est irréversible.</AlertDialogDescription>
                           </AlertDialogHeader>
                           <AlertDialogFooter>
-                            <AlertDialogCancel>Cancel</AlertDialogCancel>
-                            <AlertDialogAction onClick={() => handleDelete(item.id)} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
-                              Delete
+                            <AlertDialogCancel>Annuler</AlertDialogCancel>
+                            <AlertDialogAction onClick={() => deleteAccessory.mutate(item.id)} className="bg-destructive text-destructive-foreground">
+                              Supprimer
                             </AlertDialogAction>
                           </AlertDialogFooter>
                         </AlertDialogContent>
@@ -182,47 +209,49 @@ export function AccessoriesSection() {
         </Table>
       </div>
 
-      <Dialog open={modalOpen} onOpenChange={setModalOpen}>
-        <DialogContent className="max-w-xl bg-card border-border">
-          <DialogHeader>
-            <DialogTitle>Add New Accessory</DialogTitle>
+      <Dialog open={modalOpen} onOpenChange={(open) => { if (!open) { setModalOpen(false); setEditingId(null); form.reset(); } else setModalOpen(true); }}>
+        <DialogContent className="max-w-xl bg-card border-border flex flex-col max-h-[90vh]">
+          <DialogHeader className="flex-shrink-0">
+            <DialogTitle>{editingId ? "Modifier l'accessoire" : "Ajouter un accessoire"}</DialogTitle>
           </DialogHeader>
-          <Form {...form}>
-            <form id="accessory-form" onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 py-4">
-              <div className="grid grid-cols-2 gap-4">
-                <FormField control={form.control} name="name" render={({ field }) => (
-                  <FormItem><FormLabel>Name *</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
+          <div className="flex-1 overflow-y-auto pr-1">
+            <Form {...form}>
+              <form id="accessory-form" onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 py-2">
+                <div className="grid grid-cols-2 gap-4">
+                  <FormField control={form.control} name="name" render={({ field }) => (
+                    <FormItem><FormLabel>Name *</FormLabel><FormControl><Input {...field} className="bg-background" /></FormControl><FormMessage /></FormItem>
+                  )} />
+                  <FormField control={form.control} name="category" render={({ field }) => (
+                    <FormItem><FormLabel>Category *</FormLabel><FormControl><Input {...field} placeholder="e.g. Bag, Mouse..." className="bg-background" /></FormControl><FormMessage /></FormItem>
+                  )} />
+                </div>
+                <FormField control={form.control} name="description" render={({ field }) => (
+                  <FormItem><FormLabel>Description</FormLabel><FormControl><Textarea {...field} className="bg-background" /></FormControl><FormMessage /></FormItem>
                 )} />
-                <FormField control={form.control} name="category" render={({ field }) => (
-                  <FormItem><FormLabel>Category *</FormLabel><FormControl><Input {...field} placeholder="e.g. Bag, Mouse..." /></FormControl><FormMessage /></FormItem>
+                <div className="grid grid-cols-2 gap-4">
+                  <FormField control={form.control} name="price" render={({ field }) => (
+                    <FormItem><FormLabel>Price (DA) *</FormLabel><FormControl><Input type="number" {...field} onChange={e => field.onChange(Number(e.target.value))} className="bg-background" /></FormControl><FormMessage /></FormItem>
+                  )} />
+                  <FormField control={form.control} name="stock" render={({ field }) => (
+                    <FormItem><FormLabel>Stock *</FormLabel><FormControl><Input type="number" {...field} onChange={e => field.onChange(Number(e.target.value))} className="bg-background" /></FormControl><FormMessage /></FormItem>
+                  )} />
+                </div>
+                <FormField control={form.control} name="imageUrl" render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Product Image</FormLabel>
+                    <FormControl>
+                      <ImageUpload value={field.value ?? ""} onChange={field.onChange} label="product image" />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
                 )} />
-              </div>
-              <FormField control={form.control} name="description" render={({ field }) => (
-                <FormItem><FormLabel>Description</FormLabel><FormControl><Textarea {...field} /></FormControl><FormMessage /></FormItem>
-              )} />
-              <div className="grid grid-cols-2 gap-4">
-                <FormField control={form.control} name="price" render={({ field }) => (
-                  <FormItem><FormLabel>Price (DA) *</FormLabel><FormControl><Input type="number" {...field} onChange={e => field.onChange(Number(e.target.value))} /></FormControl><FormMessage /></FormItem>
-                )} />
-                <FormField control={form.control} name="stock" render={({ field }) => (
-                  <FormItem><FormLabel>Stock *</FormLabel><FormControl><Input type="number" {...field} onChange={e => field.onChange(Number(e.target.value))} /></FormControl><FormMessage /></FormItem>
-                )} />
-              </div>
-              <FormField control={form.control} name="imageUrl" render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Product Image / Video</FormLabel>
-                  <FormControl>
-                    <ImageUpload value={field.value ?? ""} onChange={field.onChange} label="product image or video" />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )} />
-            </form>
-          </Form>
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setModalOpen(false)}>Cancel</Button>
-            <Button type="submit" form="accessory-form" disabled={createAccessory.isPending} className="bg-primary text-primary-foreground hover:bg-primary/90">
-              Save Accessory
+              </form>
+            </Form>
+          </div>
+          <DialogFooter className="flex-shrink-0 pt-4 border-t border-border">
+            <Button variant="outline" onClick={() => { setModalOpen(false); setEditingId(null); form.reset(); }}>Annuler</Button>
+            <Button type="submit" form="accessory-form" disabled={isPending} className="bg-primary text-primary-foreground hover:bg-primary/90">
+              {isPending ? "Saving..." : editingId ? "Enregistrer" : "Ajouter"}
             </Button>
           </DialogFooter>
         </DialogContent>

@@ -351,12 +351,12 @@ export function LaptopsSection() {
       </div>
 
       <Dialog open={modalOpen} onOpenChange={setModalOpen}>
-        <DialogContent className="max-w-4xl max-h-[90vh] p-0 gap-0 bg-card border-border">
-          <DialogHeader className="p-6 pb-2 border-b border-border sticky top-0 bg-card z-10">
+        <DialogContent className="max-w-4xl p-0 gap-0 bg-card border-border flex flex-col max-h-[90vh]">
+          <DialogHeader className="p-6 pb-4 border-b border-border flex-shrink-0">
             <DialogTitle>{editingLaptopId ? 'Edit Laptop' : 'Add New Laptop'}</DialogTitle>
           </DialogHeader>
           
-          <ScrollArea className="h-[calc(90vh-140px)] px-6 py-4">
+          <ScrollArea className="flex-1 min-h-0 px-6 py-4">
             <Form {...form}>
               <form id="laptop-form" onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
                 
@@ -562,7 +562,7 @@ export function LaptopsSection() {
             </Form>
           </ScrollArea>
           
-          <DialogFooter className="p-4 border-t border-border bg-muted/20 sticky bottom-0">
+          <DialogFooter className="p-4 border-t border-border bg-muted/20 flex-shrink-0">
             <Button variant="outline" onClick={() => setModalOpen(false)}>Cancel</Button>
             <Button type="submit" form="laptop-form" disabled={createLaptop.isPending || updateLaptop.isPending} className="bg-primary text-primary-foreground hover:bg-primary/90">
               {editingLaptopId ? 'Save Changes' : 'Add Laptop'}

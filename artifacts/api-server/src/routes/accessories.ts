@@ -30,4 +30,34 @@ router.post("/", async (req, res) => {
   }
 });
 
+router.patch("/:id", async (req, res) => {
+  try {
+    const id = Number(req.params.id);
+    const { name, category, description, price, stock, imageUrl } = req.body;
+    const updates: Record<string, any> = {};
+    if (name !== undefined) updates.name = name;
+    if (category !== undefined) updates.category = category;
+    if (description !== undefined) updates.description = description;
+    if (price !== undefined) updates.price = Number(price);
+    if (stock !== undefined) updates.stock = Number(stock);
+    if (imageUrl !== undefined) updates.imageUrl = imageUrl;
+    const [updated] = await db.update(accessoriesTable).set(updates).where(eq(accessoriesTable.id, id)).returning();
+    if (!updated) { res.status(404).json({ error: "Accessory not found" }); return; }
+    res.json(updated);
+  } catch (err) {
+    req.log.error(err);
+    res.status(400).json({ error: "Invalid data" });
+  }
+});
+
+router.delete("/:id", async (req, res) => {
+  try {
+    await db.delete(accessoriesTable).where(eq(accessoriesTable.id, Number(req.params.id)));
+    res.status(204).send();
+  } catch (err) {
+    req.log.error(err);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
 export default router;
