@@ -4,9 +4,11 @@ export interface CartItem {
   laptopId: number;
   title: string;
   price: number;
+  advance: number;
   qty: number;
   imageUrl?: string | null;
   brand?: string;
+  isLaptop?: boolean;
 }
 
 interface CartContextType {
@@ -41,7 +43,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       if (existing) {
         return prev.map(i => i.laptopId === item.laptopId ? { ...i, qty: i.qty + item.qty } : i);
       }
-      return [...prev, item];
+      return [...prev, { ...item, isLaptop: item.isLaptop ?? true }];
     });
   };
 

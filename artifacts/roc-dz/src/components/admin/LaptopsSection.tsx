@@ -54,6 +54,7 @@ const formSchema = z.object({
   conditionDescription: z.string().optional(),
   warrantyMonths: z.number().int().positive().optional(),
   price: z.number().int().min(0, "Price is required"),
+  advance: z.number().int().min(0).optional(),
   stockQuantity: z.number().int().min(0),
   featured: z.boolean().optional(),
   imageUrl: z.string().optional(),
@@ -106,6 +107,7 @@ export function LaptopsSection() {
       conditionDescription: "",
       warrantyMonths: 12,
       price: 0,
+      advance: 0,
       stockQuantity: 1,
       featured: false,
       imageUrl: "",
@@ -149,6 +151,7 @@ export function LaptopsSection() {
       warrantyMonths: laptop.warrantyMonths || undefined,
       imageUrl: laptop.imageUrl || undefined,
       featured: laptop.featured || false,
+      advance: laptop.advance || 0,
     });
     setMediaUrls((laptop as any).mediaUrls || []);
     setModalOpen(true);
@@ -487,12 +490,20 @@ export function LaptopsSection() {
                 {/* Commercial */}
                 <div className="space-y-4">
                   <h3 className="text-lg font-semibold text-primary border-b border-border pb-2">Commercial</h3>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <FormField control={form.control} name="price" render={({ field }) => (
-                      <FormItem><FormLabel>Price (DA) *</FormLabel><FormControl><Input type="number" {...field} onChange={e => field.onChange(Number(e.target.value))} /></FormControl><FormMessage /></FormItem>
+                      <FormItem><FormLabel>Prix public (DA) *</FormLabel><FormControl><Input type="number" {...field} onChange={e => field.onChange(Number(e.target.value))} /></FormControl><FormMessage /></FormItem>
+                    )} />
+                    <FormField control={form.control} name="advance" render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Versement requis (DA)</FormLabel>
+                        <FormControl><Input type="number" min="0" {...field} onChange={e => field.onChange(Number(e.target.value))} /></FormControl>
+                        <p className="text-xs text-muted-foreground mt-1">Montant à verser par le client avant livraison</p>
+                        <FormMessage />
+                      </FormItem>
                     )} />
                     <FormField control={form.control} name="stockQuantity" render={({ field }) => (
-                      <FormItem><FormLabel>Stock Quantity *</FormLabel><FormControl><Input type="number" {...field} onChange={e => field.onChange(Number(e.target.value))} /></FormControl><FormMessage /></FormItem>
+                      <FormItem><FormLabel>Stock *</FormLabel><FormControl><Input type="number" {...field} onChange={e => field.onChange(Number(e.target.value))} /></FormControl><FormMessage /></FormItem>
                     )} />
                   </div>
                   <FormField control={form.control} name="featured" render={({ field }) => (

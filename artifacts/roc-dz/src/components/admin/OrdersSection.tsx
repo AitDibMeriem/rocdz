@@ -12,6 +12,7 @@ const BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 const STATUS_LABELS: Record<string, string> = {
   reserved: "Réservé",
   confirmed: "Confirmé",
+  advance_paid: "Versement reçu",
   prepared: "Préparé",
   shipped: "Expédié",
   delivered: "Livré",
@@ -22,6 +23,7 @@ const STATUS_LABELS: Record<string, string> = {
 const STATUS_COLORS: Record<string, string> = {
   reserved: "bg-yellow-500/20 text-yellow-400 border-yellow-500/30",
   confirmed: "bg-blue-500/20 text-blue-400 border-blue-500/30",
+  advance_paid: "bg-emerald-500/20 text-emerald-400 border-emerald-500/30",
   prepared: "bg-purple-500/20 text-purple-400 border-purple-500/30",
   shipped: "bg-cyan-500/20 text-cyan-400 border-cyan-500/30",
   delivered: "bg-green-500/20 text-green-400 border-green-500/30",
@@ -29,7 +31,7 @@ const STATUS_COLORS: Record<string, string> = {
   returned: "bg-orange-500/20 text-orange-400 border-orange-500/30",
 };
 
-const ALL_STATUSES = ["reserved", "confirmed", "prepared", "shipped", "delivered", "cancelled", "returned"];
+const ALL_STATUSES = ["reserved", "confirmed", "advance_paid", "prepared", "shipped", "delivered", "cancelled", "returned"];
 
 function useOrders() {
   return useQuery({
@@ -153,12 +155,21 @@ export function OrdersSection() {
             </DialogHeader>
             <div className="space-y-4">
               <div className="grid grid-cols-2 gap-3 text-sm">
-                <div><span className="text-muted-foreground">Client</span><p className="font-semibold">{selected.customerName}</p></div>
-                <div><span className="text-muted-foreground">Téléphone</span><p className="font-semibold">{selected.phone}</p></div>
-                <div><span className="text-muted-foreground">Adresse</span><p className="font-semibold">{selected.address}</p></div>
+                <div><span className="text-muted-foreground">Client</span><p className="font-semibold">{selected.firstName} {selected.lastName}</p></div>
+                <div><span className="text-muted-foreground">Téléphone</span><p className="font-semibold font-mono">{selected.phone}</p></div>
+                {selected.phone2 && <div><span className="text-muted-foreground">Tél. 2</span><p className="font-semibold font-mono">{selected.phone2}</p></div>}
                 <div><span className="text-muted-foreground">Wilaya</span><p className="font-semibold">{selected.wilaya || "—"}</p></div>
-                <div><span className="text-muted-foreground">Paiement</span><p className="font-semibold capitalize">{selected.paymentMethod}</p></div>
-                <div><span className="text-muted-foreground">Total</span><p className="font-bold text-primary">{(selected.totalPrice || 0).toLocaleString("fr-DZ")} DA</p></div>
+                <div><span className="text-muted-foreground">Adresse</span><p className="font-semibold">{selected.address}</p></div>
+                <div><span className="text-muted-foreground">Livraison</span><p className="font-semibold capitalize">{selected.deliveryType === "bureau" ? "Bureau / Stop Desk" : "À domicile"}</p></div>
+              </div>
+              <div className="bg-muted/30 rounded-lg p-3 space-y-1.5 text-sm">
+                <div className="flex justify-between"><span className="text-muted-foreground">Produits</span><span className="font-semibold">{((selected.totalPrice || 0) - (selected.deliveryFee || 0)).toLocaleString("fr-DZ")} DA</span></div>
+                <div className="flex justify-between"><span className="text-muted-foreground">Livraison</span><span className="font-semibold">{(selected.deliveryFee || 0).toLocaleString("fr-DZ")} DA</span></div>
+                <div className="flex justify-between border-t border-border pt-1"><span className="font-bold">Total</span><span className="font-black text-primary">{(selected.totalPrice || 0).toLocaleString("fr-DZ")} DA</span></div>
+                {selected.advancePaid > 0 && <>
+                  <div className="flex justify-between text-emerald-400"><span className="font-semibold">Versement reçu</span><span className="font-bold">{(selected.advancePaid || 0).toLocaleString("fr-DZ")} DA</span></div>
+                  <div className="flex justify-between text-yellow-400"><span className="font-semibold">Reste à payer</span><span className="font-bold">{(selected.remainingAmount || 0).toLocaleString("fr-DZ")} DA</span></div>
+                </>}
               </div>
 
               {selected.items && selected.items.length > 0 && (

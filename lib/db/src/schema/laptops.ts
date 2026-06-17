@@ -30,6 +30,7 @@ export const laptopsTable = pgTable("laptops", {
   conditionDescription: text("condition_description"),
   warrantyMonths: integer("warranty_months"),
   price: integer("price").notNull(),
+  advance: integer("advance").notNull().default(0),
   stockQuantity: integer("stock_quantity").notNull().default(0),
   condition: conditionEnum("condition").notNull(),
   description: text("description"),

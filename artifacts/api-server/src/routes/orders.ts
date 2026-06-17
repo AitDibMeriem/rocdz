@@ -5,7 +5,9 @@ import { eq } from "drizzle-orm";
 
 const router = Router();
 
-const VALID_STATUSES = ["reserved", "confirmed", "prepared", "shipped", "delivered", "cancelled", "returned"] as const;
+const VALID_STATUSES = [
+  "reserved", "confirmed", "advance_paid", "prepared", "shipped", "delivered", "cancelled", "returned",
+] as const;
 
 router.get("/", async (req, res) => {
   try {
@@ -19,7 +21,11 @@ router.get("/", async (req, res) => {
 
 router.post("/", async (req, res) => {
   try {
-    const { firstName, lastName, phone, phone2, address, wilaya, items, totalPrice, paymentMethod, notes } = req.body;
+    const {
+      firstName, lastName, phone, phone2, address, wilaya, items,
+      totalPrice, paymentMethod, notes, deliveryFee, advancePaid,
+      remainingAmount, deliveryType,
+    } = req.body;
     const customerName = `${firstName || ""} ${lastName || ""}`.trim();
     const [created] = await db
       .insert(ordersTable)
@@ -33,6 +39,10 @@ router.post("/", async (req, res) => {
         wilaya,
         items,
         totalPrice: Number(totalPrice),
+        deliveryFee: Number(deliveryFee) || 0,
+        advancePaid: Number(advancePaid) || 0,
+        remainingAmount: Number(remainingAmount) || 0,
+        deliveryType: deliveryType || "bureau",
         paymentMethod,
         notes,
       })

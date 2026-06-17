@@ -1,8 +1,10 @@
 import { pgTable, serial, text, integer, timestamp, pgEnum, json } from "drizzle-orm/pg-core";
 
 export const orderStatusEnum = pgEnum("order_status", [
-  "reserved", "confirmed", "prepared", "shipped", "delivered", "cancelled", "returned",
+  "reserved", "confirmed", "advance_paid", "prepared", "shipped", "delivered", "cancelled", "returned",
 ]);
+
+export const deliveryTypeEnum = pgEnum("delivery_type", ["domicile", "bureau"]);
 
 export const ordersTable = pgTable("orders", {
   id: serial("id").primaryKey(),
@@ -13,8 +15,12 @@ export const ordersTable = pgTable("orders", {
   phone2: text("phone2"),
   address: text("address").notNull(),
   wilaya: text("wilaya"),
-  items: json("items").$type<{ laptopId: number; title: string; price: number; qty: number }[]>().notNull(),
+  items: json("items").$type<{ laptopId: number; title: string; price: number; advance: number; qty: number; isLaptop?: boolean }[]>().notNull(),
   totalPrice: integer("total_price").notNull(),
+  deliveryFee: integer("delivery_fee").notNull().default(0),
+  advancePaid: integer("advance_paid").notNull().default(0),
+  remainingAmount: integer("remaining_amount").notNull().default(0),
+  deliveryType: deliveryTypeEnum("delivery_type").notNull().default("bureau"),
   paymentMethod: text("payment_method").default("cash"),
   status: orderStatusEnum("status").notNull().default("reserved"),
   notes: text("notes"),

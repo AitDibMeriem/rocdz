@@ -1,0 +1,247 @@
+==================================
+DELIVERY & PAYMENT BUSINESS RULES
+==================================
+
+1. ADVANCE PAYMENT (VERSEMENT)
+
+When an Admin creates or edits a laptop product, an additional field must exist:
+
+- Selling Price (Public Price)
+- Advance Payment Amount (Versement)
+
+Example:
+
+Selling Price = 98,500 DA
+Advance Payment = 20,000 DA
+
+The customer only sees:
+- Product Price: 98,500 DA
+- Advance Payment Required: 20,000 DA
+
+The remaining amount is paid upon delivery.
+
+----------------------------------
+
+2. ORDER STATUS: ADVANCE PAID
+
+A new order status must exist:
+
+- Reserved
+- Confirmed
+- Advance Paid
+- Prepared
+- Shipped
+- Delivered
+- Cancelled
+
+When Admin changes status to "Advance Paid":
+
+Remaining Amount =
+Product Price - Advance Payment
+
+Example:
+
+Laptop Price = 98,500 DA
+Advance Payment = 20,000 DA
+
+Remaining Amount =
+78,500 DA
+
+The system automatically updates the amount due.
+
+----------------------------------
+
+3. DELIVERY RESTRICTION
+
+For every laptop:
+
+Hidden Calculation:
+
+Net Laptop Price =
+Laptop Price - Advance Payment
+
+This value is NOT visible to customer.
+
+Rule:
+
+IF Net Laptop Price > 85,000 DA
+
+THEN:
+
+❌ Home Delivery Disabled
+
+Only:
+
+✅ Office Pickup (Bureau)
+
+must be available.
+
+Example:
+
+Laptop Price = 110,000 DA
+Advance = 20,000 DA
+
+Net Price = 90,000 DA
+
+Result:
+
+Only Office Delivery allowed.
+
+----------------------------------
+
+4. LAPTOP DELIVERY FEES
+
+ALGIERS (ALGER)
+
+Office Delivery:
+500 DA
+
+Home Delivery:
+800 DA
+
+ALL OTHER WILAYAS
+
+Office Delivery:
+1000 DA
+
+Home Delivery:
+1500 DA
+
+----------------------------------
+
+5. MULTIPLE LAPTOPS
+
+Delivery fee is calculated PER LAPTOP.
+
+Example:
+
+2 laptops
+Alger Office
+
+500 x 2
+
+Total Delivery = 1000 DA
+
+Example:
+
+3 laptops
+Oran Home
+
+1500 x 3
+
+Total Delivery = 4500 DA
+
+----------------------------------
+
+6. LAPTOP + ACCESSORIES
+
+If cart contains:
+
+- Laptop
+- Accessories
+
+System uses ONLY Laptop Delivery Rules.
+
+Accessories do not generate extra delivery fees.
+
+Example:
+
+1 Laptop
+3 Accessories
+
+Delivery fee =
+Laptop delivery fee only.
+
+----------------------------------
+
+7. ACCESSORIES ONLY
+
+If cart contains accessories only:
+
+Use dedicated accessory delivery table.
+
+Accessory delivery fee depends on Wilaya.
+
+Create table:
+
+ACCESSORY_DELIVERY_FEES
+
+Fields:
+
+- Wilaya
+- Office Fee
+- Home Fee
+
+Admin can modify prices.
+
+System automatically uses this table.
+
+----------------------------------
+
+8. DELIVERY CALCULATION ENGINE
+
+Checkout automatically calculates:
+
+- Products Total
+- Delivery Fees
+- Discount
+- Promo Code Reduction
+- Advance Payment
+- Remaining Amount
+
+Formula:
+
+Grand Total =
+Products Total +
+Delivery Fees -
+Discounts
+
+----------------------------------
+
+9. CUSTOMER DISPLAY
+
+Customer must see:
+
+✔ Product Price
+✔ Delivery Fee
+✔ Advance Payment
+✔ Grand Total
+✔ Remaining Amount
+
+Customer must NOT see:
+
+❌ Net Laptop Price
+❌ Internal calculations
+❌ Admin costs
+
+----------------------------------
+
+10. ADMIN DASHBOARD
+
+Admin can:
+
+- Define Advance Payment
+- Modify Advance Payment
+- Force Delivery Type
+- Override Delivery Restriction
+  (SUPER ADMIN ONLY)
+
+Admin Order Page must show:
+
+- Product Price
+- Advance Payment
+- Remaining Amount
+- Delivery Fee
+- Total Order Value
+
+----------------------------------
+
+11. SUPER ADMIN PERMISSIONS
+
+Only SUPER ADMIN can:
+
+- Change delivery prices
+- Change 85,000 DA threshold
+- Edit wilaya delivery fees
+- Override delivery restrictions
+- View hidden net price calculations

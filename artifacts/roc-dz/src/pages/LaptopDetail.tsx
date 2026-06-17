@@ -63,9 +63,11 @@ export default function LaptopDetail() {
       laptopId: laptop.id,
       title: laptop.title,
       price: laptop.price,
+      advance: (laptop as any).advance || 0,
       qty: 1,
       imageUrl: laptop.imageUrl,
       brand: laptop.brand,
+      isLaptop: true,
     });
     toast({
       title: "Ajouté au panier",
@@ -78,9 +80,11 @@ export default function LaptopDetail() {
       laptopId: laptop.id,
       title: laptop.title,
       price: laptop.price,
+      advance: (laptop as any).advance || 0,
       qty: 1,
       imageUrl: laptop.imageUrl,
       brand: laptop.brand,
+      isLaptop: true,
     });
     navigate("/cart");
   };

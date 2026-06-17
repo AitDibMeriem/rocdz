@@ -70,12 +70,14 @@ function DashboardSA() {
 
   const recentOrders = (orders as any[]).slice(0, 5);
   const STATUS_COLORS: Record<string, string> = {
-    reserved: "text-yellow-400", confirmed: "text-blue-400", prepared: "text-purple-400",
-    shipped: "text-cyan-400", delivered: "text-green-400", cancelled: "text-red-400", returned: "text-orange-400",
+    reserved: "text-yellow-400", confirmed: "text-blue-400", advance_paid: "text-emerald-400",
+    prepared: "text-purple-400", shipped: "text-cyan-400",
+    delivered: "text-green-400", cancelled: "text-red-400", returned: "text-orange-400",
   };
   const STATUS_LABELS: Record<string, string> = {
-    reserved: "Réservé", confirmed: "Confirmé", prepared: "Préparé",
-    shipped: "Expédié", delivered: "Livré", cancelled: "Annulé", returned: "Retourné",
+    reserved: "Réservé", confirmed: "Confirmé", advance_paid: "Versement reçu",
+    prepared: "Préparé", shipped: "Expédié", delivered: "Livré",
+    cancelled: "Annulé", returned: "Retourné",
   };
 
   return (
@@ -321,12 +323,14 @@ function OrdersSA() {
   const { toast } = useToast();
 
   const STATUS_COLORS: Record<string, string> = {
-    reserved: "text-yellow-400", confirmed: "text-blue-400", prepared: "text-purple-400",
-    shipped: "text-cyan-400", delivered: "text-green-400", cancelled: "text-red-400", returned: "text-orange-400",
+    reserved: "text-yellow-400", confirmed: "text-blue-400", advance_paid: "text-emerald-400",
+    prepared: "text-purple-400", shipped: "text-cyan-400",
+    delivered: "text-green-400", cancelled: "text-red-400", returned: "text-orange-400",
   };
   const STATUS_LABELS: Record<string, string> = {
-    reserved: "Réservé", confirmed: "Confirmé", prepared: "Préparé",
-    shipped: "Expédié", delivered: "Livré", cancelled: "Annulé", returned: "Retourné",
+    reserved: "Réservé", confirmed: "Confirmé", advance_paid: "Versement reçu",
+    prepared: "Préparé", shipped: "Expédié", delivered: "Livré",
+    cancelled: "Annulé", returned: "Retourné",
   };
 
   const exportExcel = () => {

@@ -212,15 +212,15 @@ export default function Home() {
               <span>Republic of Computer</span>
             </div>
             <h1>
-              <span className="white">The Elite of</span><br />
-              <span className="gradient">Laptops.</span>
+              <span className="white">L'Élite du</span><br />
+              <span className="gradient">PC Portable.</span>
             </h1>
             <p className="hero-desc">
-              Discover our selection of laptops (new and pre-owned) tested and guaranteed, with premium accessories.
-              Delivery available across all 58 wilayas.
+              Découvrez notre sélection de PC portables (neufs et d'occasion) testés et garantis,
+              accompagnés d'accessoires premium. Livraison disponible dans les 58 wilayas.
             </p>
             <Link href="/models" className="btn-white">
-              View models
+              Voir les modèles
               <span className="arrow">→</span>
             </Link>
           </div>
@@ -239,7 +239,7 @@ export default function Home() {
         </div>
 
         <div className="scroll-indicator">
-          <span>Scroll to explore</span>
+          <span>Défiler pour explorer</span>
           <div className="scroll-line" />
         </div>
 
@@ -304,31 +304,32 @@ export default function Home() {
       {/* LOOKING FOR */}
       <section className="looking-for">
         <div className="section-title fade-up">
-          What are you looking for <span className="gradient">?</span>
+          <span style={{ display: "block", fontSize: "clamp(0.7rem,2vw,0.85rem)", letterSpacing: "3px", color: "var(--pink)", textTransform: "uppercase", marginBottom: "0.5rem" }}>TROUVEZ VOTRE MACHINE</span>
+          Que recherchez-vous <span className="gradient">?</span>
         </div>
         <div className="looking-grid">
           <Link href="/models?condition=new" className="tilt-card fade-left">
-            <div className="badge badge-new">New</div>
-            <img src="https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=600&q=80" alt="New Laptops" />
+            <div className="badge badge-new">Neuf</div>
+            <img src="/laptop-neuf.png" alt="Laptops Neufs" onError={e => { (e.currentTarget as HTMLImageElement).src = "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=600&q=80"; }} />
             <div className="tilt-card-body">
-              <h3>New Laptops</h3>
-              <div className="sub">Original sealed packaging</div>
-              <p>Brand new laptops, latest generation, ideal for work, studies or gaming. Performance and reliability guaranteed.</p>
+              <h3>Laptops Neufs</h3>
+              <div className="sub">Sous emballage d'origine</div>
+              <p>PC portables neufs, dernière génération, idéaux pour le travail, les études ou le gaming. Performance et fiabilité garanties.</p>
               <span className="link">
-                View models →
+                Voir les modèles →
                 <span className="arrow-circle">→</span>
               </span>
             </div>
           </Link>
           <Link href="/models?condition=refurbished" className="tilt-card fade-right">
-            <div className="badge badge-refurb">Refurbished</div>
-            <img src="https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=600&q=80" alt="Pre-Owned" />
+            <div className="badge badge-refurb" style={{ background: "linear-gradient(135deg,#f59e0b,#d97706)" }}>Occasion</div>
+            <img src="/laptop-occasion.png" alt="Bonne Occasion" onError={e => { (e.currentTarget as HTMLImageElement).src = "https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=600&q=80"; }} />
             <div className="tilt-card-body">
-              <h3>Certified Pre-Owned</h3>
-              <div className="sub">Certified &amp; guaranteed by ROC DZ</div>
-              <p>Pre-owned laptops in excellent and good condition, tested and verified by our experts. Performance at the best price with ROC DZ guarantee.</p>
+              <h3>Bonne Occasion</h3>
+              <div className="sub">Certifié &amp; garanti ROC DZ</div>
+              <p>PC portables d'occasion en excellent état, testés et vérifiés par nos experts. Performance au meilleur prix avec la garantie ROC DZ.</p>
               <span className="link">
-                View models →
+                Voir les modèles →
                 <span className="arrow-circle">→</span>
               </span>
             </div>
