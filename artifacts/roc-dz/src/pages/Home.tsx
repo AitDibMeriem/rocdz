@@ -1,212 +1,331 @@
-import { useGetFeaturedLaptop, useListBrands } from "@workspace/api-client-react";
+import { useEffect, useRef } from "react";
+import { useGetFeaturedLaptop } from "@workspace/api-client-react";
 import { Link } from "wouter";
-import { Button } from "@/components/ui/button";
-import { ArrowRight, Badge, CheckCircle2, Shield, Truck, Zap } from "lucide-react";
-import { ProductCard } from "@/components/ProductCard";
-import { Skeleton } from "@/components/ui/skeleton";
+
+const BRANDS = ["DELL", "HP", "LENOVO", "ASUS", "MSI", "APPLE", "ACER"];
+
+const LAPTOP_CAROUSEL = [
+  { img: "https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=400&q=80", tag: "tag-fiabilite", tagLabel: "Fiabilité", name: "Dell", href: "/models?brand=Dell" },
+  { img: "https://images.unsplash.com/photo-1544731612-de7f96afe55f?w=400&q=80", tag: "tag-pro", tagLabel: "Pro", name: "HP", href: "/models?brand=HP" },
+  { img: "https://images.unsplash.com/photo-1527434065213-849f5e9607ea?w=400&q=80", tag: "tag-performance", tagLabel: "Performance", name: "Lenovo", href: "/models?brand=Lenovo" },
+  { img: "https://images.unsplash.com/photo-1603302576837-37561b2e2302?w=400&q=80", tag: "tag-gaming", tagLabel: "Gaming", name: "ASUS", href: "/models?brand=ASUS" },
+  { img: "https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=400&q=80", tag: "tag-polyvalent", tagLabel: "Polyvalent", name: "Acer", href: "/models?brand=Acer" },
+  { img: "https://images.unsplash.com/photo-1593640408182-31c70c8268f5?w=400&q=80", tag: "tag-gaming", tagLabel: "Gaming", name: "MSI", href: "/models?brand=MSI" },
+  { img: "https://images.unsplash.com/photo-1611186871348-b1ce696e52c9?w=400&q=80", tag: "tag-premium", tagLabel: "Premium", name: "Apple", href: "/models?brand=Apple" },
+];
+
+const ACC_CAROUSEL = [
+  { img: "https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=400&q=80", tag: "tag-saisie", tagLabel: "Saisie", name: "Keyboards" },
+  { img: "https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?w=400&q=80", tag: "tag-precision", tagLabel: "Précision", name: "Mice" },
+  { img: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&q=80", tag: "tag-audio", tagLabel: "Audio", name: "Headsets" },
+  { img: "https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?w=400&q=80", tag: "tag-display", tagLabel: "Display", name: "Monitors" },
+  { img: "https://images.unsplash.com/photo-1592840496694-26d035b52b48?w=400&q=80", tag: "tag-gaming", tagLabel: "Gaming", name: "Controllers" },
+  { img: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=400&q=80", tag: "tag-transport", tagLabel: "Transport", name: "Bags" },
+  { img: "https://images.unsplash.com/photo-1583863788434-e58a36330cf0?w=400&q=80", tag: "tag-energie", tagLabel: "Énergie", name: "Chargers" },
+  { img: "https://images.unsplash.com/photo-1625766763788-95dcce9bf5ac?w=400&q=80", tag: "tag-connectique", tagLabel: "Connectique", name: "Hubs & Adapters" },
+];
 
 export default function Home() {
-  const { data: featuredLaptop, isLoading: isLoadingFeatured } = useGetFeaturedLaptop();
-  const { data: brands, isLoading: isLoadingBrands } = useListBrands();
+  const { data: featured } = useGetFeaturedLaptop();
+  const laptopCarouselRef = useRef<HTMLDivElement>(null);
+  const accCarouselRef = useRef<HTMLDivElement>(null);
+
+  const scroll = (ref: React.RefObject<HTMLDivElement | null>, delta: number) => {
+    ref.current?.scrollBy({ left: delta, behavior: "smooth" });
+  };
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting) e.target.classList.add("visible");
+        });
+      },
+      { threshold: 0.15 }
+    );
+    document.querySelectorAll(".fade-up, .fade-left, .fade-right, .scale-in").forEach((el) => observer.observe(el));
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    const onScroll = () => {
+      const btn = document.getElementById("backToTop");
+      if (btn) btn.classList.toggle("visible", window.scrollY > 400);
+    };
+    window.addEventListener("scroll", onScroll);
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   return (
-    <div className="flex flex-col min-h-screen">
-      {/* Hero Section */}
-      <section className="relative pt-24 pb-32 overflow-hidden">
-        <div className="absolute inset-0 bg-primary/5 rounded-full blur-[120px] -top-1/2 -left-1/2 w-full h-full mix-blend-screen" />
-        <div className="absolute inset-0 bg-accent/5 rounded-full blur-[120px] -bottom-1/2 -right-1/2 w-full h-full mix-blend-screen" />
-        
-        <div className="container mx-auto px-4 relative z-10">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            <div className="flex flex-col gap-6 animate-in fade-in slide-in-from-bottom-8 duration-1000">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-primary/30 bg-primary/10 text-primary text-sm font-medium w-fit">
-                <Zap className="w-4 h-4" /> Algeria's Premium Laptop Store
-              </div>
-              <h1 className="text-5xl md:text-7xl font-black tracking-tighter leading-tight text-foreground">
-                Unleash Your <br/>
-                <span className="text-gradient-roc">True Potential.</span>
-              </h1>
-              <p className="text-lg md:text-xl text-muted-foreground max-w-lg">
-                High-performance laptops for gaming, creation, and professional work. Shipped to all 58 wilayas.
-              </p>
-              <div className="flex flex-wrap gap-4 mt-4">
-                <Button asChild size="lg" className="bg-primary hover:bg-primary/90 text-white font-bold text-lg h-14 px-8 shadow-[0_0_20px_rgba(233,30,140,0.4)]">
-                  <Link href="/models">View Models <ArrowRight className="w-5 h-5 ml-2" /></Link>
-                </Button>
-                <Button asChild variant="outline" size="lg" className="border-white/10 hover:bg-white/5 text-foreground h-14 px-8">
-                  <Link href="/about">Learn More</Link>
-                </Button>
-              </div>
-            </div>
-            
-            <div className="relative animate-[laptopFloat_6s_ease-in-out_infinite]">
-              <div className="absolute inset-0 bg-gradient-to-tr from-primary/20 to-accent/20 blur-3xl animate-[glowPulse_4s_ease-in-out_infinite]" />
-              <img 
-                src="/hero-laptop.png" 
-                alt="High performance laptop" 
-                className="relative z-10 w-full max-w-2xl mx-auto drop-shadow-2xl"
-                onError={(e) => {
-                  e.currentTarget.src = "https://placehold.co/800x600/0d0218/e91e8c?text=ROC+DZ+LAPTOP";
-                }}
-              />
-            </div>
-          </div>
-        </div>
-      </section>
+    <>
+      <div className="circuit-overlay" />
 
-      {/* Brand Marquee */}
-      <div className="w-full overflow-hidden bg-black/40 border-y border-white/5 py-6">
-        <div className="flex whitespace-nowrap animate-[marquee_30s_linear_infinite]">
-          {/* Double the content for seamless loop */}
-          {[1, 2].map((i) => (
-            <div key={i} className="flex items-center gap-16 px-8 text-2xl font-black tracking-widest text-muted-foreground/40">
-              <span>DELL</span> • <span>HP</span> • <span>LENOVO</span> • <span>ASUS</span> • <span>MSI</span> • <span>APPLE</span> • <span>ACER</span> •
+      {/* HERO */}
+      <section className="hero" id="hero">
+        <div className="hero-content">
+          <div className="hero-text fade-up">
+            <div className="hero-label">
+              <div className="line" />
+              <span>Republic of Computer</span>
             </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Categories */}
-      <section className="py-24 relative">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-black mb-4">What are you looking for?</h2>
-            <p className="text-muted-foreground">Choose from our pristine collection.</p>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-            <Link href="/models?condition=new">
-              <div className="group relative overflow-hidden rounded-2xl border border-white/10 bg-card p-8 hover:border-primary/50 transition-all cursor-pointer">
-                <div className="absolute inset-0 bg-gradient-to-br from-green-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-                <h3 className="text-2xl font-bold mb-2 group-hover:text-primary transition-colors">Brand New</h3>
-                <p className="text-muted-foreground mb-6">Factory sealed, latest generation hardware with full manufacturer warranty.</p>
-                <ArrowRight className="w-6 h-6 text-primary group-hover:translate-x-2 transition-transform" />
-              </div>
-            </Link>
-            <Link href="/models?condition=refurbished">
-              <div className="group relative overflow-hidden rounded-2xl border border-white/10 bg-card p-8 hover:border-accent/50 transition-all cursor-pointer">
-                <div className="absolute inset-0 bg-gradient-to-br from-orange-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-                <h3 className="text-2xl font-bold mb-2 group-hover:text-accent transition-colors">Certified Refurbished</h3>
-                <p className="text-muted-foreground mb-6">Rigorously tested, practically new condition with ROC DZ store warranty.</p>
-                <ArrowRight className="w-6 h-6 text-accent group-hover:translate-x-2 transition-transform" />
-              </div>
+            <h1>
+              <span className="white">The Elite of</span><br />
+              <span className="gradient">Laptops.</span>
+            </h1>
+            <p className="hero-desc">
+              Discover our selection of laptops (new and pre-owned) tested and guaranteed, with premium accessories.
+              Delivery available across all 58 wilayas.
+            </p>
+            <Link href="/models" className="btn-white">
+              View models
+              <span className="arrow">→</span>
             </Link>
           </div>
+          <div className="hero-image fade-right">
+            <div className="hero-glow" />
+            <div className="hero-glow-2" />
+            <img
+              src="/laptop-nobg.png"
+              alt="Laptop"
+              onError={(e) => {
+                (e.currentTarget as HTMLImageElement).src =
+                  "https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=700&q=80";
+              }}
+            />
+          </div>
+        </div>
+
+        <div className="scroll-indicator">
+          <span>Scroll to explore</span>
+          <div className="scroll-line" />
+        </div>
+
+        <div className="brand-marquee">
+          <div className="marquee-track">
+            {[...BRANDS, ...BRANDS, ...BRANDS].map((b, i) => (
+              <span key={i} className="brand-item">{b}</span>
+            ))}
+          </div>
         </div>
       </section>
 
-      {/* Pick of the Day */}
-      <section className="py-24 bg-black/40 border-y border-white/5 relative overflow-hidden">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-primary/10 rounded-full blur-[100px] pointer-events-none" />
-        <div className="container mx-auto px-4 relative z-10">
-          <div className="flex flex-col md:flex-row justify-between items-end mb-12">
-            <div>
-              <div className="text-primary font-bold tracking-wider uppercase mb-2">Featured Product</div>
-              <h2 className="text-3xl md:text-5xl font-black">Pick of the Day</h2>
-            </div>
+      {/* CATEGORIES */}
+      <section className="categories" id="categories">
+        <div className="category-header">
+          <div className="section-label">Categories</div>
+          <h2>Explore our<br /><span className="gradient">collections.</span></h2>
+        </div>
+
+        <div className="category-subtitle">Laptop</div>
+        <div className="category-subtitle-desc">Available brands</div>
+
+        <div className="carousel-container">
+          <button className="carousel-nav-btn prev" onClick={() => scroll(laptopCarouselRef, -300)}>‹</button>
+          <div className="carousel" ref={laptopCarouselRef}>
+            {LAPTOP_CAROUSEL.map((item) => (
+              <Link key={item.name} href={item.href} className="carousel-card">
+                <img src={item.img} alt={item.name} />
+                <div className="carousel-card-body">
+                  <div className={`card-tag ${item.tag}`}><span className="dot" />{item.tagLabel}</div>
+                  <h3>{item.name}</h3>
+                  <div className="explore">Explore Collection →</div>
+                </div>
+              </Link>
+            ))}
           </div>
-          
-          {isLoadingFeatured ? (
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center bg-card/30 rounded-3xl p-8 border border-white/5">
-              <Skeleton className="w-full aspect-[4/3] rounded-xl" />
-              <div className="space-y-4">
-                <Skeleton className="h-8 w-3/4" />
-                <Skeleton className="h-4 w-full" />
-                <Skeleton className="h-4 w-full" />
-                <Skeleton className="h-12 w-1/3 mt-8" />
-              </div>
+          <button className="carousel-nav-btn next" onClick={() => scroll(laptopCarouselRef, 300)}>›</button>
+        </div>
+
+        <div style={{ marginTop: "4rem" }}>
+          <div className="category-subtitle">Accessories</div>
+          <div className="category-subtitle-desc">Equip your setup</div>
+          <div className="carousel-container">
+            <button className="carousel-nav-btn prev" onClick={() => scroll(accCarouselRef, -300)}>‹</button>
+            <div className="carousel" ref={accCarouselRef}>
+              {ACC_CAROUSEL.map((item) => (
+                <div key={item.name} className="carousel-card">
+                  <img src={item.img} alt={item.name} />
+                  <div className="carousel-card-body">
+                    <div className={`card-tag ${item.tag}`}><span className="dot" />{item.tagLabel}</div>
+                    <h3>{item.name}</h3>
+                    <div className="explore">Explore Collection →</div>
+                  </div>
+                </div>
+              ))}
             </div>
-          ) : featuredLaptop ? (
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center bg-card/30 backdrop-blur-md rounded-3xl p-8 border border-white/10 shadow-2xl">
-              <div className="relative">
-                <div className="absolute -inset-4 bg-gradient-to-tr from-primary/20 to-accent/20 blur-2xl -z-10 rounded-full" />
-                <img 
-                  src={featuredLaptop.imageUrl || "/featured-laptop.png"} 
-                  alt={featuredLaptop.title} 
-                  className="w-full h-auto rounded-xl shadow-2xl"
-                  onError={(e) => {
-                    e.currentTarget.src = "https://placehold.co/800x600/0d0218/e91e8c?text=Featured";
-                  }}
-                />
-              </div>
-              <div>
-                <div className="flex gap-2 mb-4">
-                  <Badge variant="outline" className="border-primary/50 text-primary">{featuredLaptop.brand}</Badge>
-                  {featuredLaptop.condition === "new" ? (
-                    <Badge className="bg-green-500/20 text-green-400 border-green-500/50">New</Badge>
-                  ) : (
-                    <Badge className="bg-orange-500/20 text-orange-400 border-orange-500/50">Refurbished</Badge>
-                  )}
-                </div>
-                <h3 className="text-3xl md:text-4xl font-bold mb-4">{featuredLaptop.title}</h3>
-                <p className="text-muted-foreground mb-8 text-lg line-clamp-3">{featuredLaptop.description}</p>
-                
-                <div className="grid grid-cols-2 gap-4 mb-8">
-                  <div className="bg-black/50 p-4 rounded-xl border border-white/5">
-                    <div className="text-xs text-muted-foreground mb-1">Processor</div>
-                    <div className="font-semibold">{featuredLaptop.processor}</div>
-                  </div>
-                  <div className="bg-black/50 p-4 rounded-xl border border-white/5">
-                    <div className="text-xs text-muted-foreground mb-1">Graphics</div>
-                    <div className="font-semibold">{featuredLaptop.gpu || "Integrated"}</div>
-                  </div>
-                  <div className="bg-black/50 p-4 rounded-xl border border-white/5">
-                    <div className="text-xs text-muted-foreground mb-1">Memory</div>
-                    <div className="font-semibold">{featuredLaptop.ram}GB {featuredLaptop.ramType}</div>
-                  </div>
-                  <div className="bg-black/50 p-4 rounded-xl border border-white/5">
-                    <div className="text-xs text-muted-foreground mb-1">Storage</div>
-                    <div className="font-semibold">{featuredLaptop.storage}GB {featuredLaptop.storageType}</div>
-                  </div>
-                </div>
-                
-                <div className="flex flex-wrap items-center gap-6">
-                  <div className="text-4xl font-black text-gradient-roc">{featuredLaptop.price.toLocaleString("fr-DZ")} DA</div>
-                  <Button asChild size="lg" className="bg-primary hover:bg-primary/90 text-white ml-auto">
-                    <Link href={`/laptop/${featuredLaptop.id}`}>View Product <ArrowRight className="w-5 h-5 ml-2" /></Link>
-                  </Button>
-                </div>
-              </div>
-            </div>
-          ) : (
-            <div className="text-center text-muted-foreground py-12">No featured product currently available.</div>
-          )}
+            <button className="carousel-nav-btn next" onClick={() => scroll(accCarouselRef, 300)}>›</button>
+          </div>
         </div>
       </section>
 
-      {/* Commitments */}
-      <section className="py-24">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-black mb-4">Why Choose Us?</h2>
-            <p className="text-muted-foreground">The ROC DZ standard of excellence.</p>
+      {/* LOOKING FOR */}
+      <section className="looking-for">
+        <div className="section-title fade-up">
+          What are you looking for <span className="gradient">?</span>
+        </div>
+        <div className="looking-grid">
+          <Link href="/models?condition=new" className="tilt-card fade-left">
+            <div className="badge badge-new">New</div>
+            <img src="https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=600&q=80" alt="New Laptops" />
+            <div className="tilt-card-body">
+              <h3>New Laptops</h3>
+              <div className="sub">Original sealed packaging</div>
+              <p>Brand new laptops, latest generation, ideal for work, studies or gaming. Performance and reliability guaranteed.</p>
+              <span className="link">
+                View models →
+                <span className="arrow-circle">→</span>
+              </span>
+            </div>
+          </Link>
+          <Link href="/models?condition=refurbished" className="tilt-card fade-right">
+            <div className="badge badge-refurb">Refurbished</div>
+            <img src="https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=600&q=80" alt="Pre-Owned" />
+            <div className="tilt-card-body">
+              <h3>Certified Pre-Owned</h3>
+              <div className="sub">Certified &amp; guaranteed by ROC DZ</div>
+              <p>Pre-owned laptops in excellent and good condition, tested and verified by our experts. Performance at the best price with ROC DZ guarantee.</p>
+              <span className="link">
+                View models →
+                <span className="arrow-circle">→</span>
+              </span>
+            </div>
+          </Link>
+        </div>
+      </section>
+
+      {/* PICK OF THE DAY */}
+      <section className="pick-day">
+        <div className="pick-container">
+          <div className="pick-title-stack fade-left">
+            <div className="label">
+              {featured ? `Product of the day — Ref: ROC-${featured.id}` : "Product of the day"}
+            </div>
+            <h2>
+              <span className="white">THE</span><br />
+              <span className="gradient">PICK</span><br />
+              <span className="white">OF THE</span><br />
+              <span className="gradient">DAY</span>
+            </h2>
+            {featured && (
+              <div className="pick-specs">
+                {featured.processor && (
+                  <div className="spec-row">
+                    <span className="label">Processor</span>
+                    <span className="value">{featured.processor}</span>
+                  </div>
+                )}
+                {featured.gpu && (
+                  <div className="spec-row">
+                    <span className="label">Graphics</span>
+                    <span className="value">{featured.gpu}</span>
+                  </div>
+                )}
+                {featured.ram && (
+                  <div className="spec-row">
+                    <span className="label">Memory</span>
+                    <span className="value">{featured.ram}GB {featured.ramType}</span>
+                  </div>
+                )}
+                {featured.storage && (
+                  <div className="spec-row">
+                    <span className="label">Storage</span>
+                    <span className="value">{featured.storage}GB {featured.storageType}</span>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="text-center p-8 bg-card/30 border border-white/5 rounded-2xl">
-              <div className="w-16 h-16 mx-auto bg-primary/20 rounded-full flex items-center justify-center mb-6">
-                <CheckCircle2 className="w-8 h-8 text-primary" />
-              </div>
-              <h3 className="text-xl font-bold mb-3">Guaranteed Quality</h3>
-              <p className="text-muted-foreground">Every laptop is rigorously tested and verified by our hardware experts before sale.</p>
-            </div>
-            <div className="text-center p-8 bg-card/30 border border-white/5 rounded-2xl">
-              <div className="w-16 h-16 mx-auto bg-accent/20 rounded-full flex items-center justify-center mb-6">
-                <Truck className="w-8 h-8 text-accent" />
-              </div>
-              <h3 className="text-xl font-bold mb-3">58 Wilayas Shipping</h3>
-              <p className="text-muted-foreground">Fast, secure, and insured delivery to anywhere in Algeria. Your tech arrives safely.</p>
-            </div>
-            <div className="text-center p-8 bg-card/30 border border-white/5 rounded-2xl">
-              <div className="w-16 h-16 mx-auto bg-primary/20 rounded-full flex items-center justify-center mb-6">
-                <Shield className="w-8 h-8 text-primary" />
-              </div>
-              <h3 className="text-xl font-bold mb-3">Store Warranty</h3>
-              <p className="text-muted-foreground">Buy with peace of mind. We provide comprehensive warranty coverage on all devices.</p>
+
+          <div className="pick-image scale-in">
+            <img
+              src={featured?.imageUrl || "https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=600&q=80"}
+              alt={featured?.title || "Pick of the day"}
+            />
+          </div>
+
+          <div className="pick-info fade-right">
+            <div className="status-badge">SYSTEM_STATUS: OPTIMAL</div>
+            <div className="price-label">Current Value</div>
+            {featured ? (
+              <>
+                <div className="price">{featured.price.toLocaleString("fr-DZ")} <span>DA</span></div>
+                <div className="stock">{featured.stockQuantity > 0 ? `${featured.stockQuantity} in stock` : "Out of Stock"}</div>
+                <Link href={`/laptop/${featured.id}`} className="btn-product">
+                  View Product →
+                </Link>
+              </>
+            ) : (
+              <div className="price" style={{ fontSize: "1.5rem" }}>Loading…</div>
+            )}
+            <div className="pick-trust">
+              <p>// AUTHENTIFIÉ ROC DZ</p>
+              <p>// GARANTIE 6 MOIS</p>
+              <p>// LIVRAISON EXPRESS &amp; SÉCURISÉE</p>
             </div>
           </div>
         </div>
       </section>
-    </div>
+
+      {/* WHY US */}
+      <section className="why-us" id="why-us">
+        <div className="glass-container fade-up">
+          <div className="glass-header">
+            <div className="left">
+              <div className="label"><div className="line" />Our Commitments</div>
+              <h2>Why choose<br /><span className="gradient">us?</span></h2>
+            </div>
+            <div className="right">
+              Our selection of the best products, chosen for their quality and exceptional value
+            </div>
+          </div>
+          <div className="glass-grid">
+            <div className="glass-card">
+              <div className="bg-num">01</div>
+              <div className="icons">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z" /></svg>
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+              </div>
+              <h3>Tested &amp; Certified PCs</h3>
+              <p>Every computer is checked and tested to guarantee performance and reliability.</p>
+            </div>
+            <div className="glass-card">
+              <div className="bg-num">02</div>
+              <div className="icons">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>
+              </div>
+              <h3>ROC DZ Guarantee</h3>
+              <p>Buy with confidence with a warranty on our products.</p>
+            </div>
+            <div className="glass-card">
+              <div className="bg-num">03</div>
+              <div className="icons">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M5 13l4 4L19 7" /></svg>
+              </div>
+              <h3>Best value for money</h3>
+              <p>New and pre-owned PCs selected to offer the best performance at the best price.</p>
+            </div>
+            <div className="glass-card">
+              <div className="bg-num">04</div>
+              <div className="icons">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+              </div>
+              <h3>Delivery to all 58 wilayas</h3>
+              <p>Receive your order anywhere in Algeria quickly and safely.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <button
+        className="back-to-top"
+        id="backToTop"
+        onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+      >
+        ↑
+      </button>
+    </>
   );
 }

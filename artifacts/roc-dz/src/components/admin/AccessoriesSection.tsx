@@ -5,6 +5,7 @@ import * as z from "zod";
 import { useListAccessories, useCreateAccessory, getListAccessoriesQueryKey } from "@workspace/api-client-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { Plus, Edit, Trash2, Package } from "lucide-react";
+import { ImageUpload } from "@/components/ImageUpload";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -208,7 +209,13 @@ export function AccessoriesSection() {
                 )} />
               </div>
               <FormField control={form.control} name="imageUrl" render={({ field }) => (
-                <FormItem><FormLabel>Image URL</FormLabel><FormControl><Input {...field} placeholder="https://..." /></FormControl><FormMessage /></FormItem>
+                <FormItem>
+                  <FormLabel>Product Image / Video</FormLabel>
+                  <FormControl>
+                    <ImageUpload value={field.value ?? ""} onChange={field.onChange} label="product image or video" />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
               )} />
             </form>
           </Form>

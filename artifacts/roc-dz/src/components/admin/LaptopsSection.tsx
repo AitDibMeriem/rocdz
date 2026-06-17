@@ -5,6 +5,7 @@ import * as z from "zod";
 import { useListLaptops, useCreateLaptop, useUpdateLaptop, useDeleteLaptop, getListLaptopsQueryKey, getGetLaptopStatsQueryKey } from "@workspace/api-client-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { Plus, Search, Edit, Trash2, Laptop, Star } from "lucide-react";
+import { ImageUpload } from "@/components/ImageUpload";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -496,24 +497,18 @@ export function LaptopsSection() {
                   )} />
                 </div>
 
-                {/* Images */}
+                {/* Media */}
                 <div className="space-y-4">
                   <h3 className="text-lg font-semibold text-primary border-b border-border pb-2">Media</h3>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
-                    <FormField control={form.control} name="imageUrl" render={({ field }) => (
-                      <FormItem><FormLabel>Image URL</FormLabel><FormControl><Input {...field} placeholder="https://..." /></FormControl><FormMessage /></FormItem>
-                    )} />
-                    <div className="border border-border rounded-lg aspect-video flex items-center justify-center bg-muted/50 overflow-hidden">
-                      {imageUrlWatch ? (
-                        <img src={imageUrlWatch} alt="Preview" className="w-full h-full object-contain p-2" onError={(e) => (e.currentTarget.style.display = 'none')} />
-                      ) : (
-                        <div className="text-center text-muted-foreground">
-                          <Laptop className="w-10 h-10 mx-auto mb-2 opacity-50" />
-                          <span className="text-sm">Image Preview</span>
-                        </div>
-                      )}
-                    </div>
-                  </div>
+                  <FormField control={form.control} name="imageUrl" render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Product Image / Video</FormLabel>
+                      <FormControl>
+                        <ImageUpload value={field.value ?? ""} onChange={field.onChange} label="product image or video" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )} />
                 </div>
 
                 <div className="h-10" /> {/* Bottom padding for scroll */}
