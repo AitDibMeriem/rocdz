@@ -19,10 +19,23 @@ router.get("/", async (req, res) => {
 
 router.post("/", async (req, res) => {
   try {
-    const { customerName, phone, address, wilaya, items, totalPrice, paymentMethod, notes } = req.body;
+    const { firstName, lastName, phone, phone2, address, wilaya, items, totalPrice, paymentMethod, notes } = req.body;
+    const customerName = `${firstName || ""} ${lastName || ""}`.trim();
     const [created] = await db
       .insert(ordersTable)
-      .values({ customerName, phone, address, wilaya, items, totalPrice: Number(totalPrice), paymentMethod, notes })
+      .values({
+        firstName: firstName || "",
+        lastName: lastName || "",
+        customerName,
+        phone,
+        phone2: phone2 || null,
+        address,
+        wilaya,
+        items,
+        totalPrice: Number(totalPrice),
+        paymentMethod,
+        notes,
+      })
       .returning();
     res.status(201).json(created);
   } catch (err) {

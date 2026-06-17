@@ -2,10 +2,11 @@ import { useState } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { useLocation } from "wouter";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import * as XLSX from "xlsx";
 import {
   LayoutDashboard, Users, Laptop, Package, ShoppingCart, Tag,
   Settings, Shield, LogOut, TrendingUp, BarChart3, ArrowLeft,
-  Plus, Trash2, Edit, UserCheck, Menu, X
+  Plus, Trash2, Edit, UserCheck, Menu, X, Download, FileSpreadsheet
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -315,6 +316,137 @@ function AnalyticsSA() {
   );
 }
 
+function OrdersSA() {
+  const { data: orders = [], refetch } = useOrders();
+  const { toast } = useToast();
+
+  const STATUS_COLORS: Record<string, string> = {
+    reserved: "text-yellow-400", confirmed: "text-blue-400", prepared: "text-purple-400",
+    shipped: "text-cyan-400", delivered: "text-green-400", cancelled: "text-red-400", returned: "text-orange-400",
+  };
+  const STATUS_LABELS: Record<string, string> = {
+    reserved: "Réservé", confirmed: "Confirmé", prepared: "Préparé",
+    shipped: "Expédié", delivered: "Livré", cancelled: "Annulé", returned: "Retourné",
+  };
+
+  const exportExcel = () => {
+    const rows = (orders as any[]).map((o: any) => ({
+      "ID": `#${String(o.id).padStart(4, "0")}`,
+      "Prénom": o.firstName || "",
+      "Nom": o.lastName || "",
+      "Client": o.customerName || "",
+      "Téléphone 1": o.phone || "",
+      "Téléphone 2": o.phone2 || "",
+      "Wilaya": o.wilaya || "",
+      "Adresse": o.address || "",
+      "Total (DA)": o.totalPrice || 0,
+      "Statut": STATUS_LABELS[o.status] || o.status,
+      "Paiement": o.paymentMethod || "cash",
+      "Notes": o.notes || "",
+      "Produits": (o.items || []).map((it: any) => `${it.title} x${it.qty}`).join("; "),
+      "Date": o.createdAt ? new Date(o.createdAt).toLocaleString("fr-DZ") : "",
+    }));
+
+    const ws = XLSX.utils.json_to_sheet(rows);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Commandes");
+    XLSX.writeFile(wb, `commandes-rocdz-${new Date().toISOString().slice(0, 10)}.xlsx`);
+    toast({ title: "Export réussi", description: `${rows.length} commande(s) exportée(s)` });
+  };
+
+  const updateStatus = async (id: number, status: string) => {
+    await fetch(`${BASE}/api/orders/${id}/status`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ status }),
+    });
+    refetch();
+  };
+
+  return (
+    <div className="space-y-6">
+      <div className="flex items-start justify-between gap-4 flex-wrap">
+        <div>
+          <h2 className="text-3xl font-bold">Commandes</h2>
+          <p className="text-muted-foreground text-sm mt-1">{(orders as any[]).length} commande(s) au total</p>
+        </div>
+        <Button onClick={exportExcel} className="gap-2 bg-green-600 hover:bg-green-700 text-white">
+          <FileSpreadsheet className="w-4 h-4" />
+          Exporter Excel
+          <Download className="w-4 h-4" />
+        </Button>
+      </div>
+
+      <div className="bg-card border border-border rounded-xl overflow-hidden">
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="border-b border-border bg-muted/30">
+                <th className="text-left p-4 font-semibold text-muted-foreground">ID</th>
+                <th className="text-left p-4 font-semibold text-muted-foreground">Client</th>
+                <th className="text-left p-4 font-semibold text-muted-foreground">Tél</th>
+                <th className="text-left p-4 font-semibold text-muted-foreground">Wilaya</th>
+                <th className="text-left p-4 font-semibold text-muted-foreground">Total</th>
+                <th className="text-left p-4 font-semibold text-muted-foreground">Produits</th>
+                <th className="text-left p-4 font-semibold text-muted-foreground">Statut</th>
+                <th className="text-left p-4 font-semibold text-muted-foreground">Date</th>
+                <th className="text-left p-4 font-semibold text-muted-foreground">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {(orders as any[]).length === 0 ? (
+                <tr><td colSpan={9} className="p-8 text-center text-muted-foreground">Aucune commande</td></tr>
+              ) : (
+                (orders as any[]).map((o: any) => (
+                  <tr key={o.id} className="border-b border-border hover:bg-muted/20 transition-colors">
+                    <td className="p-4 font-mono text-muted-foreground">#{String(o.id).padStart(4, "0")}</td>
+                    <td className="p-4">
+                      <div className="font-medium">{o.firstName} {o.lastName}</div>
+                      {o.phone2 && <div className="text-xs text-muted-foreground">{o.phone2}</div>}
+                    </td>
+                    <td className="p-4 font-mono text-sm">{o.phone}</td>
+                    <td className="p-4 text-sm">{o.wilaya || "—"}</td>
+                    <td className="p-4 font-bold text-primary">{(o.totalPrice || 0).toLocaleString("fr-DZ")} DA</td>
+                    <td className="p-4 text-xs text-muted-foreground max-w-[180px] truncate">
+                      {(o.items || []).map((it: any) => `${it.title} x${it.qty}`).join(", ")}
+                    </td>
+                    <td className="p-4">
+                      <Select value={o.status} onValueChange={v => updateStatus(o.id, v)}>
+                        <SelectTrigger className="h-7 text-xs w-32 bg-background">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {Object.entries(STATUS_LABELS).map(([val, label]) => (
+                            <SelectItem key={val} value={val}>{label}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </td>
+                    <td className="p-4 text-xs text-muted-foreground whitespace-nowrap">
+                      {o.createdAt ? new Date(o.createdAt).toLocaleDateString("fr-DZ") : "—"}
+                    </td>
+                    <td className="p-4">
+                      <button
+                        onClick={async () => {
+                          await fetch(`${BASE}/api/orders/${o.id}`, { method: "DELETE" });
+                          refetch();
+                        }}
+                        className="text-muted-foreground hover:text-red-400 transition-colors"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function SettingsSA() {
   const [settings, setSettings] = useState({ storeName: "ROC DZ", email: "contact@rocdz.com", phone: "+213 XXX XXX XXX", whatsapp: "+213 XXX XXX XXX", address: "Alger, Algérie", facebook: "", instagram: "", tiktok: "" });
   const { toast } = useToast();
@@ -392,6 +524,7 @@ export default function SuperAdmin() {
     switch (active) {
       case "dashboard": return <DashboardSA />;
       case "admins": return <AdminsSA />;
+      case "orders": return <OrdersSA />;
       case "analytics": return <AnalyticsSA />;
       case "settings": return <SettingsSA />;
       case "security": return <SecuritySA />;

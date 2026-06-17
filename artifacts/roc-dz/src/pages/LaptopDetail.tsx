@@ -1,15 +1,20 @@
 import { useState } from "react";
-import { useRoute } from "wouter";
+import { useRoute, useLocation } from "wouter";
 import { useGetLaptop } from "@workspace/api-client-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { CheckCircle2, ShieldAlert, Cpu, HardDrive, MemoryStick as Memory, Monitor, ChevronLeft, ChevronRight, Play, AlertCircle } from "lucide-react";
+import { CheckCircle2, ShieldAlert, Cpu, HardDrive, MemoryStick as Memory, Monitor, ChevronLeft, ChevronRight, Play, AlertCircle, ShoppingCart } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useCart } from "@/context/CartContext";
+import { useToast } from "@/hooks/use-toast";
 
 export default function LaptopDetail() {
   const [, params] = useRoute("/laptop/:id");
+  const [, navigate] = useLocation();
   const id = params?.id ? parseInt(params.id, 10) : 0;
   const [activeIdx, setActiveIdx] = useState(0);
+  const { addItem } = useCart();
+  const { toast } = useToast();
 
   const { data: laptop, isLoading, error } = useGetLaptop(id, {
     query: { enabled: !!id, queryKey: ["/api/laptops", id] }
@@ -52,6 +57,33 @@ export default function LaptopDetail() {
 
   const prev = () => setActiveIdx(i => (i - 1 + allMedia.length) % allMedia.length);
   const next = () => setActiveIdx(i => (i + 1) % allMedia.length);
+
+  const handleAddToCart = () => {
+    addItem({
+      laptopId: laptop.id,
+      title: laptop.title,
+      price: laptop.price,
+      qty: 1,
+      imageUrl: laptop.imageUrl,
+      brand: laptop.brand,
+    });
+    toast({
+      title: "Ajouté au panier",
+      description: laptop.title,
+    });
+  };
+
+  const handleBuyNow = () => {
+    addItem({
+      laptopId: laptop.id,
+      title: laptop.title,
+      price: laptop.price,
+      qty: 1,
+      imageUrl: laptop.imageUrl,
+      brand: laptop.brand,
+    });
+    navigate("/cart");
+  };
 
   return (
     <div className="container mx-auto px-4 py-12">
@@ -115,7 +147,6 @@ export default function LaptopDetail() {
             </div>
           </div>
 
-          {/* Thumbnail strip */}
           {allMedia.length > 1 && (
             <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide">
               {allMedia.map((url, i) => {
@@ -171,7 +202,6 @@ export default function LaptopDetail() {
             {laptop.description || "No description provided for this model."}
           </p>
 
-          {/* Quick Specs */}
           <div className="grid grid-cols-2 gap-4 mb-8">
             <div className="flex items-center gap-3 p-4 bg-white/5 rounded-xl border border-white/5">
               <Cpu className="w-6 h-6 text-primary" />
@@ -204,11 +234,22 @@ export default function LaptopDetail() {
           </div>
 
           <div className="flex gap-4">
-            <Button size="lg" className="flex-1 bg-primary hover:bg-primary/90 text-white font-bold h-14" disabled={laptop.stockQuantity <= 0}>
-              Buy Now
+            <Button
+              size="lg"
+              className="flex-1 bg-primary hover:bg-primary/90 text-white font-bold h-14"
+              disabled={laptop.stockQuantity <= 0}
+              onClick={handleBuyNow}
+            >
+              Commander maintenant
             </Button>
-            <Button size="lg" variant="outline" className="h-14 px-8 border-white/10">
-              Contact Sales
+            <Button
+              size="lg"
+              variant="outline"
+              className="h-14 px-6 border-white/10"
+              disabled={laptop.stockQuantity <= 0}
+              onClick={handleAddToCart}
+            >
+              <ShoppingCart className="w-5 h-5" />
             </Button>
           </div>
         </div>

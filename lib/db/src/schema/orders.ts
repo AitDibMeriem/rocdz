@@ -6,8 +6,11 @@ export const orderStatusEnum = pgEnum("order_status", [
 
 export const ordersTable = pgTable("orders", {
   id: serial("id").primaryKey(),
+  firstName: text("first_name").notNull().default(""),
+  lastName: text("last_name").notNull().default(""),
   customerName: text("customer_name").notNull(),
   phone: text("phone").notNull(),
+  phone2: text("phone2"),
   address: text("address").notNull(),
   wilaya: text("wilaya"),
   items: json("items").$type<{ laptopId: number; title: string; price: number; qty: number }[]>().notNull(),

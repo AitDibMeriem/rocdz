@@ -286,14 +286,14 @@ export default function Home() {
             <button className="carousel-nav-btn prev" onClick={() => scroll(accCarouselRef, -300)}>‹</button>
             <div className="carousel" ref={accCarouselRef}>
               {ACC_CAROUSEL.map((item) => (
-                <div key={item.name} className="carousel-card">
+                <Link key={item.name} href={`/accessories?category=${encodeURIComponent(item.name)}`} className="carousel-card">
                   <img src={item.img} alt={item.name} />
                   <div className="carousel-card-body">
                     <div className={`card-tag ${item.tag}`}><span className="dot" />{item.tagLabel}</div>
                     <h3>{item.name}</h3>
                     <div className="explore">Explore Collection →</div>
                   </div>
-                </div>
+                </Link>
               ))}
             </div>
             <button className="carousel-nav-btn next" onClick={() => scroll(accCarouselRef, 300)}>›</button>

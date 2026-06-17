@@ -12,7 +12,10 @@ import About from "@/pages/About";
 import Admin from "@/pages/Admin";
 import AdminLogin from "@/pages/AdminLogin";
 import SuperAdmin from "@/pages/SuperAdmin";
+import Cart from "@/pages/Cart";
+import Accessories from "@/pages/Accessories";
 import { AuthProvider, useAuth } from "@/context/AuthContext";
+import { CartProvider } from "@/context/CartContext";
 
 const queryClient = new QueryClient();
 
@@ -58,7 +61,9 @@ function Router() {
         <Switch>
           <Route path="/" component={Home} />
           <Route path="/models" component={Models} />
+          <Route path="/accessories" component={Accessories} />
           <Route path="/laptop/:id" component={LaptopDetail} />
+          <Route path="/cart" component={Cart} />
           <Route path="/about" component={About} />
           <Route component={NotFound} />
         </Switch>
@@ -72,12 +77,14 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
-        <TooltipProvider>
-          <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, "")}>
-            <Router />
-          </WouterRouter>
-          <Toaster />
-        </TooltipProvider>
+        <CartProvider>
+          <TooltipProvider>
+            <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, "")}>
+              <Router />
+            </WouterRouter>
+            <Toaster />
+          </TooltipProvider>
+        </CartProvider>
       </AuthProvider>
     </QueryClientProvider>
   );
