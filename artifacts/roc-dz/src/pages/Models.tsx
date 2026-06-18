@@ -7,13 +7,15 @@ import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Slider } from "@/components/ui/slider";
-import { Search, Filter } from "lucide-react";
+import { Search } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 
 function getURLParam(key: string): string {
   const params = new URLSearchParams(window.location.search);
   return params.get(key) || "";
 }
+
+const BRANDS = ["HP", "Dell", "Lenovo", "ASUS", "MSI", "Apple", "Acer"];
 
 export default function Models() {
   const [search, setSearch] = useState(() => getURLParam("search"));
@@ -43,44 +45,53 @@ export default function Models() {
 
   const { data: laptops, isLoading } = useListLaptops(queryParams);
 
-  const BRANDS = ["HP", "Dell", "Lenovo", "ASUS", "MSI", "Apple", "Acer"];
+  const resetFilters = () => {
+    setSearch(""); setCondition("all"); setInStock(false); setBrand("all"); setPriceRange([0, 1000000]);
+  };
 
   return (
-    <div className="container mx-auto px-4 py-12">
-      <div className="flex flex-col lg:flex-row gap-8">
-        {/* Sidebar Filters */}
-        <aside className="w-full lg:w-72 flex-shrink-0">
-          <div className="sticky top-24 space-y-8 bg-card/30 p-6 rounded-2xl border border-white/5 backdrop-blur-md">
-            <div>
-              <h3 className="font-bold text-lg mb-4 flex items-center gap-2">
-                <Filter className="w-5 h-5 text-primary" /> Filtres
-              </h3>
+    <div className="relative z-10 container mx-auto px-3 sm:px-4 py-8 sm:py-12">
+      {/* Page header */}
+      <div className="mb-4 sm:mb-6">
+        <h1 className="text-xl sm:text-3xl font-black">
+          {brand !== "all" ? <><span className="text-gradient-roc">{brand}</span> <span className="text-foreground text-base sm:text-xl font-bold">— {laptops?.length ?? 0} modèle{laptops?.length !== 1 ? "s" : ""}</span></> : "Tous les modèles"}
+        </h1>
+      </div>
 
-              <div className="relative mb-6">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                <Input
-                  placeholder="Rechercher un modèle..."
-                  className="pl-9 bg-black/50 border-white/10 focus-visible:ring-primary"
+      <div className="flex flex-row gap-2 sm:gap-4 lg:gap-8 items-start">
+
+        {/* Sidebar — ALWAYS visible on LEFT, compact on mobile */}
+        <aside className="flex-shrink-0 w-[110px] sm:w-44 lg:w-64">
+          <div className="sticky top-20 bg-card/40 backdrop-blur-xl border border-white/8 rounded-2xl overflow-hidden">
+
+            {/* Search */}
+            <div className="p-2 sm:p-3 border-b border-white/5">
+              <div className="relative">
+                <Search className="absolute left-2 top-1/2 -translate-y-1/2 w-3 h-3 text-muted-foreground" />
+                <input
+                  placeholder="Rechercher..."
+                  className="w-full pl-7 pr-2 py-1.5 text-xs bg-black/40 border border-white/8 rounded-lg text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:border-primary/50"
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
                 />
               </div>
             </div>
 
-            <div>
-              <Label className="text-base font-semibold mb-3 block">Marque</Label>
-              <div className="flex flex-wrap gap-2">
+            {/* Brands */}
+            <div className="p-2 sm:p-3 border-b border-white/5">
+              <p className="text-[10px] uppercase tracking-widest text-muted-foreground font-bold mb-2">Marque</p>
+              <div className="flex flex-col gap-1">
                 <button
                   onClick={() => setBrand("all")}
-                  className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors border ${brand === "all" ? "bg-primary/20 border-primary/50 text-primary" : "border-white/10 text-muted-foreground hover:border-primary/30"}`}
+                  className={`w-full text-left px-2 py-1 rounded-lg text-xs font-semibold transition-all ${brand === "all" ? "bg-primary/20 text-primary" : "text-muted-foreground hover:text-white"}`}
                 >
-                  Tous
+                  Toutes
                 </button>
                 {BRANDS.map(b => (
                   <button
                     key={b}
                     onClick={() => setBrand(brand === b ? "all" : b)}
-                    className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors border ${brand === b ? "bg-primary/20 border-primary/50 text-primary" : "border-white/10 text-muted-foreground hover:border-primary/30"}`}
+                    className={`w-full text-left px-2 py-1 rounded-lg text-xs font-medium transition-all ${brand === b ? "bg-primary/20 text-primary font-bold" : "text-muted-foreground hover:text-white"}`}
                   >
                     {b}
                   </button>
@@ -88,114 +99,98 @@ export default function Models() {
               </div>
             </div>
 
-            <div>
-              <Label className="text-base font-semibold mb-3 block">État</Label>
-              <RadioGroup value={condition} onValueChange={(val) => setCondition(val as any)} className="space-y-2">
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="all" id="cond-all" />
-                  <Label htmlFor="cond-all">Tous</Label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="new" id="cond-new" />
-                  <Label htmlFor="cond-new" className="text-green-400">Neuf</Label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="refurbished" id="cond-refurb" />
-                  <Label htmlFor="cond-refurb" className="text-orange-400">Occasion</Label>
-                </div>
-              </RadioGroup>
-            </div>
-
-            <div>
-              <Label className="text-base font-semibold mb-3 block">Disponibilité</Label>
-              <div className="flex items-center space-x-2">
-                <Checkbox
-                  id="in-stock"
-                  checked={inStock}
-                  onCheckedChange={(checked) => setInStock(checked as boolean)}
-                />
-                <Label htmlFor="in-stock">En stock uniquement</Label>
+            {/* Condition */}
+            <div className="p-2 sm:p-3 border-b border-white/5">
+              <p className="text-[10px] uppercase tracking-widest text-muted-foreground font-bold mb-2">État</p>
+              <div className="flex flex-col gap-1">
+                {[["all", "Tous", "text-foreground"], ["new", "Neuf", "text-green-400"], ["refurbished", "Occasion", "text-orange-400"]].map(([val, label, color]) => (
+                  <button
+                    key={val}
+                    onClick={() => setCondition(val as any)}
+                    className={`w-full text-left px-2 py-1 rounded-lg text-xs transition-all flex items-center gap-1.5 ${condition === val ? "bg-white/8 font-bold " + color : "text-muted-foreground hover:text-white"}`}
+                  >
+                    <span className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${val === "new" ? "bg-green-400" : val === "refurbished" ? "bg-orange-400" : "bg-white/30"}`} />
+                    {label}
+                  </button>
+                ))}
               </div>
             </div>
 
-            <div>
-              <Label className="text-base font-semibold mb-3 block">Fourchette de prix (DA)</Label>
+            {/* Stock */}
+            <div className="p-2 sm:p-3 border-b border-white/5">
+              <button
+                onClick={() => setInStock(v => !v)}
+                className={`w-full text-left px-2 py-1 rounded-lg text-xs flex items-center gap-2 transition-all ${inStock ? "text-primary" : "text-muted-foreground hover:text-white"}`}
+              >
+                <span className={`w-3 h-3 rounded border flex-shrink-0 flex items-center justify-center ${inStock ? "bg-primary border-primary" : "border-white/30"}`}>
+                  {inStock && <span className="text-white text-[8px] font-bold">✓</span>}
+                </span>
+                En stock
+              </button>
+            </div>
+
+            {/* Price */}
+            <div className="p-2 sm:p-3 border-b border-white/5">
+              <p className="text-[10px] uppercase tracking-widest text-muted-foreground font-bold mb-2">Prix (DA)</p>
               <Slider
-                min={0}
-                max={1000000}
-                step={10000}
+                min={0} max={1000000} step={10000}
                 value={priceRange}
                 onValueChange={setPriceRange}
-                className="mb-4"
+                className="mb-2"
               />
-              <div className="flex items-center justify-between text-xs text-muted-foreground">
-                <span>{priceRange[0].toLocaleString()} DA</span>
-                <span>{priceRange[1].toLocaleString()} DA</span>
+              <div className="flex justify-between text-[10px] text-muted-foreground">
+                <span>{(priceRange[0] / 1000).toFixed(0)}k</span>
+                <span>{(priceRange[1] / 1000).toFixed(0)}k</span>
               </div>
             </div>
 
-            <Button
-              variant="outline"
-              className="w-full border-white/10 hover:bg-white/5"
-              onClick={() => {
-                setSearch("");
-                setCondition("all");
-                setInStock(false);
-                setBrand("all");
-                setPriceRange([0, 1000000]);
-              }}
-            >
-              Réinitialiser
-            </Button>
+            {/* Reset */}
+            <div className="p-2 sm:p-3">
+              <button
+                onClick={resetFilters}
+                className="w-full text-center text-[10px] text-muted-foreground hover:text-primary transition-colors py-1 font-medium"
+              >
+                Réinitialiser
+              </button>
+            </div>
           </div>
         </aside>
 
-        {/* Product Grid */}
-        <div className="flex-1">
-          {brand !== "all" && (
-            <div className="mb-6 flex items-center gap-3">
-              <span className="text-2xl font-black">{brand}</span>
-              <span className="text-muted-foreground">— {laptops?.length ?? 0} modèle{laptops?.length !== 1 ? "s" : ""}</span>
-              <button onClick={() => setBrand("all")} className="ml-auto text-xs text-muted-foreground hover:text-primary transition-colors border border-white/10 rounded-full px-3 py-1">
-                Clear ✕
-              </button>
-            </div>
-          )}
-
+        {/* Product Grid — always on the RIGHT */}
+        <div className="flex-1 min-w-0">
           {isLoading ? (
-            <div className="grid grid-cols-2 md:grid-cols-2 xl:grid-cols-3 gap-3 sm:gap-6">
+            <div className="grid grid-cols-2 xl:grid-cols-3 gap-2 sm:gap-4">
               {[1, 2, 3, 4, 5, 6].map((i) => (
-                <div key={i} className="bg-card/30 rounded-xl p-3 sm:p-4 border border-white/5">
+                <div key={i} className="bg-card/30 rounded-xl p-3 border border-white/5">
                   <Skeleton className="w-full aspect-[4/3] rounded-lg mb-3" />
-                  <Skeleton className="h-5 w-3/4 mb-2" />
-                  <Skeleton className="h-4 w-1/2 mb-3" />
-                  <div className="grid grid-cols-2 gap-2 mb-3">
-                    <Skeleton className="h-7 w-full" />
-                    <Skeleton className="h-7 w-full" />
+                  <Skeleton className="h-4 w-3/4 mb-2" />
+                  <Skeleton className="h-3 w-1/2 mb-3" />
+                  <div className="grid grid-cols-2 gap-1.5 mb-3">
+                    <Skeleton className="h-6 w-full" />
+                    <Skeleton className="h-6 w-full" />
                   </div>
-                  <Skeleton className="h-8 w-full mt-3" />
+                  <Skeleton className="h-5 w-2/3" />
                 </div>
               ))}
             </div>
           ) : laptops && laptops.length > 0 ? (
-            <div className="grid grid-cols-2 md:grid-cols-2 xl:grid-cols-3 gap-3 sm:gap-6">
+            <div className="grid grid-cols-2 xl:grid-cols-3 gap-2 sm:gap-4">
               {laptops.map((laptop) => (
                 <ProductCard key={laptop.id} laptop={laptop} />
               ))}
             </div>
           ) : (
-            <div className="flex flex-col items-center justify-center py-24 text-center bg-card/30 rounded-3xl border border-white/5 border-dashed">
-              <div className="w-20 h-20 bg-black rounded-full flex items-center justify-center mb-6">
-                <Search className="w-8 h-8 text-primary" />
-              </div>
-              <h3 className="text-2xl font-bold mb-2">Aucun modèle trouvé</h3>
-              <p className="text-muted-foreground max-w-md">
-                Aucun laptop ne correspond à vos filtres. Essayez de modifier vos critères ou réinitialisez les filtres.
+            <div className="flex flex-col items-center justify-center py-16 text-center bg-card/20 rounded-2xl border border-white/5 border-dashed">
+              <Search className="w-8 h-8 text-primary mb-4 opacity-60" />
+              <h3 className="text-lg font-bold mb-1">Aucun modèle trouvé</h3>
+              <p className="text-muted-foreground text-xs max-w-xs">
+                Essayez de modifier vos critères ou réinitialisez les filtres.
               </p>
               <Button
                 variant="outline"
-                className="mt-6 border-primary/50 text-primary hover:bg-primary/20"
-                onClick={() => { setSearch(""); setCondition("all"); setInStock(false); setBrand("all"); setPriceRange([0, 1000000]); }}
+                size="sm"
+                className="mt-4 border-primary/50 text-primary hover:bg-primary/20"
+                onClick={resetFilters}
               >
                 Réinitialiser
               </Button>

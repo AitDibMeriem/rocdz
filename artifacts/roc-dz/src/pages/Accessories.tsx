@@ -7,10 +7,11 @@ import { useCart } from "@/context/CartContext";
 
 const CATEGORIES = ["Tous", "Keyboards", "Mice", "Headsets", "Monitors", "Controllers", "Bags", "Chargers", "Hubs & Adapters", "Other"];
 
+const BASE_URL = import.meta.env.BASE_URL.replace(/\/$/, "");
 const FALLBACK_IMAGES: Record<string, string> = {
   "Keyboards": "https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=400&q=80",
-  "Mice": "https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?w=400&q=80",
-  "Headsets": "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&q=80",
+  "Mice": `${BASE_URL}/img-mouse.png`,
+  "Headsets": `${BASE_URL}/img-headset.png`,
   "Monitors": "https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?w=400&q=80",
   "Controllers": "https://images.unsplash.com/photo-1592840496694-26d035b52b48?w=400&q=80",
   "Bags": "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=400&q=80",

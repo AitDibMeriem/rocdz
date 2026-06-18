@@ -16,6 +16,7 @@ import Cart from "@/pages/Cart";
 import Accessories from "@/pages/Accessories";
 import { AuthProvider, useAuth } from "@/context/AuthContext";
 import { CartProvider } from "@/context/CartContext";
+import { BgCanvas } from "@/components/BgCanvas";
 
 const queryClient = new QueryClient();
 
@@ -56,6 +57,7 @@ function Router() {
 
   return (
     <div className="min-h-screen flex flex-col text-foreground selection:bg-primary/30">
+      <BgCanvas />
       <Navbar />
       <main className="flex-1 w-full">
         <Switch>
