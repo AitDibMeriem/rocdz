@@ -1,38 +1,36 @@
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import { useGetFeaturedLaptop } from "@workspace/api-client-react";
 import { Link } from "wouter";
 
 const BRANDS = ["DELL", "HP", "LENOVO", "ASUS", "MSI", "APPLE", "ACER"];
 
-const LAPTOP_CAROUSEL = [
-  { img: "https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=400&q=80", tag: "tag-fiabilite", tagLabel: "Fiabilité", name: "Dell", href: "/models?brand=Dell" },
-  { img: "https://images.unsplash.com/photo-1544731612-de7f96afe55f?w=400&q=80", tag: "tag-pro", tagLabel: "Pro", name: "HP", href: "/models?brand=HP" },
-  { img: "https://images.unsplash.com/photo-1527434065213-849f5e9607ea?w=400&q=80", tag: "tag-performance", tagLabel: "Performance", name: "Lenovo", href: "/models?brand=Lenovo" },
-  { img: "https://images.unsplash.com/photo-1603302576837-37561b2e2302?w=400&q=80", tag: "tag-gaming", tagLabel: "Gaming", name: "ASUS", href: "/models?brand=ASUS" },
-  { img: "https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=400&q=80", tag: "tag-polyvalent", tagLabel: "Polyvalent", name: "Acer", href: "/models?brand=Acer" },
-  { img: "https://images.unsplash.com/photo-1593640408182-31c70c8268f5?w=400&q=80", tag: "tag-gaming", tagLabel: "Gaming", name: "MSI", href: "/models?brand=MSI" },
-  { img: "https://images.unsplash.com/photo-1611186871348-b1ce696e52c9?w=400&q=80", tag: "tag-premium", tagLabel: "Premium", name: "Apple", href: "/models?brand=Apple" },
+const LAPTOP_GRID = [
+  { img: "/brand-dell.png", tag: "tag-fiabilite", tagLabel: "Fiabilité", name: "Dell", href: "/models?brand=Dell" },
+  { img: "/brand-apple2.png", tag: "tag-premium", tagLabel: "Premium", name: "Apple", href: "/models?brand=Apple" },
+  { img: "/brand-lenovo.png", tag: "tag-pro", tagLabel: "Pro", name: "Lenovo", href: "/models?brand=Lenovo" },
+  { img: "/brand-dell2.png", tag: "tag-gaming", tagLabel: "Gaming", name: "MSI", href: "/models?brand=MSI" },
+  { img: "/brand-lenovo2.png", tag: "tag-performance", tagLabel: "Performance", name: "ASUS", href: "/models?brand=ASUS" },
+  { img: "/brand-apple.png", tag: "tag-polyvalent", tagLabel: "Polyvalent", name: "HP", href: "/models?brand=HP" },
 ];
 
-const ACC_CAROUSEL = [
-  { img: "https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=400&q=80", tag: "tag-saisie", tagLabel: "Saisie", name: "Keyboards" },
-  { img: "https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?w=400&q=80", tag: "tag-precision", tagLabel: "Précision", name: "Mice" },
-  { img: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&q=80", tag: "tag-audio", tagLabel: "Audio", name: "Headsets" },
-  { img: "https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?w=400&q=80", tag: "tag-display", tagLabel: "Display", name: "Monitors" },
-  { img: "https://images.unsplash.com/photo-1592840496694-26d035b52b48?w=400&q=80", tag: "tag-gaming", tagLabel: "Gaming", name: "Controllers" },
-  { img: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=400&q=80", tag: "tag-transport", tagLabel: "Transport", name: "Bags" },
-  { img: "https://images.unsplash.com/photo-1583863788434-e58a36330cf0?w=400&q=80", tag: "tag-energie", tagLabel: "Énergie", name: "Chargers" },
-  { img: "https://images.unsplash.com/photo-1625766763788-95dcce9bf5ac?w=400&q=80", tag: "tag-connectique", tagLabel: "Connectique", name: "Hubs & Adapters" },
+const ACC_GRID = [
+  { img: "/acc-headset.png", tag: "tag-audio", tagLabel: "Audio", name: "Headsets", href: "/accessories?category=Headsets" },
+  { img: "/acc-mouse.png", tag: "tag-precision", tagLabel: "Précision", name: "Mice", href: "/accessories?category=Mice" },
+  { img: "/acc-headset2.png", tag: "tag-gaming", tagLabel: "Gaming", name: "Controllers", href: "/accessories?category=Controllers" },
+  { img: "/acc-mouse2.png", tag: "tag-saisie", tagLabel: "Saisie", name: "Keyboards", href: "/accessories?category=Keyboards" },
+];
+
+const REVIEWS = [
+  { name: "Mounia Sifi", rating: 5, text: "Professionnel, sérieux, le bon accueil, y'a tout dans ce magasin, à mon avis c'est le bon exemple pour les commerçants algériens. Continuez à briller monsieur. Lah ybarek." },
+  { name: "Yacine B.", rating: 5, text: "Un bon magasin de tout les côtés soit l'accueil soit le service soit les produits vraiment ma cha allah. Je vous souhaite une bonne continuation." },
+  { name: "Rania K.", rating: 5, text: "Super service, livraison rapide, le laptop est exactement comme décrit. Je recommande vivement ROC DZ pour tout achat informatique en Algérie." },
+  { name: "Hamid L.", rating: 5, text: "Très sérieux, bon rapport qualité prix. Le personnel est compétent et honnête. Mon PC tourne parfaitement. Merci ROC DZ!" },
+  { name: "Sara M.", rating: 5, text: "J'ai acheté un MacBook, il est arrivé en parfait état avec garantie. Service impeccable et suivi professionnel. Je reviendrai c'est sûr." },
+  { name: "Djamel T.", rating: 5, text: "Meilleur magasin de PC à Alger. Des prix compétitifs, du matériel de qualité, et une équipe qui connaît son métier. 10/10." },
 ];
 
 export default function Home() {
   const { data: featured } = useGetFeaturedLaptop();
-  const laptopCarouselRef = useRef<HTMLDivElement>(null);
-  const accCarouselRef = useRef<HTMLDivElement>(null);
-
-  const scroll = (ref: React.RefObject<HTMLDivElement | null>, delta: number) => {
-    ref.current?.scrollBy({ left: delta, behavior: "smooth" });
-  };
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -112,48 +110,44 @@ export default function Home() {
       {/* CATEGORIES */}
       <section className="categories" id="categories">
         <div className="category-header">
-          <div className="section-label">Categories</div>
-          <h2>Explore our<br /><span className="gradient">collections.</span></h2>
+          <div className="section-label">Catégories</div>
+          <h2>Explorez nos<br /><span className="gradient">univers.</span></h2>
         </div>
 
-        <div className="category-subtitle">Laptop</div>
-        <div className="category-subtitle-desc">Available brands</div>
+        <div className="category-subtitle">LAPTOP</div>
+        <div className="category-subtitle-desc">Marques disponibles</div>
 
-        <div className="carousel-container">
-          <button className="carousel-nav-btn prev" onClick={() => scroll(laptopCarouselRef, -300)}>‹</button>
-          <div className="carousel" ref={laptopCarouselRef}>
-            {LAPTOP_CAROUSEL.map((item) => (
-              <Link key={item.name} href={item.href} className="carousel-card">
+        <div className="brand-grid">
+          {LAPTOP_GRID.map((item) => (
+            <Link key={item.name} href={item.href} className="brand-card">
+              <div className="brand-card-img">
                 <img src={item.img} alt={item.name} />
-                <div className="carousel-card-body">
+              </div>
+              <div className="brand-card-body">
+                <div className={`card-tag ${item.tag}`}><span className="dot" />{item.tagLabel}</div>
+                <h3>{item.name}</h3>
+                <div className="explore">EXPLORER COLLECTION →</div>
+              </div>
+            </Link>
+          ))}
+        </div>
+
+        <div style={{ marginTop: "3rem" }}>
+          <div className="category-subtitle">ACCESSOIRES</div>
+          <div className="category-subtitle-desc">Équipez votre setup</div>
+          <div className="brand-grid">
+            {ACC_GRID.map((item) => (
+              <Link key={item.name} href={item.href} className="brand-card">
+                <div className="brand-card-img">
+                  <img src={item.img} alt={item.name} />
+                </div>
+                <div className="brand-card-body">
                   <div className={`card-tag ${item.tag}`}><span className="dot" />{item.tagLabel}</div>
                   <h3>{item.name}</h3>
-                  <div className="explore">Explore Collection →</div>
+                  <div className="explore">EXPLORER COLLECTION →</div>
                 </div>
               </Link>
             ))}
-          </div>
-          <button className="carousel-nav-btn next" onClick={() => scroll(laptopCarouselRef, 300)}>›</button>
-        </div>
-
-        <div style={{ marginTop: "4rem" }}>
-          <div className="category-subtitle">Accessories</div>
-          <div className="category-subtitle-desc">Equip your setup</div>
-          <div className="carousel-container">
-            <button className="carousel-nav-btn prev" onClick={() => scroll(accCarouselRef, -300)}>‹</button>
-            <div className="carousel" ref={accCarouselRef}>
-              {ACC_CAROUSEL.map((item) => (
-                <Link key={item.name} href={`/accessories?category=${encodeURIComponent(item.name)}`} className="carousel-card">
-                  <img src={item.img} alt={item.name} />
-                  <div className="carousel-card-body">
-                    <div className={`card-tag ${item.tag}`}><span className="dot" />{item.tagLabel}</div>
-                    <h3>{item.name}</h3>
-                    <div className="explore">Explore Collection →</div>
-                  </div>
-                </Link>
-              ))}
-            </div>
-            <button className="carousel-nav-btn next" onClick={() => scroll(accCarouselRef, 300)}>›</button>
           </div>
         </div>
       </section>
@@ -317,6 +311,38 @@ export default function Home() {
               <p>Receive your order anywhere in Algeria quickly and safely.</p>
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* AVIS CLIENTS */}
+      <section className="reviews-section">
+        <div className="reviews-header fade-up">
+          <div className="section-label">Avis Clients</div>
+          <h2>Ils nous font <span className="gradient">confiance.</span></h2>
+          <a
+            href="https://maps.app.goo.gl/GaKYnMnz1H6QiXjHA"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="google-reviews-link"
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12.48 10.92v3.28h7.84c-.24 1.84-.853 3.187-1.787 4.133-1.147 1.147-2.933 2.4-6.053 2.4-4.827 0-8.6-3.893-8.6-8.72s3.773-8.72 8.6-8.72c2.6 0 4.507 1.027 5.907 2.347l2.307-2.307C18.747 1.44 16.133 0 12.48 0 5.867 0 .307 5.387.307 12s5.56 12 12.173 12c3.573 0 6.267-1.173 8.373-3.36 2.16-2.16 2.84-5.213 2.84-7.667 0-.76-.053-1.467-.173-2.053H12.48z"/></svg>
+            Voir sur Google Maps
+          </a>
+        </div>
+        <div className="reviews-grid">
+          {REVIEWS.map((r, i) => (
+            <div key={i} className="review-card fade-up">
+              <div className="review-stars">{"★".repeat(r.rating)}</div>
+              <p className="review-text">"{r.text}"</p>
+              <div className="review-author">
+                <div className="review-avatar">{r.name[0]}</div>
+                <div>
+                  <div className="review-name">{r.name}</div>
+                  <div className="review-source">VIA GOOGLE</div>
+                </div>
+              </div>
+            </div>
+          ))}
         </div>
       </section>
 

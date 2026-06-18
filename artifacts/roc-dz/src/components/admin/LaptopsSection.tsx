@@ -6,6 +6,7 @@ import { useListLaptops, useCreateLaptop, useUpdateLaptop, useDeleteLaptop, getL
 import { useQueryClient } from "@tanstack/react-query";
 import { Plus, Search, Edit, Trash2, Laptop, Star, X as XIcon, ImagePlus } from "lucide-react";
 import { ImageUpload } from "@/components/ImageUpload";
+import { ColorSwatchPicker } from "@/components/ColorSwatchPicker";
 
 const BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 
@@ -395,7 +396,13 @@ export function LaptopsSection() {
                     )} />
                   </div>
                   <FormField control={form.control} name="color" render={({ field }) => (
-                    <FormItem><FormLabel>Couleur</FormLabel><FormControl><Input {...field} placeholder="ex: Noir, Silver, Rouge..." /></FormControl><FormMessage /></FormItem>
+                    <FormItem>
+                      <FormLabel>Couleur</FormLabel>
+                      <FormControl>
+                        <ColorSwatchPicker value={field.value || ""} onChange={field.onChange} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
                   )} />
                   <FormField control={form.control} name="description" render={({ field }) => (
                     <FormItem><FormLabel>Description</FormLabel><FormControl><Textarea {...field} className="min-h-[100px]" /></FormControl><FormMessage /></FormItem>

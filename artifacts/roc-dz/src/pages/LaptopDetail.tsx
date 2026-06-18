@@ -8,6 +8,13 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useCart } from "@/context/CartContext";
 import { useToast } from "@/hooks/use-toast";
 
+const COLOR_HEX_MAP: Record<string, string> = {
+  "Noir": "#1C1C1E", "Silver": "#A8A8A8", "Blanc": "#F0F0F0",
+  "Or": "#D4AF37", "Bleu": "#2563EB", "Rouge": "#DC2626",
+  "Vert": "#16A34A", "Violet": "#7C3AED", "Rose": "#EC4899",
+  "Gris": "#6B7280", "Bronze": "#A0522D", "Bleu Nuit": "#1E3A5F",
+};
+
 export default function LaptopDetail() {
   const [, params] = useRoute("/laptop/:id");
   const [, navigate] = useLocation();
@@ -236,6 +243,20 @@ export default function LaptopDetail() {
               </div>
             </div>
           </div>
+
+          {(laptop as any).color && (
+            <div className="mb-6">
+              <p className="text-xs uppercase tracking-widest text-muted-foreground font-bold mb-3">Couleur disponible</p>
+              <div className="flex items-center gap-3">
+                <div
+                  className="w-8 h-8 rounded-full border-2 border-primary shadow-[0_0_10px_rgba(233,30,140,0.4)]"
+                  style={{ backgroundColor: COLOR_HEX_MAP[(laptop as any).color] ?? "#888" }}
+                  title={(laptop as any).color}
+                />
+                <span className="text-sm font-semibold text-foreground">{(laptop as any).color}</span>
+              </div>
+            </div>
+          )}
 
           <div className="flex gap-4">
             <Button

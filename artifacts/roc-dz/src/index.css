@@ -727,6 +727,201 @@ section { position: relative; z-index: 2; }
 .carousel-nav-btn.prev { left: 2%; }
 .carousel-nav-btn.next { right: 2%; }
 
+/* ── Brand Grid Cards ──────────────────────── */
+.brand-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+  max-width: 960px;
+  margin: 0 auto 1rem;
+  padding: 0 4%;
+}
+
+@media (min-width: 768px) {
+  .brand-grid { grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
+}
+
+.brand-card {
+  position: relative;
+  border-radius: 20px;
+  overflow: hidden;
+  background: var(--bg-card-raw);
+  border: 1px solid var(--border-raw);
+  text-decoration: none;
+  color: inherit;
+  display: block;
+  transition: all 0.4s;
+  cursor: pointer;
+}
+
+.brand-card:hover {
+  transform: translateY(-6px);
+  border-color: rgba(233,30,140,0.35);
+  box-shadow: 0 16px 50px rgba(184, 41, 221, 0.2);
+}
+
+.brand-card-img {
+  width: 100%;
+  aspect-ratio: 4/3;
+  overflow: hidden;
+}
+
+.brand-card-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s;
+}
+
+.brand-card:hover .brand-card-img img { transform: scale(1.06); }
+
+.brand-card-body {
+  padding: 0.9rem 1rem;
+  background: linear-gradient(to top, rgba(13,2,24,0.95) 0%, rgba(13,2,24,0.7) 100%);
+}
+
+.brand-card-body .card-tag { margin-bottom: 0.3rem; }
+
+.brand-card-body h3 {
+  font-size: 1.2rem;
+  font-weight: 900;
+  margin-bottom: 0.4rem;
+  letter-spacing: -0.01em;
+}
+
+.brand-card-body .explore {
+  font-size: 0.6rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--text-dim);
+  transition: color 0.3s;
+}
+
+.brand-card:hover .brand-card-body .explore { color: var(--pink); }
+
+@media (max-width: 480px) {
+  .brand-card-body h3 { font-size: 1rem; }
+  .brand-card-body { padding: 0.7rem 0.8rem; }
+}
+
+/* ── Reviews Section ───────────────────────── */
+.reviews-section {
+  padding: 80px 5%;
+  position: relative;
+}
+
+.reviews-header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.reviews-header h2 {
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  font-weight: 900;
+  margin-bottom: 1rem;
+}
+
+.google-reviews-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.8rem;
+  color: var(--text-dim);
+  text-decoration: none;
+  border: 1px solid rgba(255,255,255,0.1);
+  padding: 0.4rem 1rem;
+  border-radius: 20px;
+  transition: all 0.3s;
+}
+
+.google-reviews-link:hover {
+  color: #4285F4;
+  border-color: #4285F4;
+}
+
+.reviews-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+@media (min-width: 768px) {
+  .reviews-grid { grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
+}
+
+.review-card {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 16px;
+  padding: 1.2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  transition: all 0.3s;
+}
+
+.review-card:hover {
+  border-color: rgba(233,30,140,0.2);
+  background: rgba(233,30,140,0.04);
+}
+
+.review-stars {
+  color: #FFD700;
+  font-size: 0.9rem;
+  letter-spacing: 2px;
+}
+
+.review-text {
+  font-size: 0.8rem;
+  line-height: 1.6;
+  color: rgba(255,255,255,0.75);
+  flex: 1;
+  font-style: italic;
+}
+
+.review-author {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  margin-top: auto;
+}
+
+.review-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--pink), var(--purple));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 0.75rem;
+  color: white;
+  flex-shrink: 0;
+}
+
+.review-name {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: rgba(255,255,255,0.9);
+}
+
+.review-source {
+  font-size: 0.6rem;
+  color: #4285F4;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+@media (max-width: 480px) {
+  .review-card { padding: 1rem; }
+  .review-text { font-size: 0.75rem; }
+}
+
 .looking-for { padding: 100px 5%; }
 
 .looking-grid {

@@ -6,6 +6,7 @@ import { useListAccessories, useCreateAccessory, getListAccessoriesQueryKey } fr
 import { useQueryClient, useMutation } from "@tanstack/react-query";
 import { Plus, Edit, Trash2, Package } from "lucide-react";
 import { ImageUpload } from "@/components/ImageUpload";
+import { ColorSwatchPicker } from "@/components/ColorSwatchPicker";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -242,7 +243,13 @@ export function AccessoriesSection() {
                   )} />
                 </div>
                 <FormField control={form.control} name="color" render={({ field }) => (
-                  <FormItem><FormLabel>Couleur</FormLabel><FormControl><Input {...field} placeholder="ex: Noir, Silver, Rouge..." className="bg-background" /></FormControl><FormMessage /></FormItem>
+                  <FormItem>
+                    <FormLabel>Couleur</FormLabel>
+                    <FormControl>
+                      <ColorSwatchPicker value={field.value || ""} onChange={field.onChange} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
                 )} />
                 <FormField control={form.control} name="description" render={({ field }) => (
                   <FormItem><FormLabel>Description</FormLabel><FormControl><Textarea {...field} className="bg-background" /></FormControl><FormMessage /></FormItem>
