@@ -5,19 +5,28 @@ import { Link } from "wouter";
 const BRANDS = ["DELL", "HP", "LENOVO", "ASUS", "MSI", "APPLE", "ACER"];
 
 const LAPTOP_GRID = [
+  { img: "/brand-hp.png", tag: "tag-gaming", tagLabel: "Gaming", name: "HP", href: "/models?brand=HP" },
+  { img: "/brand-apple3.png", tag: "tag-premium", tagLabel: "Premium", name: "Apple", href: "/models?brand=Apple" },
+  { img: "/brand-lenovo3.png", tag: "tag-pro", tagLabel: "Pro", name: "Lenovo", href: "/models?brand=Lenovo" },
+  { img: "/brand-msi.png", tag: "tag-gaming", tagLabel: "Gaming", name: "MSI", href: "/models?brand=MSI" },
+  { img: "/brand-asus.png", tag: "tag-performance", tagLabel: "Performance", name: "ASUS", href: "/models?brand=ASUS" },
+  { img: "/brand-acer.png", tag: "tag-polyvalent", tagLabel: "Polyvalent", name: "Acer", href: "/models?brand=Acer" },
   { img: "/brand-dell.png", tag: "tag-fiabilite", tagLabel: "Fiabilité", name: "Dell", href: "/models?brand=Dell" },
-  { img: "/brand-apple2.png", tag: "tag-premium", tagLabel: "Premium", name: "Apple", href: "/models?brand=Apple" },
-  { img: "/brand-lenovo.png", tag: "tag-pro", tagLabel: "Pro", name: "Lenovo", href: "/models?brand=Lenovo" },
-  { img: "/brand-dell2.png", tag: "tag-gaming", tagLabel: "Gaming", name: "MSI", href: "/models?brand=MSI" },
-  { img: "/brand-lenovo2.png", tag: "tag-performance", tagLabel: "Performance", name: "ASUS", href: "/models?brand=ASUS" },
-  { img: "/brand-apple.png", tag: "tag-polyvalent", tagLabel: "Polyvalent", name: "HP", href: "/models?brand=HP" },
+  { img: "/brand-surface.png", tag: "tag-premium", tagLabel: "Premium", name: "Microsoft Surface", href: "/models?brand=Microsoft" },
 ];
 
 const ACC_GRID = [
-  { img: "/acc-headset.png", tag: "tag-audio", tagLabel: "Audio", name: "Headsets", href: "/accessories?category=Headsets" },
-  { img: "/acc-mouse.png", tag: "tag-precision", tagLabel: "Précision", name: "Mice", href: "/accessories?category=Mice" },
-  { img: "/acc-headset2.png", tag: "tag-gaming", tagLabel: "Gaming", name: "Controllers", href: "/accessories?category=Controllers" },
-  { img: "/acc-mouse2.png", tag: "tag-saisie", tagLabel: "Saisie", name: "Keyboards", href: "/accessories?category=Keyboards" },
+  { img: "/acc-support.png", tag: "tag-setup", tagLabel: "Setup", name: "Supports", href: "/accessories?category=Hubs & Adapters" },
+  { img: "/acc-cables.png", tag: "tag-connect", tagLabel: "Connectique", name: "Câbles", href: "/accessories?category=Hubs & Adapters" },
+  { img: "/acc-chargeur.png", tag: "tag-power", tagLabel: "Alimentation", name: "Chargeurs", href: "/accessories?category=Chargers" },
+  { img: "/acc-manette2.png", tag: "tag-gaming", tagLabel: "Gaming", name: "Manettes", href: "/accessories?category=Controllers" },
+  { img: "/acc-stockage.png", tag: "tag-storage", tagLabel: "Stockage", name: "Stockage", href: "/accessories?category=Other" },
+  { img: "/acc-webcam.png", tag: "tag-video", tagLabel: "Vidéo", name: "Webcams", href: "/accessories?category=Other" },
+  { img: "/acc-sacados.png", tag: "tag-transport", tagLabel: "Transport", name: "Sac à dos", href: "/accessories?category=Bags" },
+  { img: "/acc-headset.png", tag: "tag-audio", tagLabel: "Audio", name: "Casques", href: "/accessories?category=Headsets" },
+  { img: "/acc-mouse.png", tag: "tag-precision", tagLabel: "Précision", name: "Souris", href: "/accessories?category=Mice" },
+  { img: "/acc-clavier2.png", tag: "tag-saisie", tagLabel: "Saisie", name: "Claviers", href: "/accessories?category=Keyboards" },
+  { img: "/acc-monitor2.png", tag: "tag-display", tagLabel: "Affichage", name: "Moniteurs", href: "/accessories?category=Monitors" },
 ];
 
 const REVIEWS = [
