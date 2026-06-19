@@ -11,7 +11,7 @@ const LAPTOP_GRID = [
   { img: "/brand-msi.png", tag: "tag-gaming", tagLabel: "Gaming", name: "MSI", href: "/models?brand=MSI" },
   { img: "/brand-asus.png", tag: "tag-performance", tagLabel: "Performance", name: "ASUS", href: "/models?brand=ASUS" },
   { img: "/brand-acer.png", tag: "tag-polyvalent", tagLabel: "Polyvalent", name: "Acer", href: "/models?brand=Acer" },
-  { img: "/brand-dell.png", tag: "tag-fiabilite", tagLabel: "Fiabilité", name: "Dell", href: "/models?brand=Dell" },
+  { img: "/brand-dell3.png", tag: "tag-fiabilite", tagLabel: "Fiabilité", name: "Dell", href: "/models?brand=Dell" },
   { img: "/brand-surface.png", tag: "tag-premium", tagLabel: "Premium", name: "Microsoft Surface", href: "/models?brand=Microsoft" },
 ];
 
@@ -23,9 +23,9 @@ const ACC_GRID = [
   { img: "/acc-stockage.png", tag: "tag-storage", tagLabel: "Stockage", name: "Stockage", href: "/accessories?category=Other" },
   { img: "/acc-webcam.png", tag: "tag-video", tagLabel: "Vidéo", name: "Webcams", href: "/accessories?category=Other" },
   { img: "/acc-sacados.png", tag: "tag-transport", tagLabel: "Transport", name: "Sac à dos", href: "/accessories?category=Bags" },
-  { img: "/acc-headset.png", tag: "tag-audio", tagLabel: "Audio", name: "Casques", href: "/accessories?category=Headsets" },
-  { img: "/acc-mouse.png", tag: "tag-precision", tagLabel: "Précision", name: "Souris", href: "/accessories?category=Mice" },
-  { img: "/acc-clavier2.png", tag: "tag-saisie", tagLabel: "Saisie", name: "Claviers", href: "/accessories?category=Keyboards" },
+  { img: "/acc-headset3.png", tag: "tag-audio", tagLabel: "Audio", name: "Casques", href: "/accessories?category=Headsets" },
+  { img: "/acc-mouse3.png", tag: "tag-precision", tagLabel: "Précision", name: "Souris", href: "/accessories?category=Mice" },
+  { img: "/acc-clavier3.png", tag: "tag-saisie", tagLabel: "Saisie", name: "Claviers", href: "/accessories?category=Keyboards" },
   { img: "/acc-monitor2.png", tag: "tag-display", tagLabel: "Affichage", name: "Moniteurs", href: "/accessories?category=Monitors" },
 ];
 
