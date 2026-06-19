@@ -729,17 +729,18 @@ section { position: relative; z-index: 2; }
 
 /* ── Brand Grid Cards ──────────────────────── */
 .brand-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  display: flex;
+  flex-direction: row;
   gap: 1rem;
-  max-width: 960px;
-  margin: 0 auto 1rem;
-  padding: 0 4%;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  padding: 0.5rem 4% 1rem;
+  margin: 0 0 1rem;
+  scrollbar-width: none;
 }
 
-@media (min-width: 768px) {
-  .brand-grid { grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
-}
+.brand-grid::-webkit-scrollbar { display: none; }
 
 .brand-card {
   position: relative;
@@ -752,6 +753,12 @@ section { position: relative; z-index: 2; }
   display: block;
   transition: all 0.4s;
   cursor: pointer;
+  flex: 0 0 220px;
+  scroll-snap-align: start;
+}
+
+@media (min-width: 768px) {
+  .brand-card { flex: 0 0 260px; }
 }
 
 .brand-card:hover {
@@ -783,7 +790,7 @@ section { position: relative; z-index: 2; }
 .brand-card-body .card-tag { margin-bottom: 0.3rem; }
 
 .brand-card-body h3 {
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   font-weight: 900;
   margin-bottom: 0.4rem;
   letter-spacing: -0.01em;
@@ -801,7 +808,8 @@ section { position: relative; z-index: 2; }
 .brand-card:hover .brand-card-body .explore { color: var(--pink); }
 
 @media (max-width: 480px) {
-  .brand-card-body h3 { font-size: 1rem; }
+  .brand-card { flex: 0 0 180px; }
+  .brand-card-body h3 { font-size: 0.95rem; }
   .brand-card-body { padding: 0.7rem 0.8rem; }
 }
 
