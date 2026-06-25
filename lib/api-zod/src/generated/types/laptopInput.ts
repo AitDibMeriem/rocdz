@@ -37,4 +37,7 @@ export interface LaptopInput {
   description?: string;
   imageUrl?: string;
   featured?: boolean;
+  color?: string;
+  salePrice?: number;
+  advance?: number;
 }

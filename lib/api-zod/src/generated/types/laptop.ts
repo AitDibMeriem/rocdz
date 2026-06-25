@@ -60,5 +60,10 @@ export interface Laptop {
   /** @nullable */
   imageUrl?: string | null;
   featured?: boolean;
+  /** @nullable */
+  color?: string | null;
+  /** @nullable */
+  salePrice?: number | null;
+  advance?: number;
   createdAt: string;
 }

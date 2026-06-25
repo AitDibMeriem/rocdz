@@ -22,7 +22,7 @@ router.get("/", async (req, res) => {
 router.post("/", async (req, res) => {
   try {
     const body = CreateAccessoryBody.parse(req.body);
-    const [created] = await db.insert(accessoriesTable).values(body).returning();
+    const [created] = await db.insert(accessoriesTable).values(body as any).returning();
     res.status(201).json(created);
   } catch (err) {
     req.log.error(err);
@@ -33,15 +33,20 @@ router.post("/", async (req, res) => {
 router.patch("/:id", async (req, res) => {
   try {
     const id = Number(req.params.id);
-    const { name, category, description, price, stock, imageUrl, color } = req.body;
+    const { name, category, description, price, salePrice, stock, imageUrl, color, brand, warranty, compatibility, specifications } = req.body;
     const updates: Record<string, any> = {};
     if (name !== undefined) updates.name = name;
     if (category !== undefined) updates.category = category;
     if (description !== undefined) updates.description = description;
     if (price !== undefined) updates.price = Number(price);
+    if (salePrice !== undefined) updates.salePrice = salePrice === null || salePrice === "" ? null : Number(salePrice);
     if (stock !== undefined) updates.stock = Number(stock);
     if (imageUrl !== undefined) updates.imageUrl = imageUrl;
     if (color !== undefined) updates.color = color;
+    if (brand !== undefined) updates.brand = brand || null;
+    if (warranty !== undefined) updates.warranty = warranty || null;
+    if (compatibility !== undefined) updates.compatibility = compatibility || null;
+    if (specifications !== undefined) updates.specifications = specifications || null;
     const [updated] = await db.update(accessoriesTable).set(updates).where(eq(accessoriesTable.id, id)).returning();
     if (!updated) { res.status(404).json({ error: "Accessory not found" }); return; }
     res.json(updated);

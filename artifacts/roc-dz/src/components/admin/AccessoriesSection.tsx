@@ -31,8 +31,13 @@ const formSchema = z.object({
   color: z.string().optional(),
   description: z.string().optional(),
   price: z.number().int().min(0, "Le prix est requis"),
+  salePrice: z.number().int().min(0).optional(),
   stock: z.number().int().min(0),
   imageUrl: z.string().optional(),
+  brand: z.string().optional(),
+  warranty: z.string().optional(),
+  compatibility: z.string().optional(),
+  specifications: z.string().optional(),
 });
 type FormValues = z.infer<typeof formSchema>;
 
@@ -79,12 +84,12 @@ export function AccessoriesSection() {
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
-    defaultValues: { name: "", category: "", color: "", description: "", price: 0, stock: 1, imageUrl: "" },
+    defaultValues: { name: "", category: "", color: "", description: "", price: 0, salePrice: undefined, stock: 1, imageUrl: "", brand: "", warranty: "", compatibility: "", specifications: "" },
   });
 
   const openAdd = () => {
     setEditingId(null);
-    form.reset({ name: "", category: "", color: "", description: "", price: 0, stock: 1, imageUrl: "" });
+    form.reset({ name: "", category: "", color: "", description: "", price: 0, salePrice: undefined, stock: 1, imageUrl: "", brand: "", warranty: "", compatibility: "", specifications: "" });
     setModalOpen(true);
   };
 
@@ -96,8 +101,13 @@ export function AccessoriesSection() {
       color: item.color || "",
       description: item.description || "",
       price: item.price,
+      salePrice: item.salePrice ?? undefined,
       stock: item.stock,
       imageUrl: item.imageUrl || "",
+      brand: item.brand || "",
+      warranty: item.warranty || "",
+      compatibility: item.compatibility || "",
+      specifications: item.specifications || "",
     });
     setModalOpen(true);
   };
@@ -258,10 +268,33 @@ export function AccessoriesSection() {
                   <FormField control={form.control} name="price" render={({ field }) => (
                     <FormItem><FormLabel>Prix (DA) *</FormLabel><FormControl><Input type="number" {...field} onChange={e => field.onChange(Number(e.target.value))} className="bg-background" /></FormControl><FormMessage /></FormItem>
                   )} />
+                  <FormField control={form.control} name="salePrice" render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Prix promo (DA) <span className="text-xs text-red-400 font-normal">opt.</span></FormLabel>
+                      <FormControl><Input type="number" min="0" placeholder="Promo" className="bg-background" {...field} value={field.value ?? ""} onChange={e => field.onChange(e.target.value ? Number(e.target.value) : undefined)} /></FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )} />
+                </div>
+                <div className="grid grid-cols-2 gap-4">
                   <FormField control={form.control} name="stock" render={({ field }) => (
                     <FormItem><FormLabel>Stock *</FormLabel><FormControl><Input type="number" {...field} onChange={e => field.onChange(Number(e.target.value))} className="bg-background" /></FormControl><FormMessage /></FormItem>
                   )} />
+                  <FormField control={form.control} name="brand" render={({ field }) => (
+                    <FormItem><FormLabel>Marque</FormLabel><FormControl><Input {...field} placeholder="ex: Logitech" className="bg-background" /></FormControl><FormMessage /></FormItem>
+                  )} />
                 </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <FormField control={form.control} name="warranty" render={({ field }) => (
+                    <FormItem><FormLabel>Garantie</FormLabel><FormControl><Input {...field} placeholder="ex: 1 an" className="bg-background" /></FormControl><FormMessage /></FormItem>
+                  )} />
+                  <FormField control={form.control} name="compatibility" render={({ field }) => (
+                    <FormItem><FormLabel>Compatibilité</FormLabel><FormControl><Input {...field} placeholder="ex: Windows / Mac" className="bg-background" /></FormControl><FormMessage /></FormItem>
+                  )} />
+                </div>
+                <FormField control={form.control} name="specifications" render={({ field }) => (
+                  <FormItem><FormLabel>Spécifications techniques</FormLabel><FormControl><Textarea {...field} placeholder="DPI max, connectivité, poids..." className="bg-background" /></FormControl><FormMessage /></FormItem>
+                )} />
                 <FormField control={form.control} name="imageUrl" render={({ field }) => (
                   <FormItem>
                     <FormLabel>Image du produit</FormLabel>

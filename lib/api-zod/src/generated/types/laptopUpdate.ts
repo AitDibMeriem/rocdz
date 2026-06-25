@@ -18,6 +18,9 @@ export interface LaptopUpdate {
   description?: string;
   imageUrl?: string;
   featured?: boolean;
+  color?: string;
+  salePrice?: number;
+  advance?: number;
   conditionScore?: number;
   warrantyMonths?: number;
 }

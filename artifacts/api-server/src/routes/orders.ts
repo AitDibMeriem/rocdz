@@ -24,7 +24,7 @@ router.post("/", async (req, res) => {
     const {
       firstName, lastName, phone, phone2, address, wilaya, items,
       totalPrice, paymentMethod, notes, deliveryFee, advancePaid,
-      remainingAmount, deliveryType,
+      remainingAmount, deliveryType, promoCode, promoDiscount,
     } = req.body;
     const customerName = `${firstName || ""} ${lastName || ""}`.trim();
     const [created] = await db
@@ -45,6 +45,8 @@ router.post("/", async (req, res) => {
         deliveryType: deliveryType || "bureau",
         paymentMethod,
         notes,
+        promoCode: promoCode || null,
+        promoDiscount: Number(promoDiscount) || 0,
       })
       .returning();
     res.status(201).json(created);

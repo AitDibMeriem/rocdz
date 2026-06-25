@@ -163,12 +163,20 @@ export function OrdersSection() {
                 <div><span className="text-muted-foreground">Livraison</span><p className="font-semibold capitalize">{selected.deliveryType === "bureau" ? "Bureau / Stop Desk" : "À domicile"}</p></div>
               </div>
               <div className="bg-muted/30 rounded-lg p-3 space-y-1.5 text-sm">
-                <div className="flex justify-between"><span className="text-muted-foreground">Produits</span><span className="font-semibold">{((selected.totalPrice || 0) - (selected.deliveryFee || 0)).toLocaleString("fr-DZ")} DA</span></div>
+                <div className="flex justify-between"><span className="text-muted-foreground">Produits</span><span className="font-semibold">{((selected.totalPrice || 0) - (selected.deliveryFee || 0) + (selected.promoDiscount || 0)).toLocaleString("fr-DZ")} DA</span></div>
                 <div className="flex justify-between"><span className="text-muted-foreground">Livraison</span><span className="font-semibold">{(selected.deliveryFee || 0).toLocaleString("fr-DZ")} DA</span></div>
+                {selected.promoCode && (
+                  <div className="flex justify-between text-green-400">
+                    <span className="font-semibold flex items-center gap-1">
+                      🏷️ Code promo <span className="font-mono bg-green-500/10 px-1.5 rounded text-xs">{selected.promoCode}</span>
+                    </span>
+                    <span className="font-bold">-{(selected.promoDiscount || 0).toLocaleString("fr-DZ")} DA</span>
+                  </div>
+                )}
                 <div className="flex justify-between border-t border-border pt-1"><span className="font-bold">Total</span><span className="font-black text-primary">{(selected.totalPrice || 0).toLocaleString("fr-DZ")} DA</span></div>
                 {selected.advancePaid > 0 && <>
-                  <div className="flex justify-between text-emerald-400"><span className="font-semibold">Versement reçu</span><span className="font-bold">{(selected.advancePaid || 0).toLocaleString("fr-DZ")} DA</span></div>
-                  <div className="flex justify-between text-yellow-400"><span className="font-semibold">Reste à payer</span><span className="font-bold">{(selected.remainingAmount || 0).toLocaleString("fr-DZ")} DA</span></div>
+                  <div className="flex justify-between text-emerald-400"><span className="font-semibold">✓ Versement reçu</span><span className="font-bold">{(selected.advancePaid || 0).toLocaleString("fr-DZ")} DA</span></div>
+                  <div className="flex justify-between text-yellow-400"><span className="font-semibold">⏳ Reste à payer</span><span className="font-bold">{(selected.remainingAmount || 0).toLocaleString("fr-DZ")} DA</span></div>
                 </>}
               </div>
 

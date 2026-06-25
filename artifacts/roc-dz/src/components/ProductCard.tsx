@@ -1,13 +1,17 @@
 import { Link } from "wouter";
 import { Laptop } from "@workspace/api-client-react";
 import { Badge } from "@/components/ui/badge";
-import { Cpu, HardDrive, MemoryStick as Memory } from "lucide-react";
+import { Cpu, HardDrive, MemoryStick as Memory, Tag } from "lucide-react";
 
 interface ProductCardProps {
   laptop: Laptop;
 }
 
 export function ProductCard({ laptop }: ProductCardProps) {
+  const hasPromo = laptop.salePrice != null && laptop.salePrice > 0 && laptop.salePrice < laptop.price;
+  const displayPrice = hasPromo ? laptop.salePrice! : laptop.price;
+  const discount = hasPromo ? Math.round((1 - laptop.salePrice! / laptop.price) * 100) : 0;
+
   return (
     <Link href={`/laptop/${laptop.id}`} className="block group overflow-hidden border border-white/5 bg-card/50 backdrop-blur-sm hover:border-primary/50 transition-all duration-300 rounded-xl cursor-pointer">
       <div className="relative aspect-[4/3] bg-black/40 overflow-hidden">
@@ -16,14 +20,17 @@ export function ProductCard({ laptop }: ProductCardProps) {
           alt={laptop.title}
           className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-500"
         />
-        <div className="absolute top-2 left-2 flex flex-col gap-2">
+        <div className="absolute top-2 left-2 flex flex-col gap-1.5">
           {laptop.condition === "new" ? (
-            <Badge className="bg-green-500/20 text-green-400 border-green-500/50 backdrop-blur-md">Neuf</Badge>
+            <Badge className="bg-green-500/20 text-green-400 border-green-500/50 backdrop-blur-md text-[10px] px-1.5 py-0.5">Neuf</Badge>
           ) : (
-            <Badge className="bg-orange-500/20 text-orange-400 border-orange-500/50 backdrop-blur-md">Occasion</Badge>
+            <Badge className="bg-orange-500/20 text-orange-400 border-orange-500/50 backdrop-blur-md text-[10px] px-1.5 py-0.5">Occasion</Badge>
           )}
           {laptop.featured && (
-            <Badge className="bg-primary/20 text-primary border-primary/50 backdrop-blur-md">Coup de cœur</Badge>
+            <Badge className="bg-primary/20 text-primary border-primary/50 backdrop-blur-md text-[10px] px-1.5 py-0.5">❤ Coup de cœur</Badge>
+          )}
+          {hasPromo && (
+            <Badge className="bg-red-500/90 text-white border-red-500 backdrop-blur-md text-[10px] px-1.5 py-0.5 font-black">-{discount}%</Badge>
           )}
         </div>
       </div>
@@ -39,7 +46,7 @@ export function ProductCard({ laptop }: ProductCardProps) {
             )}
           </p>
         </div>
-        <h3 className="font-bold text-sm sm:text-base mb-3 line-clamp-2 text-foreground group-hover:text-primary transition-colors">
+        <h3 className="font-bold text-sm sm:text-base mb-2 line-clamp-2 text-foreground group-hover:text-primary transition-colors">
           {laptop.title}
         </h3>
 
@@ -58,9 +65,22 @@ export function ProductCard({ laptop }: ProductCardProps) {
           </div>
         </div>
 
-        <div className="font-black text-lg sm:text-xl text-gradient-roc">
-          {laptop.price.toLocaleString("fr-DZ")} DA
+        <div className="flex items-end gap-2 flex-wrap">
+          <div className="font-black text-lg sm:text-xl text-gradient-roc">
+            {displayPrice.toLocaleString("fr-DZ")} DA
+          </div>
+          {hasPromo && (
+            <div className="text-sm text-muted-foreground line-through mb-0.5">
+              {laptop.price.toLocaleString("fr-DZ")} DA
+            </div>
+          )}
         </div>
+        {hasPromo && (
+          <div className="flex items-center gap-1 mt-1">
+            <Tag className="w-3 h-3 text-red-400" />
+            <span className="text-[10px] text-red-400 font-bold">PROMO — Économisez {(laptop.price - displayPrice).toLocaleString("fr-DZ")} DA</span>
+          </div>
+        )}
       </div>
     </Link>
   );

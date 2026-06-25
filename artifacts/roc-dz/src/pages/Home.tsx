@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { useGetFeaturedLaptop } from "@workspace/api-client-react";
 import { Link } from "wouter";
 
-const BRANDS = ["DELL", "HP", "LENOVO", "ASUS", "MSI", "APPLE", "ACER"];
+const BRANDS = ["DELL", "HP", "LENOVO", "ASUS", "MSI", "APPLE", "ACER", "SAMSUNG", "HUAWEI"];
 
 const LAPTOP_GRID = [
   { img: "/brand-hp.png", tag: "tag-gaming", tagLabel: "Gaming", name: "HP", href: "/models?brand=HP" },
@@ -13,6 +13,8 @@ const LAPTOP_GRID = [
   { img: "/brand-acer.png", tag: "tag-polyvalent", tagLabel: "Polyvalent", name: "Acer", href: "/models?brand=Acer" },
   { img: "/brand-dell3.png", tag: "tag-fiabilite", tagLabel: "Fiabilité", name: "Dell", href: "/models?brand=Dell" },
   { img: "/brand-surface.png", tag: "tag-premium", tagLabel: "Premium", name: "Microsoft Surface", href: "/models?brand=Microsoft" },
+  { img: "/brand-samsung.png", tag: "tag-performance", tagLabel: "Performance", name: "Samsung", href: "/models?brand=Samsung" },
+  { img: "/brand-huawei.png", tag: "tag-pro", tagLabel: "Pro", name: "Huawei", href: "/models?brand=Huawei" },
 ];
 
 const ACC_GRID = [

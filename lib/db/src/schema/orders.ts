@@ -22,6 +22,8 @@ export const ordersTable = pgTable("orders", {
   remainingAmount: integer("remaining_amount").notNull().default(0),
   deliveryType: deliveryTypeEnum("delivery_type").notNull().default("bureau"),
   paymentMethod: text("payment_method").default("cash"),
+  promoCode: text("promo_code"),
+  promoDiscount: integer("promo_discount").notNull().default(0),
   status: orderStatusEnum("status").notNull().default("reserved"),
   notes: text("notes"),
   createdAt: timestamp("created_at").notNull().defaultNow(),

@@ -12,5 +12,11 @@ export interface AccessoryInput {
   description?: string;
   price: number;
   stock: number;
+  salePrice?: number;
   imageUrl?: string;
+  color?: string;
+  brand?: string;
+  warranty?: string;
+  compatibility?: string;
+  specifications?: string;
 }

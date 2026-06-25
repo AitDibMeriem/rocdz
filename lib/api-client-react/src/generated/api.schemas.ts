@@ -70,6 +70,11 @@ export interface Laptop {
   /** @nullable */
   imageUrl?: string | null;
   featured?: boolean;
+  /** @nullable */
+  color?: string | null;
+  /** @nullable */
+  salePrice?: number | null;
+  advance?: number;
   createdAt: string;
 }
 
@@ -111,6 +116,9 @@ export interface LaptopInput {
   description?: string;
   imageUrl?: string;
   featured?: boolean;
+  color?: string;
+  salePrice?: number;
+  advance?: number;
 }
 
 export type LaptopUpdateCondition = typeof LaptopUpdateCondition[keyof typeof LaptopUpdateCondition];
@@ -132,6 +140,9 @@ export interface LaptopUpdate {
   description?: string;
   imageUrl?: string;
   featured?: boolean;
+  color?: string;
+  salePrice?: number;
+  advance?: number;
   conditionScore?: number;
   warrantyMonths?: number;
 }
@@ -153,7 +164,19 @@ export interface Accessory {
   price: number;
   stock: number;
   /** @nullable */
+  salePrice?: number | null;
+  /** @nullable */
   imageUrl?: string | null;
+  /** @nullable */
+  color?: string | null;
+  /** @nullable */
+  brand?: string | null;
+  /** @nullable */
+  warranty?: string | null;
+  /** @nullable */
+  compatibility?: string | null;
+  /** @nullable */
+  specifications?: string | null;
 }
 
 export interface AccessoryInput {
@@ -162,7 +185,13 @@ export interface AccessoryInput {
   description?: string;
   price: number;
   stock: number;
+  salePrice?: number;
   imageUrl?: string;
+  color?: string;
+  brand?: string;
+  warranty?: string;
+  compatibility?: string;
+  specifications?: string;
 }
 
 export interface BrandSummary {

@@ -8,9 +8,14 @@ export const accessoriesTable = pgTable("accessories", {
   category: text("category").notNull(),
   description: text("description"),
   price: integer("price").notNull(),
+  salePrice: integer("sale_price"),
   stock: integer("stock").notNull().default(0),
   imageUrl: text("image_url"),
   color: text("color"),
+  brand: text("brand"),
+  warranty: text("warranty"),
+  compatibility: text("compatibility"),
+  specifications: text("specifications"),
 });
 
 export const insertAccessorySchema = createInsertSchema(accessoriesTable).omit({ id: true });

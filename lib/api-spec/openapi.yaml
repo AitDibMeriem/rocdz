@@ -316,6 +316,12 @@ components:
           type: ["string", "null"]
         featured:
           type: boolean
+        color:
+          type: ["string", "null"]
+        salePrice:
+          type: ["integer", "null"]
+        advance:
+          type: integer
         createdAt:
           type: string
 
@@ -388,6 +394,12 @@ components:
           type: string
         featured:
           type: boolean
+        color:
+          type: string
+        salePrice:
+          type: integer
+        advance:
+          type: integer
 
     LaptopUpdate:
       type: object
@@ -413,6 +425,12 @@ components:
           type: string
         featured:
           type: boolean
+        color:
+          type: string
+        salePrice:
+          type: integer
+        advance:
+          type: integer
         conditionScore:
           type: integer
         warrantyMonths:
@@ -459,7 +477,19 @@ components:
           type: integer
         stock:
           type: integer
+        salePrice:
+          type: ["integer", "null"]
         imageUrl:
+          type: ["string", "null"]
+        color:
+          type: ["string", "null"]
+        brand:
+          type: ["string", "null"]
+        warranty:
+          type: ["string", "null"]
+        compatibility:
+          type: ["string", "null"]
+        specifications:
           type: ["string", "null"]
 
     AccessoryInput:
@@ -480,7 +510,19 @@ components:
           type: integer
         stock:
           type: integer
+        salePrice:
+          type: integer
         imageUrl:
+          type: string
+        color:
+          type: string
+        brand:
+          type: string
+        warranty:
+          type: string
+        compatibility:
+          type: string
+        specifications:
           type: string
 
     BrandSummary:

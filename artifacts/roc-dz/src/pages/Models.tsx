@@ -15,7 +15,7 @@ function getURLParam(key: string): string {
   return params.get(key) || "";
 }
 
-const BRANDS = ["HP", "Dell", "Lenovo", "ASUS", "MSI", "Apple", "Acer"];
+const BRANDS = ["HP", "Dell", "Lenovo", "ASUS", "MSI", "Apple", "Acer", "Samsung", "Huawei"];
 
 export default function Models() {
   const [search, setSearch] = useState(() => getURLParam("search"));

@@ -38,6 +38,7 @@ export const laptopsTable = pgTable("laptops", {
   mediaUrls: json("media_urls").$type<string[]>().default([]),
   featured: boolean("featured").notNull().default(false),
   color: text("color"),
+  salePrice: integer("sale_price"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
 

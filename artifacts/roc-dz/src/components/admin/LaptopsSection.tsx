@@ -59,6 +59,7 @@ const formSchema = z.object({
   stockQuantity: z.number().int().min(0),
   featured: z.boolean().optional(),
   imageUrl: z.string().optional(),
+  salePrice: z.number().int().min(0).optional(),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -113,6 +114,7 @@ export function LaptopsSection() {
       stockQuantity: 1,
       featured: false,
       imageUrl: "",
+      salePrice: undefined,
     },
   });
 
@@ -512,10 +514,20 @@ export function LaptopsSection() {
                 {/* Commercial */}
                 <div className="space-y-4">
                   <h3 className="text-lg font-semibold text-primary border-b border-border pb-2">Commercial</h3>
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <FormField control={form.control} name="price" render={({ field }) => (
                       <FormItem><FormLabel>Prix public (DA) *</FormLabel><FormControl><Input type="number" {...field} onChange={e => field.onChange(Number(e.target.value))} /></FormControl><FormMessage /></FormItem>
                     )} />
+                    <FormField control={form.control} name="salePrice" render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Prix promo (DA) <span className="text-xs text-red-400 font-normal">optionnel</span></FormLabel>
+                        <FormControl><Input type="number" min="0" placeholder="Laisser vide si pas de promo" {...field} value={field.value ?? ""} onChange={e => field.onChange(e.target.value ? Number(e.target.value) : undefined)} /></FormControl>
+                        <p className="text-xs text-muted-foreground mt-1">Affiché avec badge -% et prix barré</p>
+                        <FormMessage />
+                      </FormItem>
+                    )} />
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <FormField control={form.control} name="advance" render={({ field }) => (
                       <FormItem>
                         <FormLabel>Versement requis (DA)</FormLabel>

@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { useListAccessories } from "@workspace/api-client-react";
+import { useListAccessories, Accessory } from "@workspace/api-client-react";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Search, ShoppingCart, Check } from "lucide-react";
+import { Search, ShoppingCart, Check, X, Tag, Shield, Cpu } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { useCart } from "@/context/CartContext";
 
@@ -19,14 +19,107 @@ const FALLBACK_IMAGES: Record<string, string> = {
   "Hubs & Adapters": "https://images.unsplash.com/photo-1625766763788-95dcce9bf5ac?w=400&q=80",
 };
 
+function AccessoryModal({ acc, onClose, onAddToCart, added }: { acc: Accessory; onClose: () => void; onAddToCart: (a: Accessory) => void; added: boolean }) {
+  const hasPromo = acc.salePrice != null && acc.salePrice > 0 && acc.salePrice < acc.price;
+  const displayPrice = hasPromo ? acc.salePrice! : acc.price;
+  const discount = hasPromo ? Math.round((1 - acc.salePrice! / acc.price) * 100) : 0;
+  const imgSrc = acc.imageUrl || FALLBACK_IMAGES[acc.category] || "https://placehold.co/400x400/1a1a1a/e91e8c?text=ROC+DZ";
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm" onClick={onClose}>
+      <div className="relative bg-card border border-white/10 rounded-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto shadow-2xl shadow-primary/10" onClick={e => e.stopPropagation()}>
+        <button onClick={onClose} className="absolute top-4 right-4 z-10 w-8 h-8 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 transition-colors">
+          <X className="w-4 h-4" />
+        </button>
+
+        <div className="relative aspect-video bg-black/40 overflow-hidden rounded-t-2xl">
+          <img src={imgSrc} alt={acc.name} className="w-full h-full object-cover" />
+          {hasPromo && (
+            <div className="absolute top-3 left-3 bg-red-500 text-white text-xs font-black px-2 py-1 rounded-full">-{discount}%</div>
+          )}
+          <div className={`absolute top-3 right-3 text-xs font-bold px-2.5 py-1 rounded-full ${acc.stock > 0 ? "bg-green-500/20 text-green-400 border border-green-500/30" : "bg-red-500/20 text-red-400 border border-red-500/30"}`}>
+            {acc.stock > 0 ? `${acc.stock} en stock` : "Rupture"}
+          </div>
+        </div>
+
+        <div className="p-6 space-y-4">
+          <div>
+            <div className="text-xs font-bold uppercase tracking-widest text-primary mb-1">{acc.category}</div>
+            <h2 className="text-xl font-black mb-1">{acc.name}</h2>
+            {(acc as any).brand && <p className="text-sm text-muted-foreground">par <span className="font-semibold text-foreground">{(acc as any).brand}</span></p>}
+          </div>
+
+          {acc.description && (
+            <p className="text-sm text-muted-foreground leading-relaxed">{acc.description}</p>
+          )}
+
+          {(acc as any).specifications && (
+            <div className="bg-white/5 rounded-xl p-3 space-y-1">
+              <div className="flex items-center gap-1.5 text-xs font-bold text-primary mb-2"><Cpu className="w-3.5 h-3.5" /> Spécifications</div>
+              <p className="text-xs text-muted-foreground whitespace-pre-line">{(acc as any).specifications}</p>
+            </div>
+          )}
+
+          <div className="flex gap-3">
+            {(acc as any).warranty && (
+              <div className="flex-1 bg-white/5 rounded-xl p-3 flex items-center gap-2">
+                <Shield className="w-4 h-4 text-primary flex-shrink-0" />
+                <div>
+                  <div className="text-xs text-muted-foreground">Garantie</div>
+                  <div className="text-xs font-bold">{(acc as any).warranty}</div>
+                </div>
+              </div>
+            )}
+            {(acc as any).compatibility && (
+              <div className="flex-1 bg-white/5 rounded-xl p-3">
+                <div className="text-xs text-muted-foreground mb-0.5">Compatibilité</div>
+                <div className="text-xs font-bold">{(acc as any).compatibility}</div>
+              </div>
+            )}
+          </div>
+
+          <div className="border-t border-white/10 pt-4">
+            <div className="flex items-end gap-3 mb-1">
+              <div className="text-2xl font-black text-gradient-roc">{displayPrice.toLocaleString("fr-DZ")} DA</div>
+              {hasPromo && <div className="text-base text-muted-foreground line-through mb-0.5">{acc.price.toLocaleString("fr-DZ")} DA</div>}
+            </div>
+            {hasPromo && (
+              <div className="flex items-center gap-1 mb-3">
+                <Tag className="w-3 h-3 text-red-400" />
+                <span className="text-xs text-red-400 font-bold">PROMO — Économisez {(acc.price - displayPrice).toLocaleString("fr-DZ")} DA</span>
+              </div>
+            )}
+            <button
+              onClick={() => onAddToCart(acc)}
+              disabled={acc.stock === 0}
+              className={`w-full flex items-center justify-center gap-2 py-3 rounded-xl font-bold text-sm transition-all duration-300 ${
+                added
+                  ? "bg-green-500/20 text-green-400 border border-green-500/30"
+                  : acc.stock === 0
+                  ? "bg-white/5 text-white/30 cursor-not-allowed border border-white/5"
+                  : "bg-primary/90 hover:bg-primary text-white border border-primary/50 hover:shadow-[0_0_20px_rgba(233,30,140,0.3)]"
+              }`}
+            >
+              {added ? <><Check className="w-4 h-4" /> Ajouté au panier !</> : <><ShoppingCart className="w-4 h-4" /> Ajouter au panier</>}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function Accessories() {
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("Tous");
   const [addedIds, setAddedIds] = useState<Set<number>>(new Set());
+  const [selected, setSelected] = useState<Accessory | null>(null);
   const { addItem } = useCart();
 
-  const handleAddToCart = (acc: { id: number; name: string; price: number; imageUrl?: string | null; category: string }) => {
-    addItem({ laptopId: acc.id + 100000, title: acc.name, price: acc.price, advance: 0, qty: 1, imageUrl: acc.imageUrl, brand: acc.category, isLaptop: false });
+  const handleAddToCart = (acc: Accessory) => {
+    const hasPromo = acc.salePrice != null && acc.salePrice > 0 && acc.salePrice < acc.price;
+    const displayPrice = hasPromo ? acc.salePrice! : acc.price;
+    addItem({ laptopId: acc.id + 100000, title: acc.name, price: displayPrice, advance: 0, qty: 1, imageUrl: acc.imageUrl, brand: acc.category, isLaptop: false });
     setAddedIds(prev => new Set(prev).add(acc.id));
     setTimeout(() => setAddedIds(prev => { const n = new Set(prev); n.delete(acc.id); return n; }), 2000);
   };
@@ -52,7 +145,6 @@ export default function Accessories() {
         </p>
       </div>
 
-      {/* Search */}
       <div className="flex flex-col sm:flex-row gap-4 mb-8 max-w-2xl mx-auto">
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
@@ -65,17 +157,12 @@ export default function Accessories() {
         </div>
       </div>
 
-      {/* Category tabs */}
-      <div className="flex flex-wrap gap-2 justify-center mb-10">
+      <div className="acc-category-tabs">
         {CATEGORIES.map(cat => (
           <button
             key={cat}
             onClick={() => setCategory(cat)}
-            className={`px-4 py-2 rounded-full text-sm font-semibold transition-all border ${
-              category === cat
-                ? "bg-primary/20 border-primary/50 text-primary"
-                : "border-white/10 text-muted-foreground hover:border-primary/30 hover:text-white"
-            }`}
+            className={`acc-cat-btn ${category === cat ? "acc-cat-active" : ""}`}
           >
             {cat}
           </button>
@@ -107,43 +194,62 @@ export default function Accessories() {
         </div>
       ) : (
         <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-6">
-          {filtered.map(acc => (
-            <div key={acc.id} className="bg-card/30 border border-white/10 rounded-2xl overflow-hidden hover:border-primary/30 transition-all hover:shadow-[0_0_30px_rgba(233,30,140,0.1)] group cursor-pointer" onClick={() => {}}>
-
-              <div className="aspect-square overflow-hidden bg-black/30">
-                <img
-                  src={acc.imageUrl || FALLBACK_IMAGES[acc.category] || "https://placehold.co/400x400/1a1a1a/e91e8c?text=ROC+DZ"}
-                  alt={acc.name}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                />
-              </div>
-              <div className="p-4">
-                <div className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-1">{acc.category}</div>
-                <h3 className="font-bold text-base mb-2 line-clamp-2">{acc.name}</h3>
-                {acc.description && <p className="text-xs text-muted-foreground mb-3 line-clamp-2">{acc.description}</p>}
-                <div className="flex items-center justify-between mb-3">
-                  <span className="text-primary font-black text-lg">{acc.price.toLocaleString("fr-DZ")} DA</span>
-                  <span className={`text-xs font-semibold px-2 py-1 rounded-full ${acc.stock > 0 ? "bg-green-500/20 text-green-400" : "bg-red-500/20 text-red-400"}`}>
-                    {acc.stock > 0 ? `${acc.stock} en stock` : "Rupture"}
-                  </span>
+          {filtered.map(acc => {
+            const hasPromo = acc.salePrice != null && acc.salePrice > 0 && acc.salePrice < acc.price;
+            const displayPrice = hasPromo ? acc.salePrice! : acc.price;
+            const discount = hasPromo ? Math.round((1 - acc.salePrice! / acc.price) * 100) : 0;
+            return (
+              <div key={acc.id} className="bg-card/30 border border-white/10 rounded-2xl overflow-hidden hover:border-primary/30 transition-all hover:shadow-[0_0_30px_rgba(233,30,140,0.1)] group cursor-pointer" onClick={() => setSelected(acc)}>
+                <div className="relative aspect-square overflow-hidden bg-black/30">
+                  <img
+                    src={acc.imageUrl || FALLBACK_IMAGES[acc.category] || "https://placehold.co/400x400/1a1a1a/e91e8c?text=ROC+DZ"}
+                    alt={acc.name}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  />
+                  {hasPromo && (
+                    <div className="absolute top-2 left-2 bg-red-500 text-white text-[10px] font-black px-1.5 py-0.5 rounded-full">-{discount}%</div>
+                  )}
                 </div>
-                <button
-                  onClick={() => handleAddToCart(acc)}
-                  disabled={acc.stock === 0}
-                  className={`w-full flex items-center justify-center gap-2 py-2.5 rounded-xl font-bold text-sm transition-all duration-300 ${
-                    addedIds.has(acc.id)
-                      ? "bg-green-500/20 text-green-400 border border-green-500/30"
-                      : acc.stock === 0
-                      ? "bg-white/5 text-white/30 cursor-not-allowed border border-white/5"
-                      : "bg-primary/90 hover:bg-primary text-white border border-primary/50 hover:shadow-[0_0_20px_rgba(233,30,140,0.3)]"
-                  }`}
-                >
-                  {addedIds.has(acc.id) ? <><Check className="w-4 h-4" /> Ajouté !</> : <><ShoppingCart className="w-4 h-4" /> Ajouter au panier</>}
-                </button>
+                <div className="p-3 sm:p-4">
+                  <div className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-1">{acc.category}</div>
+                  <h3 className="font-bold text-sm sm:text-base mb-1.5 line-clamp-2">{acc.name}</h3>
+                  {acc.description && <p className="text-xs text-muted-foreground mb-2 line-clamp-2">{acc.description}</p>}
+                  <div className="flex items-center justify-between mb-2">
+                    <div>
+                      <span className="text-primary font-black text-base sm:text-lg">{displayPrice.toLocaleString("fr-DZ")} DA</span>
+                      {hasPromo && <span className="text-xs text-muted-foreground line-through ml-1.5">{acc.price.toLocaleString("fr-DZ")}</span>}
+                    </div>
+                    <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${acc.stock > 0 ? "bg-green-500/20 text-green-400" : "bg-red-500/20 text-red-400"}`}>
+                      {acc.stock > 0 ? `×${acc.stock}` : "Rupture"}
+                    </span>
+                  </div>
+                  <button
+                    onClick={e => { e.stopPropagation(); handleAddToCart(acc); }}
+                    disabled={acc.stock === 0}
+                    className={`w-full flex items-center justify-center gap-2 py-2 sm:py-2.5 rounded-xl font-bold text-xs sm:text-sm transition-all duration-300 ${
+                      addedIds.has(acc.id)
+                        ? "bg-green-500/20 text-green-400 border border-green-500/30"
+                        : acc.stock === 0
+                        ? "bg-white/5 text-white/30 cursor-not-allowed border border-white/5"
+                        : "bg-primary/90 hover:bg-primary text-white border border-primary/50 hover:shadow-[0_0_20px_rgba(233,30,140,0.3)]"
+                    }`}
+                  >
+                    {addedIds.has(acc.id) ? <><Check className="w-3.5 h-3.5" /> Ajouté !</> : <><ShoppingCart className="w-3.5 h-3.5" /> Panier</>}
+                  </button>
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
+      )}
+
+      {selected && (
+        <AccessoryModal
+          acc={selected}
+          onClose={() => setSelected(null)}
+          onAddToCart={acc => { handleAddToCart(acc); }}
+          added={addedIds.has(selected.id)}
+        />
       )}
     </div>
   );

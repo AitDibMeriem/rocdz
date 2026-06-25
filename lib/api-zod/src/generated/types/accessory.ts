@@ -15,5 +15,17 @@ export interface Accessory {
   price: number;
   stock: number;
   /** @nullable */
+  salePrice?: number | null;
+  /** @nullable */
   imageUrl?: string | null;
+  /** @nullable */
+  color?: string | null;
+  /** @nullable */
+  brand?: string | null;
+  /** @nullable */
+  warranty?: string | null;
+  /** @nullable */
+  compatibility?: string | null;
+  /** @nullable */
+  specifications?: string | null;
 }

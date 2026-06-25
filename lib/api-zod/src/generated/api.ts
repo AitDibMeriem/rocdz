@@ -60,6 +60,9 @@ export const ListLaptopsResponseItem = zod.object({
   "description": zod.string().nullish(),
   "imageUrl": zod.string().nullish(),
   "featured": zod.boolean().optional(),
+  "color": zod.string().nullish(),
+  "salePrice": zod.number().nullish(),
+  "advance": zod.number().optional(),
   "createdAt": zod.string()
 })
 export const ListLaptopsResponse = zod.array(ListLaptopsResponseItem)
@@ -97,7 +100,10 @@ export const CreateLaptopBody = zod.object({
   "condition": zod.enum(['new', 'refurbished']),
   "description": zod.string().optional(),
   "imageUrl": zod.string().optional(),
-  "featured": zod.boolean().optional()
+  "featured": zod.boolean().optional(),
+  "color": zod.string().optional(),
+  "salePrice": zod.number().optional(),
+  "advance": zod.number().optional()
 })
 
 
@@ -135,6 +141,9 @@ export const GetFeaturedLaptopResponse = zod.object({
   "description": zod.string().nullish(),
   "imageUrl": zod.string().nullish(),
   "featured": zod.boolean().optional(),
+  "color": zod.string().nullish(),
+  "salePrice": zod.number().nullish(),
+  "advance": zod.number().optional(),
   "createdAt": zod.string()
 })
 
@@ -189,6 +198,9 @@ export const GetLaptopResponse = zod.object({
   "description": zod.string().nullish(),
   "imageUrl": zod.string().nullish(),
   "featured": zod.boolean().optional(),
+  "color": zod.string().nullish(),
+  "salePrice": zod.number().nullish(),
+  "advance": zod.number().optional(),
   "createdAt": zod.string()
 })
 
@@ -211,6 +223,9 @@ export const UpdateLaptopBody = zod.object({
   "description": zod.string().optional(),
   "imageUrl": zod.string().optional(),
   "featured": zod.boolean().optional(),
+  "color": zod.string().optional(),
+  "salePrice": zod.number().optional(),
+  "advance": zod.number().optional(),
   "conditionScore": zod.number().optional(),
   "warrantyMonths": zod.number().optional()
 })
@@ -246,6 +261,9 @@ export const UpdateLaptopResponse = zod.object({
   "description": zod.string().nullish(),
   "imageUrl": zod.string().nullish(),
   "featured": zod.boolean().optional(),
+  "color": zod.string().nullish(),
+  "salePrice": zod.number().nullish(),
+  "advance": zod.number().optional(),
   "createdAt": zod.string()
 })
 
@@ -272,7 +290,13 @@ export const ListAccessoriesResponseItem = zod.object({
   "description": zod.string().nullish(),
   "price": zod.number(),
   "stock": zod.number(),
-  "imageUrl": zod.string().nullish()
+  "salePrice": zod.number().nullish(),
+  "imageUrl": zod.string().nullish(),
+  "color": zod.string().nullish(),
+  "brand": zod.string().nullish(),
+  "warranty": zod.string().nullish(),
+  "compatibility": zod.string().nullish(),
+  "specifications": zod.string().nullish()
 })
 export const ListAccessoriesResponse = zod.array(ListAccessoriesResponseItem)
 
@@ -286,7 +310,13 @@ export const CreateAccessoryBody = zod.object({
   "description": zod.string().optional(),
   "price": zod.number(),
   "stock": zod.number(),
-  "imageUrl": zod.string().optional()
+  "salePrice": zod.number().optional(),
+  "imageUrl": zod.string().optional(),
+  "color": zod.string().optional(),
+  "brand": zod.string().optional(),
+  "warranty": zod.string().optional(),
+  "compatibility": zod.string().optional(),
+  "specifications": zod.string().optional()
 })
 
 
