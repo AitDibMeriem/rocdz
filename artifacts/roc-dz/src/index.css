@@ -1683,3 +1683,213 @@ section { position: relative; z-index: 2; }
   .pick-info .stock { margin-bottom: 1.2rem; }
   .btn-product { padding: 0.85rem 1.8rem; font-size: 0.8rem; }
 }
+
+/* ── Tracking CTA on homepage ─────────────────────────────────── */
+.tracking-cta {
+  margin: 0 auto 80px;
+  max-width: 900px;
+  padding: 0 5%;
+}
+.tracking-cta-card {
+  background: linear-gradient(135deg, rgba(233,30,140,0.08) 0%, rgba(184,41,221,0.08) 100%);
+  border: 1px solid rgba(233,30,140,0.2);
+  border-radius: 24px;
+  padding: 40px 48px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+.tracking-cta-left { display: flex; align-items: center; gap: 20px; flex: 1; min-width: 200px; }
+.tracking-cta-icon { font-size: 2.5rem; flex-shrink: 0; }
+.tracking-cta-text h3 { font-size: 1.2rem; font-weight: 800; margin-bottom: 4px; }
+.tracking-cta-text p { font-size: 0.85rem; color: rgba(255,255,255,0.55); line-height: 1.4; }
+.tracking-cta-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: linear-gradient(135deg, #e91e8c 0%, #b829dd 100%);
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.9rem;
+  padding: 14px 28px;
+  border-radius: 50px;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: opacity 0.2s, transform 0.2s;
+}
+.tracking-cta-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+.light-mode .tracking-cta-text p { color: rgba(20,16,16,0.55); }
+
+/* ── Suivi (order tracking) page ─────────────────────────────── */
+.suivi-wrap {
+  min-height: 80vh;
+  padding: 0 5% 80px;
+  max-width: 800px;
+  margin: 0 auto;
+}
+.suivi-hero { text-align: center; padding: 60px 0 40px; }
+.suivi-icon { font-size: 3.5rem; margin-bottom: 16px; }
+.suivi-title { font-size: clamp(1.8rem, 5vw, 2.4rem); font-weight: 900; margin-bottom: 12px; }
+.suivi-desc { color: rgba(255,255,255,0.55); font-size: 0.95rem; max-width: 480px; margin: 0 auto; line-height: 1.6; }
+.light-mode .suivi-desc { color: rgba(20,16,16,0.55); }
+
+.suivi-container { width: 100%; }
+.suivi-form { display: flex; gap: 12px; margin-bottom: 32px; }
+.suivi-input {
+  flex: 1;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 14px;
+  padding: 14px 18px;
+  color: #fff;
+  font-size: 1rem;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.suivi-input:focus { border-color: #e91e8c; }
+.suivi-input::placeholder { color: rgba(255,255,255,0.3); }
+.suivi-btn {
+  background: linear-gradient(135deg, #e91e8c 0%, #b829dd 100%);
+  color: #fff;
+  border: none;
+  border-radius: 14px;
+  padding: 14px 24px;
+  font-weight: 700;
+  font-size: 0.95rem;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: opacity 0.2s;
+}
+.suivi-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+.light-mode .suivi-input { background: rgba(255,240,248,0.8); border-color: rgba(199,25,93,0.2); color: #141010; }
+.light-mode .suivi-input::placeholder { color: rgba(20,16,16,0.35); }
+.light-mode .suivi-input:focus { border-color: #e91e8c; }
+
+.suivi-error {
+  background: rgba(239,68,68,0.1);
+  border: 1px solid rgba(239,68,68,0.3);
+  border-radius: 12px;
+  padding: 12px 16px;
+  color: #f87171;
+  margin-bottom: 20px;
+  font-size: 0.9rem;
+}
+.suivi-results-count { font-size: 0.85rem; color: rgba(255,255,255,0.5); margin-bottom: 16px; }
+.light-mode .suivi-results-count { color: rgba(20,16,16,0.5); }
+
+.suivi-order-card {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 20px;
+  padding: 24px;
+  margin-bottom: 20px;
+}
+.light-mode .suivi-order-card { background: rgba(255,240,248,0.6); border-color: rgba(199,25,93,0.12); }
+
+.suivi-order-header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 16px; }
+.suivi-order-num { font-family: monospace; font-size: 1rem; font-weight: 700; }
+.suivi-order-date { font-size: 0.8rem; color: rgba(255,255,255,0.4); margin-left: 10px; }
+.light-mode .suivi-order-date { color: rgba(20,16,16,0.4); }
+.suivi-status-badge { font-size: 0.8rem; font-weight: 700; padding: 6px 12px; border-radius: 50px; }
+
+/* Progress bar */
+.suivi-progress { display: flex; align-items: center; margin-bottom: 20px; }
+.suivi-progress-step { display: flex; align-items: center; flex: 1; }
+.suivi-progress-dot { width: 12px; height: 12px; border-radius: 50%; border: 2px solid; flex-shrink: 0; transition: all 0.3s; }
+.suivi-progress-line { flex: 1; height: 2px; transition: background 0.3s; }
+
+/* Items */
+.suivi-items { margin-bottom: 16px; border-top: 1px solid rgba(255,255,255,0.06); padding-top: 16px; }
+.light-mode .suivi-items { border-color: rgba(20,16,16,0.08); }
+.suivi-item { display: flex; justify-content: space-between; align-items: center; padding: 6px 0; font-size: 0.9rem; }
+.suivi-item-name { color: rgba(255,255,255,0.8); }
+.light-mode .suivi-item-name { color: rgba(20,16,16,0.8); }
+.suivi-item-qty { color: rgba(255,255,255,0.4); font-size: 0.8rem; }
+.light-mode .suivi-item-qty { color: rgba(20,16,16,0.4); }
+.suivi-item-price { font-weight: 700; font-size: 0.9rem; }
+
+/* Totals */
+.suivi-totals { background: rgba(255,255,255,0.03); border-radius: 12px; padding: 14px 16px; margin-bottom: 16px; }
+.light-mode .suivi-totals { background: rgba(20,16,16,0.04); }
+.suivi-total-row { display: flex; justify-content: space-between; font-size: 0.875rem; padding: 4px 0; color: rgba(255,255,255,0.6); }
+.light-mode .suivi-total-row { color: rgba(20,16,16,0.6); }
+.suivi-grand-total { font-weight: 900; font-size: 1rem; color: #e91e8c !important; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 8px; margin-top: 4px; }
+.light-mode .suivi-grand-total { border-color: rgba(20,16,16,0.1); }
+.suivi-promo { color: #4ade80 !important; }
+.suivi-versed { color: #34d399 !important; font-weight: 700; }
+.suivi-remaining { color: #facc15 !important; font-weight: 700; }
+
+/* Versement panel */
+.suivi-verse-panel {
+  background: rgba(20,184,166,0.08);
+  border: 1px solid rgba(20,184,166,0.25);
+  border-radius: 14px;
+  padding: 16px;
+  margin-bottom: 16px;
+}
+.suivi-verse-title { font-weight: 700; font-size: 0.85rem; color: #2dd4bf; margin-bottom: 10px; }
+.suivi-verse-msg {
+  font-family: monospace;
+  font-size: 0.78rem;
+  color: rgba(255,255,255,0.65);
+  white-space: pre-wrap;
+  background: rgba(0,0,0,0.2);
+  border-radius: 8px;
+  padding: 10px 12px;
+  margin-bottom: 10px;
+  line-height: 1.6;
+}
+.light-mode .suivi-verse-msg { background: rgba(0,0,0,0.05); color: rgba(20,16,16,0.65); }
+.suivi-copy-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(20,184,166,0.15);
+  border: 1px solid rgba(20,184,166,0.3);
+  color: #2dd4bf;
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.suivi-copy-btn:hover { background: rgba(20,184,166,0.25); }
+
+.suivi-wilaya { font-size: 0.8rem; color: rgba(255,255,255,0.4); }
+.light-mode .suivi-wilaya { color: rgba(20,16,16,0.4); }
+
+/* Empty state */
+.suivi-empty { text-align: center; padding: 48px 24px; }
+.suivi-empty-icon { font-size: 2.5rem; margin-bottom: 12px; }
+.suivi-empty-title { font-size: 1.1rem; font-weight: 700; margin-bottom: 8px; }
+.suivi-empty-desc { font-size: 0.85rem; color: rgba(255,255,255,0.5); margin-bottom: 20px; }
+.light-mode .suivi-empty-desc { color: rgba(20,16,16,0.5); }
+.suivi-empty-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: linear-gradient(135deg, #e91e8c 0%, #b829dd 100%);
+  color: #fff;
+  font-weight: 700;
+  padding: 12px 24px;
+  border-radius: 50px;
+  text-decoration: none;
+  font-size: 0.9rem;
+}
+
+/* Back link */
+.suivi-back { text-align: center; margin-top: 32px; }
+.suivi-back-link { color: rgba(255,255,255,0.4); font-size: 0.85rem; text-decoration: none; transition: color 0.2s; }
+.suivi-back-link:hover { color: rgba(255,255,255,0.7); }
+.light-mode .suivi-back-link { color: rgba(20,16,16,0.4); }
+.light-mode .suivi-back-link:hover { color: rgba(20,16,16,0.7); }
+
+@media (max-width: 600px) {
+  .suivi-form { flex-direction: column; }
+  .tracking-cta-card { flex-direction: column; text-align: center; padding: 28px 24px; }
+  .tracking-cta-left { justify-content: center; }
+}

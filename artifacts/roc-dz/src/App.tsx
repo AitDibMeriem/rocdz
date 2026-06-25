@@ -14,6 +14,7 @@ import AdminLogin from "@/pages/AdminLogin";
 import SuperAdmin from "@/pages/SuperAdmin";
 import Cart from "@/pages/Cart";
 import Accessories from "@/pages/Accessories";
+import Suivi from "@/pages/Suivi";
 import { AuthProvider, useAuth } from "@/context/AuthContext";
 import { CartProvider } from "@/context/CartContext";
 import { LangProvider } from "@/context/LangContext";
@@ -67,6 +68,7 @@ function Router() {
           <Route path="/accessories" component={Accessories} />
           <Route path="/laptop/:id" component={LaptopDetail} />
           <Route path="/cart" component={Cart} />
+          <Route path="/suivi" component={Suivi} />
           <Route path="/about" component={About} />
           <Route component={NotFound} />
         </Switch>

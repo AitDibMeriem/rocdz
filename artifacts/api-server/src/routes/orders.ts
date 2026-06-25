@@ -19,6 +19,43 @@ router.get("/", async (req, res) => {
   }
 });
 
+router.get("/track", async (req, res) => {
+  try {
+    const phone = String(req.query.phone || "").trim();
+    if (!phone || phone.length < 9) { res.status(400).json({ error: "Numéro de téléphone invalide" }); return; }
+    const all = await db.select().from(ordersTable).orderBy(ordersTable.createdAt);
+    const matches = all
+      .filter(o => {
+        const p = (o.phone || "").replace(/\s/g, "");
+        const p2 = (o.phone2 || "").replace(/\s/g, "");
+        const q = phone.replace(/\s/g, "");
+        return p === q || p2 === q || p.endsWith(q) || q.endsWith(p);
+      })
+      .reverse()
+      .map(o => ({
+        id: o.id,
+        firstName: o.firstName,
+        customerName: o.customerName,
+        status: o.status,
+        totalPrice: o.totalPrice,
+        deliveryFee: o.deliveryFee,
+        advancePaid: o.advancePaid,
+        remainingAmount: o.remainingAmount,
+        deliveryType: o.deliveryType,
+        wilaya: o.wilaya,
+        items: o.items,
+        promoCode: o.promoCode,
+        promoDiscount: o.promoDiscount,
+        createdAt: o.createdAt,
+        updatedAt: o.updatedAt,
+      }));
+    res.json(matches);
+  } catch (err) {
+    req.log.error(err);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
 router.post("/", async (req, res) => {
   try {
     const {

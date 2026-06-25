@@ -325,6 +325,22 @@ export default function Home() {
         </div>
       </section>
 
+      {/* SUIVI COMMANDE CTA */}
+      <div className="tracking-cta fade-up">
+        <div className="tracking-cta-card">
+          <div className="tracking-cta-left">
+            <div className="tracking-cta-icon">📦</div>
+            <div className="tracking-cta-text">
+              <h3>Suivre ma commande</h3>
+              <p>Entrez votre numéro de téléphone pour voir l'état de votre commande en temps réel.</p>
+            </div>
+          </div>
+          <Link href="/suivi" className="tracking-cta-btn">
+            🔍 Suivre ma commande
+          </Link>
+        </div>
+      </div>
+
       {/* AVIS CLIENTS */}
       <section className="reviews-section">
         <div className="reviews-header fade-up">
