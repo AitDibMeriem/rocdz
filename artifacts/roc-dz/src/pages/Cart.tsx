@@ -325,9 +325,11 @@ export default function Cart() {
                 <Input value={form.notes} onChange={e => setForm(f => ({ ...f, notes: e.target.value }))} placeholder="Instructions..." className="bg-background/50 border-white/10" />
               </div>
 
-              {/* Promo code */}
+              {/* Promo code - optional */}
               <div>
-                <Label className="text-xs text-muted-foreground mb-1 block">{t.cart.promoCode}</Label>
+                <Label className="text-xs text-muted-foreground mb-1 block">
+                  {t.cart.promoCode} <span className="text-muted-foreground/50 font-normal">(Optionnel)</span>
+                </Label>
                 {promoData ? (
                   <div className="flex items-center justify-between bg-green-500/10 border border-green-500/30 rounded-xl px-3 py-2.5">
                     <div className="flex items-center gap-2">

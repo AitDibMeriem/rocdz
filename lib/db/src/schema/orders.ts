@@ -1,7 +1,7 @@
 import { pgTable, serial, text, integer, timestamp, pgEnum, json } from "drizzle-orm/pg-core";
 
 export const orderStatusEnum = pgEnum("order_status", [
-  "reserved", "confirmed", "advance_paid", "prepared", "shipped", "delivered", "cancelled", "returned",
+  "reserved", "confirmed", "advance_paid", "verse", "prepared", "shipped", "delivered", "cancelled", "returned",
 ]);
 
 export const deliveryTypeEnum = pgEnum("delivery_type", ["domicile", "bureau"]);

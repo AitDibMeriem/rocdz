@@ -308,6 +308,27 @@
 .light-mode .footer { background: rgba(104,7,71,0.08); border-color: rgba(199,25,93,0.15); }
 .light-mode .back-to-top { background: #f70776; }
 
+/* ── Light mode: admin sidebar + card vars ────────────────────── */
+.light-mode {
+  --sidebar: 340 25% 96%;
+  --sidebar-foreground: 15 10% 8%;
+  --sidebar-border: 340 25% 88%;
+  --sidebar-accent: 340 20% 91%;
+  --sidebar-accent-foreground: 15 10% 8%;
+  --sidebar-primary: 327 97% 51%;
+  --sidebar-primary-foreground: 0 0% 100%;
+  --sidebar-ring: 327 97% 51%;
+}
+.light-mode [class*="bg-sidebar"] {
+  background-color: hsl(340, 25%, 96%) !important;
+}
+.light-mode [class*="border-sidebar"] {
+  border-color: hsl(340, 25%, 88%) !important;
+}
+.light-mode [class*="text-sidebar-foreground"] {
+  color: #141010 !important;
+}
+
 /* ── Light mode: fix all text & form elements ─────────────────── */
 html.light-mode {
   color-scheme: light;
@@ -1470,6 +1491,118 @@ section { position: relative; z-index: 2; }
   .btn-white { padding: 0.8rem 1.4rem; font-size: 0.8rem; }
   .hero-label span { font-size: 0.65rem; letter-spacing: 2px; }
 }
+
+/* ── Admin Login page ─────────────────────────────────────────── */
+.admin-login-wrap {
+  min-height: 100vh;
+  background: var(--bg-deep, #0d0218);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: Inter, sans-serif;
+}
+.admin-login-card {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 20px;
+  padding: 48px;
+  width: 100%;
+  max-width: 420px;
+  backdrop-filter: blur(20px);
+}
+.admin-login-header { text-align: center; margin-bottom: 40px; }
+.admin-login-logo {
+  font-size: 2rem;
+  font-weight: 900;
+  background: linear-gradient(135deg, #e91e8c 0%, #b829dd 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  letter-spacing: 2px;
+  margin-bottom: 8px;
+}
+.admin-login-subtitle {
+  color: rgba(255,255,255,0.5);
+  font-size: 0.85rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+.admin-login-form { display: flex; flex-direction: column; gap: 20px; }
+.admin-login-label {
+  color: rgba(255,255,255,0.6);
+  font-size: 0.8rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  display: block;
+  margin-bottom: 8px;
+}
+.admin-login-input {
+  width: 100%;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 10px;
+  padding: 12px 16px;
+  color: #fff;
+  font-size: 0.95rem;
+  outline: none;
+  box-sizing: border-box;
+  transition: border-color 0.2s;
+}
+.admin-login-input:focus { border-color: #e91e8c; }
+.admin-login-error {
+  background: rgba(233,30,140,0.1);
+  border: 1px solid rgba(233,30,140,0.3);
+  border-radius: 8px;
+  padding: 10px 14px;
+  color: #e91e8c;
+  font-size: 0.85rem;
+}
+.admin-login-btn {
+  background: linear-gradient(135deg, #e91e8c 0%, #b829dd 100%);
+  color: #fff;
+  border: none;
+  border-radius: 50px;
+  padding: 14px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  letter-spacing: 1px;
+  transition: opacity 0.3s;
+}
+.admin-login-btn:disabled { opacity: 0.7; cursor: not-allowed; }
+.admin-login-footer { text-align: center; margin-top: 24px; }
+.admin-login-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: rgba(255,255,255,0.5);
+  font-size: 0.8rem;
+  text-decoration: none;
+  padding: 8px 20px;
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 50px;
+  transition: all 0.3s;
+}
+.admin-login-back:hover { color: #fff; border-color: rgba(255,255,255,0.3); }
+.admin-login-copy { margin-top: 16px; color: rgba(255,255,255,0.2); font-size: 0.7rem; }
+
+/* Light mode overrides for admin login */
+.light-mode .admin-login-wrap { background: #fff0f8; }
+.light-mode .admin-login-card {
+  background: rgba(255,240,248,0.9);
+  border-color: rgba(199,25,93,0.2);
+  box-shadow: 0 20px 60px rgba(199,25,93,0.1);
+}
+.light-mode .admin-login-subtitle { color: rgba(20,16,16,0.5); }
+.light-mode .admin-login-label { color: rgba(20,16,16,0.6); }
+.light-mode .admin-login-input {
+  background: rgba(255,255,255,0.8) !important;
+  border-color: rgba(199,25,93,0.2) !important;
+  color: #141010 !important;
+}
+.light-mode .admin-login-input:focus { border-color: #e91e8c !important; }
+.light-mode .admin-login-back { color: rgba(20,16,16,0.5); border-color: rgba(20,16,16,0.15); }
+.light-mode .admin-login-back:hover { color: #141010; border-color: rgba(20,16,16,0.3); }
+.light-mode .admin-login-copy { color: rgba(20,16,16,0.25); }
 
 @media (max-width: 480px) {
   .nav-logo { white-space: nowrap; font-size: 1.2rem; }

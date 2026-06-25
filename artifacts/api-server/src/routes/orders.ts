@@ -1,12 +1,12 @@
 import { Router } from "express";
 import { db } from "@workspace/db";
-import { ordersTable } from "@workspace/db";
-import { eq } from "drizzle-orm";
+import { ordersTable, laptopsTable, accessoriesTable, promoCodesTable } from "@workspace/db";
+import { eq, sql } from "drizzle-orm";
 
 const router = Router();
 
 const VALID_STATUSES = [
-  "reserved", "confirmed", "advance_paid", "prepared", "shipped", "delivered", "cancelled", "returned",
+  "reserved", "confirmed", "advance_paid", "verse", "prepared", "shipped", "delivered", "cancelled", "returned",
 ] as const;
 
 router.get("/", async (req, res) => {
@@ -27,6 +27,7 @@ router.post("/", async (req, res) => {
       remainingAmount, deliveryType, promoCode, promoDiscount,
     } = req.body;
     const customerName = `${firstName || ""} ${lastName || ""}`.trim();
+
     const [created] = await db
       .insert(ordersTable)
       .values({
@@ -49,7 +50,58 @@ router.post("/", async (req, res) => {
         promoDiscount: Number(promoDiscount) || 0,
       })
       .returning();
+
+    // Decrement stock for each item
+    if (Array.isArray(items)) {
+      for (const item of items) {
+        const qty = Number(item.qty) || 1;
+        if (item.isLaptop === false) {
+          const accId = item.laptopId - 100000;
+          await db
+            .update(accessoriesTable)
+            .set({ stock: sql`GREATEST(0, ${accessoriesTable.stock} - ${qty})` })
+            .where(eq(accessoriesTable.id, accId));
+        } else {
+          await db
+            .update(laptopsTable)
+            .set({ stockQuantity: sql`GREATEST(0, ${laptopsTable.stockQuantity} - ${qty})` })
+            .where(eq(laptopsTable.id, item.laptopId));
+        }
+      }
+    }
+
+    // Increment promo code usedCount
+    if (promoCode) {
+      await db
+        .update(promoCodesTable)
+        .set({ usedCount: sql`${promoCodesTable.usedCount} + 1` })
+        .where(eq(promoCodesTable.code, String(promoCode).toUpperCase()));
+    }
+
     res.status(201).json(created);
+  } catch (err) {
+    req.log.error(err);
+    res.status(400).json({ error: "Invalid data" });
+  }
+});
+
+// Record a versement (deposit) for an order
+router.patch("/:id/verse", async (req, res) => {
+  try {
+    const id = Number(req.params.id);
+    const { versedAmount } = req.body;
+    const amount = Number(versedAmount) || 0;
+
+    const [order] = await db.select().from(ordersTable).where(eq(ordersTable.id, id)).limit(1);
+    if (!order) { res.status(404).json({ error: "Order not found" }); return; }
+
+    const newRemaining = Math.max(0, (order.totalPrice || 0) - amount);
+    const [updated] = await db
+      .update(ordersTable)
+      .set({ advancePaid: amount, remainingAmount: newRemaining, status: "verse", updatedAt: new Date() })
+      .where(eq(ordersTable.id, id))
+      .returning();
+    res.json(updated);
   } catch (err) {
     req.log.error(err);
     res.status(400).json({ error: "Invalid data" });

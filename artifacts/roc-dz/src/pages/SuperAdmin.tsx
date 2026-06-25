@@ -6,7 +6,7 @@ import * as XLSX from "xlsx";
 import {
   LayoutDashboard, Users, Laptop, Package, ShoppingCart, Tag,
   Settings, Shield, LogOut, TrendingUp, BarChart3, ArrowLeft,
-  Plus, Trash2, Edit, UserCheck, Menu, X, Download, FileSpreadsheet
+  Plus, Trash2, Edit, UserCheck, Menu, X, Download, FileSpreadsheet, FolderOpen, ImageIcon
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -19,7 +19,7 @@ import { useGetLaptopStats, useListLaptops } from "@workspace/api-client-react";
 
 const BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 
-type SaSection = "dashboard" | "admins" | "laptops" | "orders" | "promo" | "analytics" | "settings" | "security";
+type SaSection = "dashboard" | "admins" | "laptops" | "orders" | "promo" | "analytics" | "categories" | "settings" | "security";
 
 const NAV: { id: SaSection; label: string; icon: React.ElementType }[] = [
   { id: "dashboard", label: "Dashboard", icon: LayoutDashboard },
@@ -27,6 +27,7 @@ const NAV: { id: SaSection; label: string; icon: React.ElementType }[] = [
   { id: "laptops", label: "Produits", icon: Laptop },
   { id: "orders", label: "Commandes", icon: ShoppingCart },
   { id: "promo", label: "Codes Promo", icon: Tag },
+  { id: "categories", label: "Catégories", icon: FolderOpen },
   { id: "analytics", label: "Analytiques", icon: BarChart3 },
   { id: "settings", label: "Paramètres", icon: Settings },
   { id: "security", label: "Sécurité", icon: Shield },
@@ -451,6 +452,205 @@ function OrdersSA() {
   );
 }
 
+function CategoriesSA() {
+  const queryClient = useQueryClient();
+  const { toast } = useToast();
+  const [filterType, setFilterType] = useState<"all" | "laptop" | "accessory">("all");
+  const [open, setOpen] = useState(false);
+  const [editItem, setEditItem] = useState<any | null>(null);
+  const [form, setForm] = useState({ name: "", type: "accessory", imageUrl: "" });
+
+  const { data: categories = [], isLoading } = useQuery({
+    queryKey: ["categories"],
+    queryFn: async () => { const r = await fetch(`${BASE}/api/categories`); return r.json() as Promise<any[]>; },
+  });
+
+  const filtered = filterType === "all" ? categories : (categories as any[]).filter((c: any) => c.type === filterType);
+
+  const createMutation = useMutation({
+    mutationFn: async (data: { name: string; type: string; imageUrl: string }) => {
+      const r = await fetch(`${BASE}/api/categories`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+      if (!r.ok) throw new Error("Erreur");
+      return r.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["categories"] });
+      setOpen(false);
+      setForm({ name: "", type: "accessory", imageUrl: "" });
+      toast({ title: "Catégorie créée" });
+    },
+    onError: () => toast({ title: "Erreur", description: "Nom déjà existant ou données invalides", variant: "destructive" }),
+  });
+
+  const editMutation = useMutation({
+    mutationFn: async ({ id, name, imageUrl }: { id: number; name: string; imageUrl: string }) => {
+      const r = await fetch(`${BASE}/api/categories/${id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, imageUrl }),
+      });
+      return r.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["categories"] });
+      setEditItem(null);
+      toast({ title: "Catégorie modifiée" });
+    },
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: async (id: number) => {
+      await fetch(`${BASE}/api/categories/${id}`, { method: "DELETE" });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["categories"] });
+      toast({ title: "Catégorie supprimée" });
+    },
+  });
+
+  const laptopCats = (categories as any[]).filter((c: any) => c.type === "laptop");
+  const accCats = (categories as any[]).filter((c: any) => c.type === "accessory");
+
+  return (
+    <div className="space-y-6">
+      <div className="flex justify-between items-center flex-wrap gap-4">
+        <div>
+          <h2 className="text-3xl font-bold">Catégories</h2>
+          <p className="text-muted-foreground text-sm mt-1">{laptopCats.length} marques laptop · {accCats.length} catégories accessoire</p>
+        </div>
+        <Button onClick={() => { setForm({ name: "", type: "accessory", imageUrl: "" }); setOpen(true); }} className="gap-2 bg-primary text-white">
+          <Plus className="w-4 h-4" />Nouvelle catégorie
+        </Button>
+      </div>
+
+      <div className="flex gap-2">
+        {(["all", "laptop", "accessory"] as const).map(t => (
+          <button key={t} onClick={() => setFilterType(t)}
+            className={`px-4 py-2 rounded-xl text-sm font-medium transition-all border ${filterType === t ? "bg-primary text-white border-primary" : "border-border bg-card hover:border-primary/30"}`}>
+            {t === "all" ? `Tous (${(categories as any[]).length})` : t === "laptop" ? `Marques Laptop (${laptopCats.length})` : `Catégories Accessoire (${accCats.length})`}
+          </button>
+        ))}
+      </div>
+
+      {isLoading ? (
+        <div className="text-center py-16 text-muted-foreground">Chargement...</div>
+      ) : filtered.length === 0 ? (
+        <div className="flex flex-col items-center py-24 bg-card border border-dashed border-border rounded-xl">
+          <FolderOpen className="w-12 h-12 text-muted-foreground mb-4" />
+          <p className="text-muted-foreground">Aucune catégorie</p>
+        </div>
+      ) : (
+        <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-4">
+          {(filtered as any[]).map((cat: any) => (
+            <div key={cat.id} className="bg-card border border-border rounded-xl overflow-hidden hover:border-primary/30 transition-colors">
+              {cat.imageUrl ? (
+                <img src={cat.imageUrl} alt={cat.name} className="w-full aspect-video object-cover bg-black/30" />
+              ) : (
+                <div className="w-full aspect-video bg-muted flex items-center justify-center">
+                  <ImageIcon className="w-8 h-8 text-muted-foreground" />
+                </div>
+              )}
+              <div className="p-3">
+                <div className="flex items-center justify-between mb-1">
+                  <span className="font-bold text-sm truncate">{cat.name}</span>
+                  <Badge variant="outline" className={cat.type === "laptop" ? "text-blue-400 border-blue-400/30 text-xs" : "text-purple-400 border-purple-400/30 text-xs"}>
+                    {cat.type === "laptop" ? "Laptop" : "Accessoire"}
+                  </Badge>
+                </div>
+                <div className="flex gap-2 mt-2">
+                  <button onClick={() => setEditItem(cat)} className="flex-1 text-xs text-muted-foreground hover:text-primary transition-colors py-1.5 rounded-lg border border-border hover:border-primary/30 flex items-center justify-center gap-1">
+                    <Edit className="w-3 h-3" />Modifier
+                  </button>
+                  <button onClick={() => deleteMutation.mutate(cat.id)} className="text-xs text-muted-foreground hover:text-red-400 transition-colors py-1.5 px-2 rounded-lg border border-border hover:border-red-400/30">
+                    <Trash2 className="w-3 h-3" />
+                  </button>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* Create dialog */}
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogContent className="bg-card border-border max-w-md">
+          <DialogHeader><DialogTitle>Nouvelle catégorie</DialogTitle></DialogHeader>
+          <div className="space-y-4 py-2">
+            <div>
+              <Label>Type *</Label>
+              <Select value={form.type} onValueChange={v => setForm(f => ({ ...f, type: v }))}>
+                <SelectTrigger className="bg-background mt-1"><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="accessory">Catégorie Accessoire</SelectItem>
+                  <SelectItem value="laptop">Marque Laptop</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <Label>Nom *</Label>
+              <Input value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} placeholder="Ex: Keyboards, HP, MSI..." className="bg-background mt-1" />
+            </div>
+            <div>
+              <Label>URL Photo (optionnel)</Label>
+              <Input value={form.imageUrl} onChange={e => setForm(f => ({ ...f, imageUrl: e.target.value }))} placeholder="https://..." className="bg-background mt-1" />
+              {form.imageUrl && (
+                <img src={form.imageUrl} alt="preview" className="mt-2 w-full h-24 object-cover rounded-lg bg-black/30" onError={e => (e.currentTarget.style.display = "none")} />
+              )}
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setOpen(false)}>Annuler</Button>
+            <Button
+              className="bg-primary text-white"
+              disabled={!form.name.trim() || createMutation.isPending}
+              onClick={() => createMutation.mutate(form)}
+            >
+              {createMutation.isPending ? "Création..." : "Créer"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Edit dialog */}
+      <Dialog open={!!editItem} onOpenChange={() => setEditItem(null)}>
+        {editItem && (
+          <DialogContent className="bg-card border-border max-w-md">
+            <DialogHeader><DialogTitle>Modifier — {editItem.name}</DialogTitle></DialogHeader>
+            <div className="space-y-4 py-2">
+              <div>
+                <Label>Nom</Label>
+                <Input defaultValue={editItem.name} id="edit-name" className="bg-background mt-1" />
+              </div>
+              <div>
+                <Label>URL Photo</Label>
+                <Input defaultValue={editItem.imageUrl || ""} id="edit-img" placeholder="https://..." className="bg-background mt-1" />
+              </div>
+            </div>
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setEditItem(null)}>Annuler</Button>
+              <Button
+                className="bg-primary text-white"
+                disabled={editMutation.isPending}
+                onClick={() => {
+                  const name = (document.getElementById("edit-name") as HTMLInputElement)?.value;
+                  const imageUrl = (document.getElementById("edit-img") as HTMLInputElement)?.value;
+                  editMutation.mutate({ id: editItem.id, name, imageUrl });
+                }}
+              >
+                {editMutation.isPending ? "Sauvegarde..." : "Sauvegarder"}
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        )}
+      </Dialog>
+    </div>
+  );
+}
+
 function SettingsSA() {
   const [settings, setSettings] = useState({ storeName: "ROC DZ", email: "contact@rocdz.com", phone: "+213 XXX XXX XXX", whatsapp: "+213 XXX XXX XXX", address: "Alger, Algérie", facebook: "", instagram: "", tiktok: "" });
   const { toast } = useToast();
@@ -530,6 +730,7 @@ export default function SuperAdmin() {
       case "admins": return <AdminsSA />;
       case "orders": return <OrdersSA />;
       case "analytics": return <AnalyticsSA />;
+      case "categories": return <CategoriesSA />;
       case "settings": return <SettingsSA />;
       case "security": return <SecuritySA />;
       default: return (

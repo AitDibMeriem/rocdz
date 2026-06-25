@@ -1,11 +1,13 @@
 import { useState } from "react";
-import { ShoppingCart, ChevronDown } from "lucide-react";
+import { ShoppingCart, ChevronDown, Copy, CheckCircle2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 
 const BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 
@@ -13,6 +15,7 @@ const STATUS_LABELS: Record<string, string> = {
   reserved: "Réservé",
   confirmed: "Confirmé",
   advance_paid: "Versement reçu",
+  verse: "Versé",
   prepared: "Préparé",
   shipped: "Expédié",
   delivered: "Livré",
@@ -24,6 +27,7 @@ const STATUS_COLORS: Record<string, string> = {
   reserved: "bg-yellow-500/20 text-yellow-400 border-yellow-500/30",
   confirmed: "bg-blue-500/20 text-blue-400 border-blue-500/30",
   advance_paid: "bg-emerald-500/20 text-emerald-400 border-emerald-500/30",
+  verse: "bg-teal-500/20 text-teal-400 border-teal-500/30",
   prepared: "bg-purple-500/20 text-purple-400 border-purple-500/30",
   shipped: "bg-cyan-500/20 text-cyan-400 border-cyan-500/30",
   delivered: "bg-green-500/20 text-green-400 border-green-500/30",
@@ -31,7 +35,7 @@ const STATUS_COLORS: Record<string, string> = {
   returned: "bg-orange-500/20 text-orange-400 border-orange-500/30",
 };
 
-const ALL_STATUSES = ["reserved", "confirmed", "advance_paid", "prepared", "shipped", "delivered", "cancelled", "returned"];
+const ALL_STATUSES = ["reserved", "confirmed", "verse", "prepared", "shipped", "delivered", "cancelled", "returned"];
 
 function useOrders() {
   return useQuery({
@@ -49,6 +53,9 @@ export function OrdersSection() {
   const { toast } = useToast();
   const [selected, setSelected] = useState<any | null>(null);
   const [filterStatus, setFilterStatus] = useState("all");
+  const [verseOpen, setVerseOpen] = useState(false);
+  const [verseAmount, setVerseAmount] = useState("");
+  const [copiedMsg, setCopiedMsg] = useState(false);
 
   const statusMutation = useMutation({
     mutationFn: async ({ id, status }: { id: number; status: string }) => {
@@ -65,6 +72,42 @@ export function OrdersSection() {
       toast({ title: `Commande ${STATUS_LABELS[data.status]}` });
     },
   });
+
+  const verseMutation = useMutation({
+    mutationFn: async ({ id, versedAmount }: { id: number; versedAmount: number }) => {
+      const r = await fetch(`${BASE}/api/orders/${id}/verse`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ versedAmount }),
+      });
+      return r.json();
+    },
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ["orders"] });
+      setSelected(data);
+      setVerseOpen(false);
+      setVerseAmount("");
+      toast({ title: "Versement enregistré", description: `Reste à payer: ${(data.remainingAmount || 0).toLocaleString("fr-DZ")} DA` });
+    },
+  });
+
+  const handleVerse = () => {
+    const amount = Number(verseAmount.replace(/\s/g, ""));
+    if (!amount || !selected) return;
+    verseMutation.mutate({ id: selected.id, versedAmount: amount });
+  };
+
+  const buildVerseMessage = (order: any) => {
+    const versed = order.advancePaid || 0;
+    const remaining = order.remainingAmount || 0;
+    return `Bonjour ${order.firstName || order.customerName},\n\nVotre commande ROC DZ #${String(order.id).padStart(4, "0")} a été prise en charge.\n\n✅ Versement reçu: ${versed.toLocaleString("fr-DZ")} DA\n🛍️ Total commande: ${(order.totalPrice || 0).toLocaleString("fr-DZ")} DA\n🚚 Livraison: ${(order.deliveryFee || 0).toLocaleString("fr-DZ")} DA\n⏳ Reste à payer: ${remaining.toLocaleString("fr-DZ")} DA\n\nMerci pour votre confiance !`;
+  };
+
+  const copyMessage = (order: any) => {
+    navigator.clipboard.writeText(buildVerseMessage(order));
+    setCopiedMsg(true);
+    setTimeout(() => setCopiedMsg(false), 2000);
+  };
 
   const filtered = filterStatus === "all" ? orders : orders.filter((o: any) => o.status === filterStatus);
 
@@ -93,7 +136,7 @@ export function OrdersSection() {
         </Select>
       </div>
 
-      <div className="grid grid-cols-2 sm:grid-cols-4 xl:grid-cols-7 gap-3">
+      <div className="grid grid-cols-2 sm:grid-cols-4 xl:grid-cols-8 gap-3">
         {ALL_STATUSES.map(s => (
           <button
             key={s}
@@ -147,9 +190,10 @@ export function OrdersSection() {
         </div>
       )}
 
+      {/* Order detail dialog */}
       <Dialog open={!!selected} onOpenChange={() => setSelected(null)}>
         {selected && (
-          <DialogContent className="bg-card border-border max-w-lg">
+          <DialogContent className="bg-card border-border max-w-lg max-h-[90vh] overflow-y-auto">
             <DialogHeader>
               <DialogTitle>Commande #{String(selected.id).padStart(4, "0")}</DialogTitle>
             </DialogHeader>
@@ -162,23 +206,38 @@ export function OrdersSection() {
                 <div><span className="text-muted-foreground">Adresse</span><p className="font-semibold">{selected.address}</p></div>
                 <div><span className="text-muted-foreground">Livraison</span><p className="font-semibold capitalize">{selected.deliveryType === "bureau" ? "Bureau / Stop Desk" : "À domicile"}</p></div>
               </div>
+
               <div className="bg-muted/30 rounded-lg p-3 space-y-1.5 text-sm">
                 <div className="flex justify-between"><span className="text-muted-foreground">Produits</span><span className="font-semibold">{((selected.totalPrice || 0) - (selected.deliveryFee || 0) + (selected.promoDiscount || 0)).toLocaleString("fr-DZ")} DA</span></div>
                 <div className="flex justify-between"><span className="text-muted-foreground">Livraison</span><span className="font-semibold">{(selected.deliveryFee || 0).toLocaleString("fr-DZ")} DA</span></div>
                 {selected.promoCode && (
                   <div className="flex justify-between text-green-400">
-                    <span className="font-semibold flex items-center gap-1">
-                      🏷️ Code promo <span className="font-mono bg-green-500/10 px-1.5 rounded text-xs">{selected.promoCode}</span>
-                    </span>
+                    <span className="font-semibold flex items-center gap-1">🏷️ Promo <span className="font-mono bg-green-500/10 px-1.5 rounded text-xs">{selected.promoCode}</span></span>
                     <span className="font-bold">-{(selected.promoDiscount || 0).toLocaleString("fr-DZ")} DA</span>
                   </div>
                 )}
                 <div className="flex justify-between border-t border-border pt-1"><span className="font-bold">Total</span><span className="font-black text-primary">{(selected.totalPrice || 0).toLocaleString("fr-DZ")} DA</span></div>
                 {selected.advancePaid > 0 && <>
-                  <div className="flex justify-between text-emerald-400"><span className="font-semibold">✓ Versement reçu</span><span className="font-bold">{(selected.advancePaid || 0).toLocaleString("fr-DZ")} DA</span></div>
+                  <div className="flex justify-between text-emerald-400"><span className="font-semibold">✓ Versé</span><span className="font-bold">{(selected.advancePaid || 0).toLocaleString("fr-DZ")} DA</span></div>
                   <div className="flex justify-between text-yellow-400"><span className="font-semibold">⏳ Reste à payer</span><span className="font-bold">{(selected.remainingAmount || 0).toLocaleString("fr-DZ")} DA</span></div>
                 </>}
               </div>
+
+              {/* Versement notification panel */}
+              {(selected.status === "verse" || selected.status === "advance_paid") && selected.advancePaid > 0 && (
+                <div className="bg-teal-500/10 border border-teal-500/30 rounded-xl p-4">
+                  <p className="text-teal-400 font-bold text-sm mb-2">Message client — Versement confirmé</p>
+                  <pre className="text-xs text-muted-foreground whitespace-pre-wrap font-mono bg-black/20 rounded p-3 mb-3">{buildVerseMessage(selected)}</pre>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="gap-2 border-teal-500/30 text-teal-400 hover:bg-teal-500/10"
+                    onClick={() => copyMessage(selected)}
+                  >
+                    {copiedMsg ? <><CheckCircle2 className="w-4 h-4" /> Copié !</> : <><Copy className="w-4 h-4" /> Copier pour WhatsApp</>}
+                  </Button>
+                </div>
+              )}
 
               {selected.items && selected.items.length > 0 && (
                 <div>
@@ -199,7 +258,7 @@ export function OrdersSection() {
               <div>
                 <p className="text-muted-foreground text-sm mb-2">Changer le statut</p>
                 <div className="flex flex-wrap gap-2">
-                  {ALL_STATUSES.map(s => (
+                  {ALL_STATUSES.filter(s => s !== "verse").map(s => (
                     <Button
                       key={s}
                       size="sm"
@@ -211,11 +270,60 @@ export function OrdersSection() {
                       {STATUS_LABELS[s]}
                     </Button>
                   ))}
+                  <Button
+                    size="sm"
+                    variant={selected.status === "verse" ? "default" : "outline"}
+                    className={selected.status === "verse" ? "bg-teal-600 text-white" : "border-teal-500/40 text-teal-400"}
+                    onClick={() => { setVerseAmount(String(selected.advancePaid || "")); setVerseOpen(true); }}
+                    disabled={statusMutation.isPending}
+                  >
+                    💰 Versé
+                  </Button>
                 </div>
               </div>
             </div>
           </DialogContent>
         )}
+      </Dialog>
+
+      {/* Versement dialog */}
+      <Dialog open={verseOpen} onOpenChange={setVerseOpen}>
+        <DialogContent className="bg-card border-border max-w-sm">
+          <DialogHeader><DialogTitle>Enregistrer un versement</DialogTitle></DialogHeader>
+          <div className="space-y-4 py-2">
+            <div>
+              <Label>Montant versé (DA)</Label>
+              <Input
+                type="number"
+                value={verseAmount}
+                onChange={e => setVerseAmount(e.target.value)}
+                placeholder="Ex: 10000"
+                className="bg-background mt-1"
+                autoFocus
+              />
+            </div>
+            {selected && verseAmount && Number(verseAmount) > 0 && (
+              <div className="bg-teal-500/10 border border-teal-500/20 rounded-lg p-3 text-sm space-y-1">
+                <div className="flex justify-between"><span className="text-muted-foreground">Total commande</span><span className="font-bold">{(selected.totalPrice || 0).toLocaleString("fr-DZ")} DA</span></div>
+                <div className="flex justify-between text-teal-400"><span>Versement</span><span className="font-bold">-{Number(verseAmount).toLocaleString("fr-DZ")} DA</span></div>
+                <div className="flex justify-between border-t border-teal-500/20 pt-1 text-yellow-400">
+                  <span className="font-bold">Reste à payer</span>
+                  <span className="font-black">{Math.max(0, (selected.totalPrice || 0) - Number(verseAmount)).toLocaleString("fr-DZ")} DA</span>
+                </div>
+              </div>
+            )}
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setVerseOpen(false)}>Annuler</Button>
+            <Button
+              className="bg-teal-600 text-white hover:bg-teal-700"
+              disabled={!verseAmount || Number(verseAmount) <= 0 || verseMutation.isPending}
+              onClick={handleVerse}
+            >
+              {verseMutation.isPending ? "Enregistrement..." : "Confirmer le versement"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
       </Dialog>
     </div>
   );

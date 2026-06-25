@@ -23,6 +23,10 @@ router.get("/validate", async (req, res) => {
       res.status(404).json({ error: "Code expiré" });
       return;
     }
+    if (promo.usageLimit !== null && promo.usedCount >= promo.usageLimit) {
+      res.status(404).json({ error: "Code épuisé (limite atteinte)" });
+      return;
+    }
     res.json({ code: promo.code, discountType: promo.discountType, discountValue: promo.discountValue });
   } catch (err) {
     req.log.error(err);

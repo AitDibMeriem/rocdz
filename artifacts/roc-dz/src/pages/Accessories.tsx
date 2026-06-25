@@ -257,7 +257,8 @@ export default function Accessories() {
                       {acc.stock > 0 ? `×${acc.stock}` : t.acc.outOfStock}
                     </span>
                   </div>
-                  <div className="flex gap-1.5">
+                  {/* Buttons: hidden on mobile (use modal), visible on sm+ */}
+                  <div className="hidden sm:flex gap-1.5">
                     <button
                       onClick={e => { e.stopPropagation(); handleAddToCart(acc); }}
                       disabled={acc.stock === 0}
@@ -278,6 +279,11 @@ export default function Accessories() {
                     >
                       <Zap className="w-3 h-3" /> {t.acc.buyNow}
                     </button>
+                  </div>
+                  {/* Mobile: "Voir" indicator */}
+                  <div className="flex sm:hidden items-center justify-center gap-1 py-2 rounded-xl text-xs text-muted-foreground border border-white/10">
+                    <ShoppingCart className="w-3 h-3" />
+                    <span>{acc.stock > 0 ? t.acc.addToCart : t.acc.outOfStock}</span>
                   </div>
                 </div>
               </div>

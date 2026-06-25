@@ -7,6 +7,7 @@ import uploadRouter from "./upload";
 import authRouter from "./auth";
 import promoCodesRouter from "./promo-codes";
 import ordersRouter from "./orders";
+import categoriesRouter from "./categories";
 
 const router: IRouter = Router();
 
@@ -17,6 +18,7 @@ router.use("/accessories", accessoriesRouter);
 router.use("/brands", brandsRouter);
 router.use("/promo-codes", promoCodesRouter);
 router.use("/orders", ordersRouter);
+router.use("/categories", categoriesRouter);
 router.use(uploadRouter);
 
 export default router;
