@@ -100,9 +100,8 @@ export function calcDelivery(
   const laptops = items.filter(i => i.isLaptop !== false && i.advance !== undefined);
   const hasLaptop = laptops.length > 0;
 
-  const homeBlocked = laptops.some(
-    i => (i.price - i.advance) > LAPTOP_HOME_THRESHOLD
-  );
+  const totalRemaining = laptops.reduce((sum, i) => sum + (i.price - i.advance) * i.qty, 0);
+  const homeBlocked = totalRemaining > LAPTOP_HOME_THRESHOLD;
 
   if (hasLaptop) {
     const laptopCount = laptops.reduce((s, i) => s + i.qty, 0);

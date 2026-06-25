@@ -5,6 +5,31 @@ import { eq } from "drizzle-orm";
 
 const router = Router();
 
+router.get("/validate", async (req, res) => {
+  const { code } = req.query;
+  if (!code || typeof code !== "string") {
+    res.status(400).json({ error: "Code requis" });
+    return;
+  }
+  try {
+    const [promo] = await db.select().from(promoCodesTable)
+      .where(eq(promoCodesTable.code, code.toUpperCase()))
+      .limit(1);
+    if (!promo || !promo.active) {
+      res.status(404).json({ error: "Code invalide ou expiré" });
+      return;
+    }
+    if (promo.expiryDate && new Date(promo.expiryDate) < new Date()) {
+      res.status(404).json({ error: "Code expiré" });
+      return;
+    }
+    res.json({ code: promo.code, discountType: promo.discountType, discountValue: promo.discountValue });
+  } catch (err) {
+    req.log.error(err);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
 router.get("/", async (req, res) => {
   try {
     const codes = await db.select().from(promoCodesTable).orderBy(promoCodesTable.createdAt);

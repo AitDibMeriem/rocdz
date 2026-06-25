@@ -6,6 +6,7 @@ export interface CartItem {
   price: number;
   advance: number;
   qty: number;
+  maxStock?: number;
   imageUrl?: string | null;
   brand?: string;
   isLaptop?: boolean;
@@ -41,7 +42,9 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     setItems(prev => {
       const existing = prev.find(i => i.laptopId === item.laptopId);
       if (existing) {
-        return prev.map(i => i.laptopId === item.laptopId ? { ...i, qty: i.qty + item.qty } : i);
+        const max = item.maxStock ?? existing.maxStock ?? Infinity;
+        const newQty = Math.min(existing.qty + item.qty, max);
+        return prev.map(i => i.laptopId === item.laptopId ? { ...i, qty: newQty } : i);
       }
       return [...prev, { ...item, isLaptop: item.isLaptop ?? true }];
     });
@@ -53,7 +56,11 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 
   const updateQty = (laptopId: number, qty: number) => {
     if (qty <= 0) { removeItem(laptopId); return; }
-    setItems(prev => prev.map(i => i.laptopId === laptopId ? { ...i, qty } : i));
+    setItems(prev => prev.map(i => {
+      if (i.laptopId !== laptopId) return i;
+      const max = i.maxStock ?? Infinity;
+      return { ...i, qty: Math.min(qty, max) };
+    }));
   };
 
   const clearCart = () => setItems([]);

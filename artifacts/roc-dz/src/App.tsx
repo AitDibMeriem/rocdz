@@ -16,6 +16,7 @@ import Cart from "@/pages/Cart";
 import Accessories from "@/pages/Accessories";
 import { AuthProvider, useAuth } from "@/context/AuthContext";
 import { CartProvider } from "@/context/CartContext";
+import { LangProvider } from "@/context/LangContext";
 import { BgCanvas } from "@/components/BgCanvas";
 
 const queryClient = new QueryClient();
@@ -80,12 +81,14 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
         <CartProvider>
-          <TooltipProvider>
-            <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, "")}>
-              <Router />
-            </WouterRouter>
-            <Toaster />
-          </TooltipProvider>
+          <LangProvider>
+            <TooltipProvider>
+              <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, "")}>
+                <Router />
+              </WouterRouter>
+              <Toaster />
+            </TooltipProvider>
+          </LangProvider>
         </CartProvider>
       </AuthProvider>
     </QueryClientProvider>

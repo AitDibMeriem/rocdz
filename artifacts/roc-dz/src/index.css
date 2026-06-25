@@ -308,6 +308,60 @@
 .light-mode .footer { background: rgba(104,7,71,0.08); border-color: rgba(199,25,93,0.15); }
 .light-mode .back-to-top { background: #f70776; }
 
+/* ── Light mode: fix all text & form elements ─────────────────── */
+html.light-mode {
+  color-scheme: light;
+}
+.light-mode h1, .light-mode h2, .light-mode h3,
+.light-mode h4, .light-mode h5, .light-mode h6 {
+  color: #141010;
+}
+.light-mode p, .light-mode span:not(.text-gradient-roc):not([class*="text-primary"]):not([class*="text-green"]):not([class*="text-red"]):not([class*="text-yellow"]):not([class*="text-orange"]) {
+  color: #141010;
+}
+.light-mode label {
+  color: #141010 !important;
+}
+.light-mode input,
+.light-mode textarea {
+  color: #141010 !important;
+  background-color: rgba(255,240,248,0.8) !important;
+  border-color: rgba(199,25,93,0.2) !important;
+}
+.light-mode input::placeholder,
+.light-mode textarea::placeholder {
+  color: rgba(20,16,16,0.4) !important;
+}
+.light-mode button:not([class*="bg-primary"]):not([class*="bg-green"]):not([class*="bg-red"]):not(.btn-white):not(.back-to-top):not(.nav-hamburger):not(.theme-toggle-btn):not(.lang-btn) {
+  color: inherit;
+}
+/* Tailwind bg-card/40 + border-white/10 cards in light mode */
+.light-mode [class*="bg-card"] {
+  background-color: rgba(255,240,248,0.8) !important;
+}
+.light-mode [class*="border-white"] {
+  border-color: rgba(199,25,93,0.15) !important;
+}
+/* Admin login page fix */
+.light-mode .text-muted-foreground {
+  color: rgba(20,16,16,0.5) !important;
+}
+.light-mode [class*="text-foreground"] {
+  color: #141010 !important;
+}
+/* Radix Select + Popover in light mode */
+.light-mode [data-radix-select-viewport],
+.light-mode [role="listbox"],
+.light-mode [data-radix-select-item] {
+  background-color: #fff0f8 !important;
+  color: #141010 !important;
+}
+/* Skeleton in light mode */
+.light-mode .animate-pulse,
+.light-mode [class*="bg-white/"] {
+  opacity: 0.6;
+}
+
 .circuit-overlay {
   position: fixed;
   top: 0; left: 0;
