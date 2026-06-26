@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { useLocation } from "wouter";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -6,7 +6,7 @@ import * as XLSX from "xlsx";
 import {
   LayoutDashboard, Users, Laptop, Package, ShoppingCart, Tag,
   Settings, Shield, LogOut, TrendingUp, BarChart3, ArrowLeft,
-  Plus, Trash2, Edit, UserCheck, Menu, X, Download, FileSpreadsheet, FolderOpen, ImageIcon
+  Plus, Trash2, Edit, UserCheck, Menu, X, Download, FileSpreadsheet, FolderOpen, ImageIcon, Sun, Moon, Key
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -145,25 +145,62 @@ function DashboardSA() {
 }
 
 function AdminsSA() {
-  const [admins, setAdmins] = useState<AdminAccount[]>(INITIAL_ADMINS);
+  const { user } = useAuth();
+  const [admins, setAdmins] = useState<{ username: string; displayName: string; role: string }[]>([]);
+  const [loading, setLoading] = useState(true);
   const [open, setOpen] = useState(false);
-  const [form, setForm] = useState({ username: "", displayName: "", role: "ADMIN", password: "" });
+  const [pwOpen, setPwOpen] = useState<string | null>(null);
+  const [form, setForm] = useState({ username: "", displayName: "", password: "" });
+  const [pwForm, setPwForm] = useState({ newPassword: "" });
   const { toast } = useToast();
 
-  const createAdmin = () => {
-    if (!form.username || !form.password) return;
-    setAdmins(prev => [...prev, {
-      id: String(Date.now()), username: form.username, displayName: form.displayName || form.username,
-      role: form.role, createdAt: new Date().toISOString(), active: true,
-    }]);
-    setOpen(false);
-    setForm({ username: "", displayName: "", role: "ADMIN", password: "" });
-    toast({ title: "Admin créé avec succès" });
+  const fetchAdmins = async () => {
+    try {
+      const r = await fetch(`${BASE}/api/auth/admins`, { headers: { Authorization: `Bearer ${user!.token}` } });
+      if (r.ok) setAdmins(await r.json());
+    } finally { setLoading(false); }
   };
 
-  const ROLE_LABELS: Record<string, string> = {
-    ADMIN: "Administrateur", SALES_MANAGER: "Responsable Ventes",
-    INVENTORY_MANAGER: "Responsable Stock", CUSTOMER_SUPPORT: "Support Client",
+  useEffect(() => { fetchAdmins(); }, []);
+
+  const createAdmin = async () => {
+    if (!form.username.trim() || !form.password.trim()) {
+      toast({ title: "Champs requis", description: "Nom d'utilisateur et mot de passe sont obligatoires", variant: "destructive" });
+      return;
+    }
+    try {
+      const r = await fetch(`${BASE}/api/auth/admins`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${user!.token}` },
+        body: JSON.stringify({ username: form.username.trim(), password: form.password, displayName: form.displayName.trim() || form.username.trim() }),
+      });
+      const data = await r.json();
+      if (!r.ok) { toast({ title: "Erreur", description: data.error || "Impossible de créer l'admin", variant: "destructive" }); return; }
+      await fetchAdmins();
+      setOpen(false);
+      setForm({ username: "", displayName: "", password: "" });
+      toast({ title: "Admin créé avec succès" });
+    } catch { toast({ title: "Erreur réseau", variant: "destructive" }); }
+  };
+
+  const deleteAdmin = async (username: string) => {
+    try {
+      await fetch(`${BASE}/api/auth/admins/${username}`, { method: "DELETE", headers: { Authorization: `Bearer ${user!.token}` } });
+      await fetchAdmins();
+      toast({ title: "Admin supprimé" });
+    } catch { toast({ title: "Erreur réseau", variant: "destructive" }); }
+  };
+
+  const changePassword = async (username: string) => {
+    if (!pwForm.newPassword.trim()) return;
+    try {
+      const r = await fetch(`${BASE}/api/auth/admins/${username}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${user!.token}` },
+        body: JSON.stringify({ password: pwForm.newPassword }),
+      });
+      if (r.ok) { setPwOpen(null); setPwForm({ newPassword: "" }); toast({ title: "Mot de passe modifié avec succès" }); }
+    } catch { toast({ title: "Erreur réseau", variant: "destructive" }); }
   };
 
   return (
@@ -177,62 +214,66 @@ function AdminsSA() {
           <Plus className="w-4 h-4" />Créer Admin
         </Button>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-        <div className="bg-gradient-to-br from-primary/20 to-purple-900/20 border border-primary/30 rounded-xl p-5">
-          <div className="flex items-center gap-3 mb-3">
-            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-pink-500 to-purple-600 flex items-center justify-center text-white font-black text-sm">SA</div>
-            <div>
-              <p className="font-bold">Super Admin</p>
-              <p className="text-xs text-muted-foreground">superroc</p>
-            </div>
-          </div>
-          <Badge className="bg-primary/20 text-primary border-primary/30">SUPER_ADMIN</Badge>
-        </div>
-        {admins.map(a => (
-          <div key={a.id} className="bg-card border border-border rounded-xl p-5 hover:border-primary/30 transition-colors">
-            <div className="flex items-center justify-between mb-3">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center font-black text-sm text-primary">
-                  {a.displayName.slice(0, 2).toUpperCase()}
+
+      {loading ? (
+        <div className="text-muted-foreground text-sm">Chargement…</div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+          {admins.map(a => (
+            <div key={a.username} className={`border rounded-xl p-5 hover:border-primary/30 transition-colors ${a.role === "super_admin" ? "bg-gradient-to-br from-primary/20 to-purple-900/20 border-primary/30" : "bg-card border-border"}`}>
+              <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center gap-3">
+                  <div className={`w-10 h-10 rounded-full flex items-center justify-center font-black text-sm text-white ${a.role === "super_admin" ? "bg-gradient-to-br from-pink-500 to-purple-600" : "bg-muted text-primary"}`}>
+                    {(a.displayName || a.username).slice(0, 2).toUpperCase()}
+                  </div>
+                  <div>
+                    <p className="font-bold">{a.displayName}</p>
+                    <p className="text-xs text-muted-foreground">{a.username}</p>
+                  </div>
                 </div>
-                <div>
-                  <p className="font-bold">{a.displayName}</p>
-                  <p className="text-xs text-muted-foreground">{a.username}</p>
+                <div className="flex items-center gap-1">
+                  <button onClick={() => { setPwOpen(a.username); setPwForm({ newPassword: "" }); }} className="text-muted-foreground hover:text-primary transition-colors p-1" title="Changer le mot de passe">
+                    <Key className="w-4 h-4" />
+                  </button>
+                  {a.role !== "super_admin" && (
+                    <button onClick={() => deleteAdmin(a.username)} className="text-muted-foreground hover:text-destructive transition-colors p-1">
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  )}
                 </div>
               </div>
-              <button onClick={() => setAdmins(prev => prev.filter(x => x.id !== a.id))} className="text-muted-foreground hover:text-destructive transition-colors">
-                <Trash2 className="w-4 h-4" />
-              </button>
-            </div>
-            <div className="flex items-center justify-between">
-              <Badge variant="outline">{ROLE_LABELS[a.role] || a.role}</Badge>
-              <Badge className={a.active ? "bg-green-500/20 text-green-400 border-green-500/30" : "bg-red-500/20 text-red-400 border-red-500/30"}>
-                {a.active ? "Actif" : "Inactif"}
+              <Badge className={a.role === "super_admin" ? "bg-primary/20 text-primary border-primary/30" : "bg-muted text-muted-foreground border-border"}>
+                {a.role === "super_admin" ? "SUPER_ADMIN" : "ADMIN"}
               </Badge>
             </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
+
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="bg-card border-border max-w-md">
           <DialogHeader><DialogTitle>Créer un Admin</DialogTitle></DialogHeader>
           <div className="space-y-4 py-2">
-            <div><Label>Nom d'affichage</Label><Input value={form.displayName} onChange={e => setForm(f => ({ ...f, displayName: e.target.value }))} className="bg-background" /></div>
-            <div><Label>Nom d'utilisateur *</Label><Input value={form.username} onChange={e => setForm(f => ({ ...f, username: e.target.value }))} className="bg-background" /></div>
-            <div><Label>Mot de passe *</Label><Input type="password" value={form.password} onChange={e => setForm(f => ({ ...f, password: e.target.value }))} className="bg-background" /></div>
-            <div>
-              <Label>Rôle</Label>
-              <Select value={form.role} onValueChange={v => setForm(f => ({ ...f, role: v }))}>
-                <SelectTrigger className="bg-background"><SelectValue /></SelectTrigger>
-                <SelectContent>
-                  {ROLES.map(r => <SelectItem key={r} value={r}>{r.replace("_", " ")}</SelectItem>)}
-                </SelectContent>
-              </Select>
-            </div>
+            <div><Label>Nom d'affichage</Label><Input value={form.displayName} onChange={e => setForm(f => ({ ...f, displayName: e.target.value }))} className="bg-background" placeholder="Ex: Mohamed Admin" /></div>
+            <div><Label>Nom d'utilisateur *</Label><Input value={form.username} onChange={e => setForm(f => ({ ...f, username: e.target.value }))} className="bg-background" placeholder="Ex: admin2026" /></div>
+            <div><Label>Mot de passe *</Label><Input type="password" value={form.password} onChange={e => setForm(f => ({ ...f, password: e.target.value }))} className="bg-background" placeholder="Mot de passe sécurisé" /></div>
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setOpen(false)}>Annuler</Button>
             <Button onClick={createAdmin} className="bg-primary text-white">Créer</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={!!pwOpen} onOpenChange={() => setPwOpen(null)}>
+        <DialogContent className="bg-card border-border max-w-md">
+          <DialogHeader><DialogTitle>Changer le mot de passe — {pwOpen}</DialogTitle></DialogHeader>
+          <div className="space-y-4 py-2">
+            <div><Label>Nouveau mot de passe *</Label><Input type="password" value={pwForm.newPassword} onChange={e => setPwForm({ newPassword: e.target.value })} className="bg-background" placeholder="Nouveau mot de passe" /></div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setPwOpen(null)}>Annuler</Button>
+            <Button onClick={() => pwOpen && changePassword(pwOpen)} className="bg-primary text-white">Enregistrer</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
@@ -715,6 +756,19 @@ export default function SuperAdmin() {
   const [, navigate] = useLocation();
   const [active, setActive] = useState<SaSection>("dashboard");
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [theme, setTheme] = useState<"dark" | "light">(() => (localStorage.getItem("rocdz_theme") as "dark" | "light") || "dark");
+
+  useEffect(() => {
+    const root = document.documentElement;
+    if (theme === "light") { root.classList.add("light-mode"); root.classList.remove("dark-mode"); }
+    else { root.classList.remove("light-mode"); root.classList.add("dark-mode"); }
+  }, [theme]);
+
+  const toggleTheme = () => {
+    const next = theme === "dark" ? "light" : "dark";
+    setTheme(next);
+    localStorage.setItem("rocdz_theme", next);
+  };
 
   if (!user || user.role !== "super_admin") {
     return (
@@ -748,7 +802,9 @@ export default function SuperAdmin() {
   const NavContent = () => (
     <div className="flex h-full flex-col bg-sidebar border-r border-sidebar-border">
       <div className="p-6 border-b border-sidebar-border">
-        <h2 className="text-xl font-black text-gradient-roc">R⊙C DZ</h2>
+        <a href="/" className="block mb-2">
+          <img src="/logo.png" alt="ROC DZ" style={{ height: "32px", width: "auto", objectFit: "contain" }} />
+        </a>
         <p className="text-xs text-muted-foreground uppercase tracking-wider mt-1">Super Admin</p>
         <div className="mt-3 flex items-center gap-2">
           <div className="w-6 h-6 rounded-full bg-gradient-to-br from-pink-500 to-purple-600 flex items-center justify-center text-white text-xs font-black">SA</div>
@@ -768,6 +824,10 @@ export default function SuperAdmin() {
         })}
       </nav>
       <div className="p-4 border-t border-sidebar-border space-y-1">
+        <button onClick={toggleTheme} className="flex items-center w-full gap-2 text-sm text-muted-foreground hover:text-primary transition-colors py-2 px-3 rounded-md">
+          {theme === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+          {theme === "dark" ? "Mode clair" : "Mode sombre"}
+        </button>
         <button onClick={() => navigate("/admin")} className="flex items-center w-full gap-2 text-sm text-muted-foreground hover:text-primary transition-colors py-2 px-3 rounded-md">
           <ArrowLeft className="h-4 w-4" />Admin Standard
         </button>
@@ -790,9 +850,14 @@ export default function SuperAdmin() {
       <div className="md:hidden fixed top-0 left-0 right-0 h-16 bg-sidebar border-b border-sidebar-border z-40 flex items-center px-4 justify-between">
         <div className="flex items-center gap-2">
           <button onClick={() => setMobileOpen(true)} className="text-foreground"><Menu className="h-6 w-6" /></button>
-          <h2 className="text-lg font-black text-gradient-roc">R⊙C DZ</h2>
+          <img src="/logo.png" alt="ROC DZ" style={{ height: "26px", width: "auto", objectFit: "contain" }} />
         </div>
-        <button onClick={handleLogout} className="text-red-400"><LogOut className="h-5 w-5" /></button>
+        <div className="flex items-center gap-2">
+          <button onClick={toggleTheme} className="text-muted-foreground hover:text-primary p-1">
+            {theme === "dark" ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+          </button>
+          <button onClick={handleLogout} className="text-red-400"><LogOut className="h-5 w-5" /></button>
+        </div>
       </div>
       <main className="flex-1 w-full md:pl-[260px] pt-16 md:pt-0">
         <div className="p-6 md:p-8 max-w-7xl mx-auto w-full">{renderSection()}</div>

@@ -1,65 +1,97 @@
-import { Shield, Zap, Laptop, Cpu, Award } from "lucide-react";
+import { useLang } from "@/context/LangContext";
+import { Instagram, MapPin, CheckCircle2 } from "lucide-react";
+
+const INSTAGRAM_URL = "https://www.instagram.com/rocdz";
+const MAPS_URL = "https://maps.app.goo.gl/oSViRUVb9935mY6z9";
 
 export default function About() {
+  const { t, isRTL } = useLang();
+  const a = t.about;
+
   return (
-    <div className="min-h-screen">
-      {/* Hero */}
-      <section className="py-24 relative overflow-hidden">
-        <div className="absolute inset-0 bg-primary/5 rounded-full blur-[100px] -top-1/2 left-1/4 w-[800px] h-[800px] mix-blend-screen pointer-events-none" />
+    <div className="min-h-screen" dir={isRTL ? "rtl" : "ltr"}>
+      <section className="py-20 relative overflow-hidden">
+        <div className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(ellipse 60% 40% at 50% 0%, rgba(232,33,160,0.08) 0%, transparent 70%)" }} />
         <div className="container mx-auto px-4 text-center relative z-10">
-          <h1 className="text-5xl md:text-7xl font-black tracking-tighter mb-6">
-            About <span className="text-gradient-roc">ROC DZ</span>
+          <div className="inline-block mb-4 px-4 py-1 rounded-full text-xs font-bold tracking-widest uppercase" style={{ background: "rgba(232,33,160,0.12)", color: "var(--pink)", border: "1px solid rgba(232,33,160,0.3)" }}>
+            {a.subtitle}
+          </div>
+          <h1 className="text-4xl md:text-6xl font-black tracking-tighter mb-6">
+            <span style={{ color: "var(--text)" }}>{a.title.split(" ")[0]}{" "}</span>
+            <span className="text-gradient-roc">{a.title.split(" ").slice(1).join(" ")}</span>
           </h1>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Republic of Computer. Algeria's premier destination for high-end laptops, gaming rigs, and professional workstations.
+        </div>
+      </section>
+
+      <div className="container mx-auto px-4 max-w-4xl pb-20 space-y-10">
+        <div className="rounded-2xl p-8 border" style={{ background: "var(--card)", borderColor: "var(--border-raw)" }}>
+          <p className="text-lg leading-relaxed" style={{ color: "var(--text-muted)" }}>
+            {a.mission}
           </p>
         </div>
-      </section>
 
-      {/* Story */}
-      <section className="py-16">
-        <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-16 items-center max-w-6xl mx-auto">
-            <div className="space-y-6">
-              <h2 className="text-3xl font-bold text-foreground">Our Mission</h2>
-              <p className="text-muted-foreground leading-relaxed">
-                At ROC DZ, we believe that access to top-tier technology shouldn't be a struggle. We source the finest new and certified refurbished laptops globally and make them accessible to creators, gamers, and professionals across all 58 wilayas of Algeria.
-              </p>
-              <p className="text-muted-foreground leading-relaxed">
-                Every pixel of our store and every component in our laptops is chosen with uncompromising standards. We don't just sell computers; we provide the tools to build your future.
-              </p>
-            </div>
-            <div className="relative aspect-square rounded-full border border-primary/20 p-8 flex items-center justify-center">
-              <div className="absolute inset-0 bg-gradient-to-tr from-primary/10 to-accent/10 rounded-full blur-2xl" />
-              <Cpu className="w-32 h-32 text-primary opacity-80" />
-            </div>
-          </div>
-        </div>
-      </section>
+        <a
+          href={INSTAGRAM_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center gap-3 px-6 py-4 rounded-2xl font-bold text-white transition-all hover:scale-[1.02]"
+          style={{ background: "linear-gradient(135deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888)", textDecoration: "none" }}
+        >
+          <Instagram size={22} />
+          <span>{a.followUs} — @rocdz</span>
+        </a>
 
-      {/* Values */}
-      <section className="py-24 bg-black/40 border-y border-white/5">
-        <div className="container mx-auto px-4 max-w-6xl">
-          <h2 className="text-3xl font-bold text-center mb-16">The ROC Standard</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="bg-card/30 p-8 rounded-2xl border border-white/5">
-              <Award className="w-10 h-10 text-primary mb-6" />
-              <h3 className="text-xl font-bold mb-4">Uncompromising Quality</h3>
-              <p className="text-muted-foreground">Whether brand new or refurbished, every machine undergoes a rigorous multi-point inspection before it reaches your hands.</p>
-            </div>
-            <div className="bg-card/30 p-8 rounded-2xl border border-white/5">
-              <Shield className="w-10 h-10 text-accent mb-6" />
-              <h3 className="text-xl font-bold mb-4">Ironclad Warranty</h3>
-              <p className="text-muted-foreground">We stand by our hardware. Our comprehensive store warranty ensures you're protected long after your purchase.</p>
-            </div>
-            <div className="bg-card/30 p-8 rounded-2xl border border-white/5">
-              <Zap className="w-10 h-10 text-primary mb-6" />
-              <h3 className="text-xl font-bold mb-4">Expert Support</h3>
-              <p className="text-muted-foreground">Our team consists of hardware enthusiasts who understand exactly what you need for gaming, rendering, or coding.</p>
-            </div>
-          </div>
+        <div className="rounded-2xl p-8 border space-y-4" style={{ background: "var(--card)", borderColor: "var(--border-raw)" }}>
+          <h2 className="text-2xl font-bold" style={{ color: "var(--text)" }}>{a.catalogTitle}</h2>
+          <p className="leading-relaxed" style={{ color: "var(--text-muted)" }}>{a.catalog}</p>
         </div>
-      </section>
+
+        <div className="rounded-2xl p-8 border" style={{ background: "var(--card)", borderColor: "var(--border-raw)" }}>
+          <p className="leading-relaxed" style={{ color: "var(--text-muted)" }}>{a.advice}</p>
+        </div>
+
+        <div className="rounded-2xl p-8 border" style={{ background: "var(--card)", borderColor: "var(--border-raw)" }}>
+          <p className="leading-relaxed" style={{ color: "var(--text-muted)" }}>{a.community}</p>
+        </div>
+
+        <a
+          href={INSTAGRAM_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center gap-3 px-6 py-4 rounded-2xl font-bold text-white transition-all hover:scale-[1.02]"
+          style={{ background: "linear-gradient(135deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888)", textDecoration: "none" }}
+        >
+          <Instagram size={22} />
+          <span>{a.followUs} — @rocdz</span>
+        </a>
+
+        <div className="rounded-2xl p-8 border" style={{ background: "var(--card)", borderColor: "var(--border-raw)" }}>
+          <h2 className="text-2xl font-bold mb-6" style={{ color: "var(--text)" }}>{a.whyTitle}</h2>
+          <ul className="space-y-3">
+            {(a.reasons as readonly string[]).map((reason, i) => (
+              <li key={i} className="flex items-start gap-3">
+                <CheckCircle2 size={20} style={{ color: "var(--pink)", flexShrink: 0, marginTop: "2px" }} />
+                <span style={{ color: "var(--text-muted)" }}>{reason}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <div className="rounded-2xl p-8 border" style={{ background: "linear-gradient(135deg,rgba(232,33,160,0.08),rgba(139,59,221,0.08))", borderColor: "rgba(232,33,160,0.25)" }}>
+          <p className="text-lg font-medium leading-relaxed" style={{ color: "var(--text)" }}>{a.closing}</p>
+        </div>
+
+        <a
+          href={MAPS_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center gap-3 px-6 py-4 rounded-2xl font-bold transition-all hover:scale-[1.02]"
+          style={{ background: "var(--card)", border: "1px solid rgba(232,33,160,0.3)", color: "var(--pink)", textDecoration: "none" }}
+        >
+          <MapPin size={20} />
+          <span>{t.contact.location} — {t.contact.mapLink}</span>
+        </a>
+      </div>
     </div>
   );
 }

@@ -2,11 +2,21 @@ import { useEffect } from "react";
 import { useGetFeaturedLaptop } from "@workspace/api-client-react";
 import { Link } from "wouter";
 
-const BRANDS = ["DELL", "HP", "LENOVO", "ASUS", "MSI", "APPLE", "ACER", "SAMSUNG", "HUAWEI"];
+const BRAND_LOGOS = [
+  { name: "Dell", img: "/brand-dell3.png" },
+  { name: "HP", img: "/brand-hp.png" },
+  { name: "Lenovo", img: "/brand-lenovo3.png" },
+  { name: "ASUS", img: "/brand-asus.png" },
+  { name: "MSI", img: "/brand-msi.png" },
+  { name: "Apple", img: "/brand-apple3.png" },
+  { name: "Acer", img: "/brand-acer.png" },
+  { name: "Samsung", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/24/Samsung_Logo.svg/200px-Samsung_Logo.svg.png" },
+  { name: "Huawei", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e8/Huawei_Logo.svg/200px-Huawei_Logo.svg.png" },
+];
 
 const LAPTOP_GRID = [
   { img: "/brand-hp.png", tag: "tag-gaming", tagLabel: "Gaming", name: "HP", href: "/models?brand=HP" },
-  { img: "/brand-apple3.png", tag: "tag-premium", tagLabel: "Premium", name: "Apple", href: "/models?brand=Apple" },
+  { img: "/brand-apple-hero.png", tag: "tag-premium", tagLabel: "Premium", name: "Apple", href: "/models?brand=Apple" },
   { img: "/brand-lenovo3.png", tag: "tag-pro", tagLabel: "Pro", name: "Lenovo", href: "/models?brand=Lenovo" },
   { img: "/brand-msi.png", tag: "tag-gaming", tagLabel: "Gaming", name: "MSI", href: "/models?brand=MSI" },
   { img: "/brand-asus.png", tag: "tag-performance", tagLabel: "Performance", name: "ASUS", href: "/models?brand=ASUS" },
@@ -111,8 +121,16 @@ export default function Home() {
 
         <div className="brand-marquee">
           <div className="marquee-track">
-            {[...BRANDS, ...BRANDS, ...BRANDS].map((b, i) => (
-              <span key={i} className="brand-item">{b}</span>
+            {[...BRAND_LOGOS, ...BRAND_LOGOS, ...BRAND_LOGOS].map((b, i) => (
+              <span key={i} className="brand-item" style={{ display: "inline-flex", alignItems: "center", gap: "6px", padding: "0 4px" }}>
+                <img
+                  src={b.img}
+                  alt={b.name}
+                  style={{ height: "20px", width: "auto", maxWidth: "64px", objectFit: "contain", background: "rgba(255,255,255,0.12)", borderRadius: "4px", padding: "2px 5px" }}
+                  onError={e => { (e.currentTarget as HTMLImageElement).style.display = "none"; }}
+                />
+                <span style={{ fontSize: "0.65rem" }}>{b.name}</span>
+              </span>
             ))}
           </div>
         </div>

@@ -1,11 +1,12 @@
 import {
   LayoutDashboard, Laptop, Package, ShoppingCart,
-  Tag, BarChart3, Settings, ArrowLeft, Menu, LogOut, Shield
+  Tag, BarChart3, Settings, ArrowLeft, Menu, LogOut, Shield, Sun, Moon
 } from "lucide-react";
 import { Link, useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { useAuth } from "@/context/AuthContext";
+import { useState, useEffect } from "react";
 
 export type AdminSection = "dashboard" | "laptops" | "accessories" | "orders" | "promo" | "reports" | "settings";
 
@@ -27,15 +28,35 @@ const navItems: { id: AdminSection; label: string; icon: React.ElementType }[] =
 export function AdminSidebar({ activeSection, onChangeSection }: AdminSidebarProps) {
   const { user, logout } = useAuth();
   const [, navigate] = useLocation();
+  const [theme, setTheme] = useState<"dark" | "light">(() => (localStorage.getItem("rocdz_theme") as "dark" | "light") || "dark");
+
+  useEffect(() => {
+    const root = document.documentElement;
+    if (theme === "light") {
+      root.classList.add("light-mode");
+      root.classList.remove("dark-mode");
+    } else {
+      root.classList.remove("light-mode");
+      root.classList.add("dark-mode");
+    }
+  }, [theme]);
+
+  const toggleTheme = () => {
+    const next = theme === "dark" ? "light" : "dark";
+    setTheme(next);
+    localStorage.setItem("rocdz_theme", next);
+  };
 
   const handleLogout = () => { logout(); navigate("/admin/login"); };
 
   const NavContent = () => (
     <div className="flex h-full flex-col bg-sidebar border-r border-sidebar-border">
       <div className="p-6">
-        <h2 className="text-2xl font-black tracking-tighter text-gradient-roc">R⊙C DZ</h2>
-        <p className="text-xs text-muted-foreground uppercase tracking-wider font-semibold mt-1">Admin Panel</p>
-        {user && <p className="text-xs text-primary mt-2 font-medium">{user.displayName}</p>}
+        <Link href="/" className="block mb-1">
+          <img src="/logo.png" alt="ROC DZ" style={{ height: "36px", width: "auto", objectFit: "contain" }} />
+        </Link>
+        <p className="text-xs text-muted-foreground uppercase tracking-wider font-semibold mt-2">Admin Panel</p>
+        {user && <p className="text-xs text-primary mt-1 font-medium">{user.displayName}</p>}
       </div>
 
       <nav className="flex-1 space-y-1 px-3 overflow-y-auto">
@@ -61,16 +82,23 @@ export function AdminSidebar({ activeSection, onChangeSection }: AdminSidebarPro
       </nav>
 
       <div className="p-4 border-t border-sidebar-border space-y-1">
+        <button
+          onClick={toggleTheme}
+          className="flex items-center w-full gap-2 text-sm text-muted-foreground hover:text-primary transition-colors py-2 px-3 rounded-md hover:bg-primary/10"
+        >
+          {theme === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+          {theme === "dark" ? "Mode clair" : "Mode sombre"}
+        </button>
         {user?.role === "super_admin" && (
           <Link href="/super-admin" className="flex items-center gap-2 text-sm text-primary hover:text-primary/80 transition-colors py-2 px-3 rounded-md hover:bg-primary/10">
             <Shield className="h-4 w-4" />Super Admin
           </Link>
         )}
         <Link href="/" className="flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors py-2 px-3 rounded-md">
-          <ArrowLeft className="h-4 w-4" />Back to Store
+          <ArrowLeft className="h-4 w-4" />Retour à la boutique
         </Link>
         <button onClick={handleLogout} className="flex items-center w-full gap-2 text-sm text-red-400 hover:text-red-300 transition-colors py-2 px-3 rounded-md">
-          <LogOut className="h-4 w-4" />Logout
+          <LogOut className="h-4 w-4" />Déconnexion
         </button>
       </div>
     </div>
@@ -91,9 +119,14 @@ export function AdminSidebar({ activeSection, onChangeSection }: AdminSidebarPro
               <NavContent />
             </SheetContent>
           </Sheet>
-          <h2 className="text-xl font-black text-gradient-roc">R⊙C DZ</h2>
+          <img src="/logo.png" alt="ROC DZ" style={{ height: "28px", width: "auto", objectFit: "contain" }} />
         </div>
-        <button onClick={handleLogout} className="text-red-400"><LogOut className="h-5 w-5" /></button>
+        <div className="flex items-center gap-2">
+          <button onClick={toggleTheme} className="text-muted-foreground hover:text-primary p-1">
+            {theme === "dark" ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+          </button>
+          <button onClick={handleLogout} className="text-red-400"><LogOut className="h-5 w-5" /></button>
+        </div>
       </div>
     </>
   );

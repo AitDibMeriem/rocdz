@@ -9,6 +9,7 @@ import { Trash2, ShoppingCart, CheckCircle2, Plus, Minus, Home, Building2, Tag, 
 import { Link } from "wouter";
 import { calcDelivery } from "@/lib/deliveryFees";
 import { useLang } from "@/context/LangContext";
+import { addNotification } from "@/lib/notifications";
 
 const BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 
@@ -141,6 +142,7 @@ export default function Cart() {
       });
       if (!res.ok) throw new Error("Erreur serveur");
       clearCart();
+      addNotification(t.notifications.orderTitle, t.notifications.orderMsg);
       setSuccess(true);
     } catch {
       toast({ title: "Erreur", description: "Impossible de passer la commande. Réessayez.", variant: "destructive" });
