@@ -75,7 +75,7 @@ export function Navbar() {
   return (
     <nav className="navbar">
       <div className="nav-logo" onClick={() => { navigate("/"); setMenuOpen(false); }} style={{ cursor: "pointer" }}>
-        <img src="/logo.png" alt="ROC DZ" style={{ height: "38px", width: "auto", objectFit: "contain" }} />
+        <img src="/logo.png" alt="ROC DZ" style={{ height: "56px", width: "auto", objectFit: "contain" }} />
       </div>
 
       <ul className="nav-links">

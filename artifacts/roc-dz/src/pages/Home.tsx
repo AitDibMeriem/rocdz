@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { useGetFeaturedLaptop } from "@workspace/api-client-react";
 import { Link } from "wouter";
+import { useLang } from "@/context/LangContext";
 
 const BRAND_LOGOS = [
   { name: "Dell", img: "https://upload.wikimedia.org/wikipedia/commons/4/48/Dell_Logo.svg" },
@@ -15,30 +16,30 @@ const BRAND_LOGOS = [
 ];
 
 const LAPTOP_GRID = [
-  { img: "/brand-hp.png", tag: "tag-gaming", tagLabel: "Gaming", name: "HP", href: "/models?brand=HP" },
-  { img: "/brand-apple-hero.png", tag: "tag-premium", tagLabel: "Premium", name: "Apple", href: "/models?brand=Apple" },
-  { img: "/brand-lenovo3.png", tag: "tag-pro", tagLabel: "Pro", name: "Lenovo", href: "/models?brand=Lenovo" },
-  { img: "/brand-msi.png", tag: "tag-gaming", tagLabel: "Gaming", name: "MSI", href: "/models?brand=MSI" },
-  { img: "/brand-asus.png", tag: "tag-performance", tagLabel: "Performance", name: "ASUS", href: "/models?brand=ASUS" },
-  { img: "/brand-acer.png", tag: "tag-polyvalent", tagLabel: "Polyvalent", name: "Acer", href: "/models?brand=Acer" },
-  { img: "/brand-dell3.png", tag: "tag-fiabilite", tagLabel: "Fiabilité", name: "Dell", href: "/models?brand=Dell" },
-  { img: "/brand-surface.png", tag: "tag-premium", tagLabel: "Premium", name: "Microsoft Surface", href: "/models?brand=Microsoft" },
-  { img: "/brand-samsung.png", tag: "tag-performance", tagLabel: "Performance", name: "Samsung", href: "/models?brand=Samsung" },
-  { img: "/brand-huawei.png", tag: "tag-pro", tagLabel: "Pro", name: "Huawei", href: "/models?brand=Huawei" },
+  { img: "/brand-hp.png", tag: "tag-gaming", tagKey: "tagGaming", name: "HP", href: "/models?brand=HP" },
+  { img: "/brand-apple-hero.png", tag: "tag-premium", tagKey: "tagPremium", name: "Apple", href: "/models?brand=Apple" },
+  { img: "/brand-lenovo3.png", tag: "tag-pro", tagKey: "tagPro", name: "Lenovo", href: "/models?brand=Lenovo" },
+  { img: "/brand-msi.png", tag: "tag-gaming", tagKey: "tagGaming", name: "MSI", href: "/models?brand=MSI" },
+  { img: "/brand-asus.png", tag: "tag-performance", tagKey: "tagPerformance", name: "ASUS", href: "/models?brand=ASUS" },
+  { img: "/brand-acer.png", tag: "tag-polyvalent", tagKey: "tagPolyvalent", name: "Acer", href: "/models?brand=Acer" },
+  { img: "/brand-dell3.png", tag: "tag-fiabilite", tagKey: "tagFiabilite", name: "Dell", href: "/models?brand=Dell" },
+  { img: "/brand-surface.png", tag: "tag-premium", tagKey: "tagPremium", name: "Microsoft", href: "/models?brand=Microsoft" },
+  { img: "/brand-samsung.png", tag: "tag-performance", tagKey: "tagPerformance", name: "Samsung", href: "/models?brand=Samsung" },
+  { img: "/brand-huawei.png", tag: "tag-pro", tagKey: "tagPro", name: "Huawei", href: "/models?brand=Huawei" },
 ];
 
 const ACC_GRID = [
-  { img: "/acc-support.png", tag: "tag-setup", tagLabel: "Setup", name: "Supports", href: "/accessories?category=Hubs & Adapters" },
-  { img: "/acc-cables.png", tag: "tag-connect", tagLabel: "Connectique", name: "Câbles", href: "/accessories?category=Hubs & Adapters" },
-  { img: "/acc-chargeur.png", tag: "tag-power", tagLabel: "Alimentation", name: "Chargeurs", href: "/accessories?category=Chargers" },
-  { img: "/acc-manette2.png", tag: "tag-gaming", tagLabel: "Gaming", name: "Manettes", href: "/accessories?category=Controllers" },
-  { img: "/acc-stockage.png", tag: "tag-storage", tagLabel: "Stockage", name: "Stockage", href: "/accessories?category=Other" },
-  { img: "/acc-webcam.png", tag: "tag-video", tagLabel: "Vidéo", name: "Webcams", href: "/accessories?category=Other" },
-  { img: "/acc-sacados.png", tag: "tag-transport", tagLabel: "Transport", name: "Sac à dos", href: "/accessories?category=Bags" },
-  { img: "/acc-headset3.png", tag: "tag-audio", tagLabel: "Audio", name: "Casques", href: "/accessories?category=Headsets" },
-  { img: "/acc-mouse3.png", tag: "tag-precision", tagLabel: "Précision", name: "Souris", href: "/accessories?category=Mice" },
-  { img: "/acc-clavier3.png", tag: "tag-saisie", tagLabel: "Saisie", name: "Claviers", href: "/accessories?category=Keyboards" },
-  { img: "/acc-monitor2.png", tag: "tag-display", tagLabel: "Affichage", name: "Moniteurs", href: "/accessories?category=Monitors" },
+  { img: "/acc-support.png", tag: "tag-setup", tagKey: "tagSetup", nameKey: "accSupports", href: "/accessories?category=Hubs & Adapters" },
+  { img: "/acc-cables.png", tag: "tag-connect", tagKey: "tagConnect", nameKey: "accCables", href: "/accessories?category=Hubs & Adapters" },
+  { img: "/acc-chargeur.png", tag: "tag-power", tagKey: "tagPower", nameKey: "accChargeurs", href: "/accessories?category=Chargers" },
+  { img: "/acc-manette2.png", tag: "tag-gaming", tagKey: "tagGaming", nameKey: "accManettes", href: "/accessories?category=Controllers" },
+  { img: "/acc-stockage.png", tag: "tag-storage", tagKey: "tagStorage", nameKey: "accStockage", href: "/accessories?category=Other" },
+  { img: "/acc-webcam.png", tag: "tag-video", tagKey: "tagVideo", nameKey: "accWebcams", href: "/accessories?category=Other" },
+  { img: "/acc-sacados.png", tag: "tag-transport", tagKey: "tagTransport", nameKey: "accSacados", href: "/accessories?category=Bags" },
+  { img: "/acc-headset3.png", tag: "tag-audio", tagKey: "tagAudio", nameKey: "accCasques", href: "/accessories?category=Headsets" },
+  { img: "/acc-mouse3.png", tag: "tag-precision", tagKey: "tagPrecision", nameKey: "accSouris", href: "/accessories?category=Mice" },
+  { img: "/acc-clavier3.png", tag: "tag-saisie", tagKey: "tagSaisie", nameKey: "accClaviers", href: "/accessories?category=Keyboards" },
+  { img: "/acc-monitor2.png", tag: "tag-display", tagKey: "tagDisplay", nameKey: "accMoniteurs", href: "/accessories?category=Monitors" },
 ];
 
 const REVIEWS = [
@@ -52,6 +53,11 @@ const REVIEWS = [
 
 export default function Home() {
   const { data: featured } = useGetFeaturedLaptop();
+  const { t, isRTL } = useLang();
+  const h = t.home;
+
+  const getTag = (key: string) => (h as Record<string, string>)[key] ?? key;
+  const getName = (key: string) => (h as Record<string, string>)[key] ?? key;
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -76,7 +82,7 @@ export default function Home() {
   }, []);
 
   return (
-    <>
+    <div dir={isRTL ? "rtl" : "ltr"}>
       <div className="circuit-overlay" />
 
       {/* HERO */}
@@ -85,18 +91,15 @@ export default function Home() {
           <div className="hero-text fade-up">
             <div className="hero-label">
               <div className="line" />
-              <span>Republic of Computer</span>
+              <span>{h.heroLabel}</span>
             </div>
             <h1>
-              <span className="white">L'Élite du</span><br />
-              <span className="gradient">PC Portable.</span>
+              <span className="white">{h.heroH1}</span><br />
+              <span className="gradient">{h.heroH2}</span>
             </h1>
-            <p className="hero-desc">
-              Découvrez notre sélection de PC portables (neufs et d'occasion) testés et garantis,
-              accompagnés d'accessoires premium. Livraison disponible dans les 58 wilayas.
-            </p>
+            <p className="hero-desc">{h.heroDesc}</p>
             <Link href="/models" className="btn-white">
-              Voir les modèles
+              {h.heroCta}
               <span className="arrow">→</span>
             </Link>
           </div>
@@ -115,7 +118,7 @@ export default function Home() {
         </div>
 
         <div className="scroll-indicator">
-          <span>Défiler pour explorer</span>
+          <span>{h.heroScroll}</span>
           <div className="scroll-line" />
         </div>
 
@@ -139,12 +142,12 @@ export default function Home() {
       {/* CATEGORIES */}
       <section className="categories" id="categories">
         <div className="category-header">
-          <div className="section-label">Catégories</div>
-          <h2>Explorez nos<br /><span className="gradient">univers.</span></h2>
+          <div className="section-label">{h.catLabel}</div>
+          <h2>{h.catTitle}<br /><span className="gradient">{h.catTitleGrad}</span></h2>
         </div>
 
-        <div className="category-subtitle">LAPTOP</div>
-        <div className="category-subtitle-desc">Marques disponibles</div>
+        <div className="category-subtitle">{h.catLaptopSub}</div>
+        <div className="category-subtitle-desc">{h.catLaptopDesc}</div>
 
         <div className="brand-grid">
           {LAPTOP_GRID.map((item) => (
@@ -153,27 +156,27 @@ export default function Home() {
                 <img src={item.img} alt={item.name} />
               </div>
               <div className="brand-card-body">
-                <div className={`card-tag ${item.tag}`}><span className="dot" />{item.tagLabel}</div>
+                <div className={`card-tag ${item.tag}`}><span className="dot" />{getTag(item.tagKey)}</div>
                 <h3>{item.name}</h3>
-                <div className="explore">EXPLORER COLLECTION →</div>
+                <div className="explore">{h.catExplore}</div>
               </div>
             </Link>
           ))}
         </div>
 
         <div style={{ marginTop: "3rem" }}>
-          <div className="category-subtitle">ACCESSOIRES</div>
-          <div className="category-subtitle-desc">Équipez votre setup</div>
+          <div className="category-subtitle">{h.catAccSub}</div>
+          <div className="category-subtitle-desc">{h.catAccDesc}</div>
           <div className="brand-grid">
             {ACC_GRID.map((item) => (
-              <Link key={item.name} href={item.href} className="brand-card">
+              <Link key={item.nameKey} href={item.href} className="brand-card">
                 <div className="brand-card-img">
-                  <img src={item.img} alt={item.name} />
+                  <img src={item.img} alt={getName(item.nameKey)} />
                 </div>
                 <div className="brand-card-body">
-                  <div className={`card-tag ${item.tag}`}><span className="dot" />{item.tagLabel}</div>
-                  <h3>{item.name}</h3>
-                  <div className="explore">EXPLORER COLLECTION →</div>
+                  <div className={`card-tag ${item.tag}`}><span className="dot" />{getTag(item.tagKey)}</div>
+                  <h3>{getName(item.nameKey)}</h3>
+                  <div className="explore">{h.catExplore}</div>
                 </div>
               </Link>
             ))}
@@ -184,32 +187,32 @@ export default function Home() {
       {/* LOOKING FOR */}
       <section className="looking-for">
         <div className="section-title fade-up">
-          <span style={{ display: "block", fontSize: "clamp(0.7rem,2vw,0.85rem)", letterSpacing: "3px", color: "var(--pink)", textTransform: "uppercase", marginBottom: "0.5rem" }}>TROUVEZ VOTRE MACHINE</span>
-          Que recherchez-vous <span className="gradient">?</span>
+          <span style={{ display: "block", fontSize: "clamp(0.7rem,2vw,0.85rem)", letterSpacing: "3px", color: "var(--pink)", textTransform: "uppercase", marginBottom: "0.5rem" }}>{h.lookingSub}</span>
+          {h.lookingTitle} <span className="gradient">?</span>
         </div>
         <div className="looking-grid">
           <Link href="/models?condition=new" className="tilt-card fade-left">
-            <div className="badge badge-new">Neuf</div>
-            <img src="/laptop-occasion.png" alt="Laptops Neufs" onError={e => { (e.currentTarget as HTMLImageElement).src = "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=600&q=80"; }} />
+            <div className="badge badge-new">{h.newBadge}</div>
+            <img src="/laptop-occasion.png" alt={h.newTitle} onError={e => { (e.currentTarget as HTMLImageElement).src = "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=600&q=80"; }} />
             <div className="tilt-card-body">
-              <h3>Laptops Neufs</h3>
-              <div className="sub">Sous emballage d'origine</div>
-              <p>PC portables neufs, dernière génération, idéaux pour le travail, les études ou le gaming. Performance et fiabilité garanties.</p>
+              <h3>{h.newTitle}</h3>
+              <div className="sub">{h.newCardSub}</div>
+              <p>{h.newDesc}</p>
               <span className="link">
-                Voir les modèles →
+                {h.newLink}
                 <span className="arrow-circle">→</span>
               </span>
             </div>
           </Link>
           <Link href="/models?condition=refurbished" className="tilt-card fade-right">
-            <div className="badge badge-refurb" style={{ background: "linear-gradient(135deg,#f59e0b,#d97706)" }}>Occasion</div>
-            <img src="/laptop-neuf.png" alt="Bonne Occasion" onError={e => { (e.currentTarget as HTMLImageElement).src = "https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=600&q=80"; }} />
+            <div className="badge badge-refurb" style={{ background: "linear-gradient(135deg,#f59e0b,#d97706)" }}>{h.occasionBadge}</div>
+            <img src="/laptop-neuf.png" alt={h.occasionTitle} onError={e => { (e.currentTarget as HTMLImageElement).src = "https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=600&q=80"; }} />
             <div className="tilt-card-body">
-              <h3>Bonne Occasion</h3>
-              <div className="sub">Certifié &amp; garanti ROC DZ</div>
-              <p>PC portables d'occasion en excellent état, testés et vérifiés par nos experts. Performance au meilleur prix avec la garantie ROC DZ.</p>
+              <h3>{h.occasionTitle}</h3>
+              <div className="sub">{h.occasionCardSub}</div>
+              <p>{h.occasionDesc}</p>
               <span className="link">
-                Voir les modèles →
+                {h.occasionLink}
                 <span className="arrow-circle">→</span>
               </span>
             </div>
@@ -222,37 +225,37 @@ export default function Home() {
         <div className="pick-container">
           <div className="pick-title-stack fade-left">
             <div className="label">
-              {featured ? `Product of the day — Ref: ROC-${featured.id}` : "Product of the day"}
+              {featured ? `${h.pickRef}${featured.id}` : h.pickDefault}
             </div>
             <h2>
-              <span className="white">THE</span><br />
-              <span className="gradient">PICK</span><br />
-              <span className="white">OF THE</span><br />
-              <span className="gradient">DAY</span>
+              <span className="white">{h.pickH1}</span>
+              {h.pickH2 && <><br /><span className="gradient">{h.pickH2}</span></>}
+              {h.pickH3 && <><br /><span className="white">{h.pickH3}</span></>}
+              {h.pickH4 && <><br /><span className="gradient">{h.pickH4}</span></>}
             </h2>
             {featured && (
               <div className="pick-specs">
                 {featured.processor && (
                   <div className="spec-row">
-                    <span className="label">Processor</span>
+                    <span className="label">{h.pickProc}</span>
                     <span className="value">{featured.processor}</span>
                   </div>
                 )}
                 {featured.gpu && (
                   <div className="spec-row">
-                    <span className="label">Graphics</span>
+                    <span className="label">{h.pickGpu}</span>
                     <span className="value">{featured.gpu}</span>
                   </div>
                 )}
                 {featured.ram && (
                   <div className="spec-row">
-                    <span className="label">Memory</span>
+                    <span className="label">{h.pickRam}</span>
                     <span className="value">{featured.ram}GB {featured.ramType}</span>
                   </div>
                 )}
                 {featured.storage && (
                   <div className="spec-row">
-                    <span className="label">Storage</span>
+                    <span className="label">{h.pickStorage}</span>
                     <span className="value">{featured.storage}GB {featured.storageType}</span>
                   </div>
                 )}
@@ -263,28 +266,28 @@ export default function Home() {
           <div className="pick-image scale-in">
             <img
               src={featured?.imageUrl || "https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=600&q=80"}
-              alt={featured?.title || "Pick of the day"}
+              alt={featured?.title || h.pickDefault}
             />
           </div>
 
           <div className="pick-info fade-right">
-            <div className="status-badge">SYSTEM_STATUS: OPTIMAL</div>
-            <div className="price-label">Current Value</div>
+            <div className="status-badge">{h.pickStatus}</div>
+            <div className="price-label">{h.pickPriceLabel}</div>
             {featured ? (
               <>
                 <div className="price">{featured.price.toLocaleString("fr-DZ")} <span>DA</span></div>
-                <div className="stock">{featured.stockQuantity > 0 ? `${featured.stockQuantity} in stock` : "Out of Stock"}</div>
+                <div className="stock">{featured.stockQuantity > 0 ? `${featured.stockQuantity} ${h.pickInStock}` : h.pickOutOfStock}</div>
                 <Link href={`/laptop/${featured.id}`} className="btn-product">
-                  View Product →
+                  {h.pickBtn}
                 </Link>
               </>
             ) : (
-              <div className="price" style={{ fontSize: "1.5rem" }}>Loading…</div>
+              <div className="price" style={{ fontSize: "1.5rem" }}>{h.pickLoading}</div>
             )}
             <div className="pick-trust">
-              <p>// AUTHENTIFIÉ ROC DZ</p>
-              <p>// GARANTIE 6 MOIS</p>
-              <p>// LIVRAISON EXPRESS &amp; SÉCURISÉE</p>
+              <p>{h.pickAuth}</p>
+              <p>{h.pickGarantie}</p>
+              <p>{h.pickLivraison}</p>
             </div>
           </div>
         </div>
@@ -295,12 +298,10 @@ export default function Home() {
         <div className="glass-container fade-up">
           <div className="glass-header">
             <div className="left">
-              <div className="label"><div className="line" />Our Commitments</div>
-              <h2>Why choose<br /><span className="gradient">us?</span></h2>
+              <div className="label"><div className="line" />{h.whyCommitments}</div>
+              <h2>{h.whyTitle}<br /><span className="gradient">{h.whyTitleGrad}</span></h2>
             </div>
-            <div className="right">
-              Our selection of the best products, chosen for their quality and exceptional value
-            </div>
+            <div className="right">{h.whySub}</div>
           </div>
           <div className="glass-grid">
             <div className="glass-card">
@@ -309,8 +310,8 @@ export default function Home() {
                 <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z" /></svg>
                 <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
               </div>
-              <h3>Tested &amp; Certified PCs</h3>
-              <p>Every computer is checked and tested to guarantee performance and reliability.</p>
+              <h3>{h.whyC1Title}</h3>
+              <p>{h.whyC1Desc}</p>
             </div>
             <div className="glass-card">
               <div className="bg-num">02</div>
@@ -318,8 +319,8 @@ export default function Home() {
                 <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
                 <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>
               </div>
-              <h3>ROC DZ Guarantee</h3>
-              <p>Buy with confidence with a warranty on our products.</p>
+              <h3>{h.whyC2Title}</h3>
+              <p>{h.whyC2Desc}</p>
             </div>
             <div className="glass-card">
               <div className="bg-num">03</div>
@@ -327,8 +328,8 @@ export default function Home() {
                 <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                 <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M5 13l4 4L19 7" /></svg>
               </div>
-              <h3>Best value for money</h3>
-              <p>New and pre-owned PCs selected to offer the best performance at the best price.</p>
+              <h3>{h.whyC3Title}</h3>
+              <p>{h.whyC3Desc}</p>
             </div>
             <div className="glass-card">
               <div className="bg-num">04</div>
@@ -336,8 +337,8 @@ export default function Home() {
                 <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
                 <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
               </div>
-              <h3>Delivery to all 58 wilayas</h3>
-              <p>Receive your order anywhere in Algeria quickly and safely.</p>
+              <h3>{h.whyC4Title}</h3>
+              <p>{h.whyC4Desc}</p>
             </div>
           </div>
         </div>
@@ -349,12 +350,12 @@ export default function Home() {
           <div className="tracking-cta-left">
             <div className="tracking-cta-icon">📦</div>
             <div className="tracking-cta-text">
-              <h3>Suivre ma commande</h3>
-              <p>Entrez votre numéro de téléphone pour voir l'état de votre commande en temps réel.</p>
+              <h3>{h.trackTitle}</h3>
+              <p>{h.trackDesc}</p>
             </div>
           </div>
           <Link href="/suivi" className="tracking-cta-btn">
-            🔍 Suivre ma commande
+            {h.trackBtn}
           </Link>
         </div>
       </div>
@@ -362,8 +363,8 @@ export default function Home() {
       {/* AVIS CLIENTS */}
       <section className="reviews-section">
         <div className="reviews-header fade-up">
-          <div className="section-label">Avis Clients</div>
-          <h2>Ils nous font <span className="gradient">confiance.</span></h2>
+          <div className="section-label">{h.reviewsLabel}</div>
+          <h2>{h.reviewsTitle} <span className="gradient">{h.reviewsTitleGrad}</span></h2>
           <a
             href="https://maps.app.goo.gl/GaKYnMnz1H6QiXjHA"
             target="_blank"
@@ -371,7 +372,7 @@ export default function Home() {
             className="google-reviews-link"
           >
             <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12.48 10.92v3.28h7.84c-.24 1.84-.853 3.187-1.787 4.133-1.147 1.147-2.933 2.4-6.053 2.4-4.827 0-8.6-3.893-8.6-8.72s3.773-8.72 8.6-8.72c2.6 0 4.507 1.027 5.907 2.347l2.307-2.307C18.747 1.44 16.133 0 12.48 0 5.867 0 .307 5.387.307 12s5.56 12 12.173 12c3.573 0 6.267-1.173 8.373-3.36 2.16-2.16 2.84-5.213 2.84-7.667 0-.76-.053-1.467-.173-2.053H12.48z"/></svg>
-            Voir sur Google Maps
+            {h.reviewsGoogle}
           </a>
         </div>
         <div className="reviews-grid">
@@ -383,7 +384,7 @@ export default function Home() {
                 <div className="review-avatar">{r.name[0]}</div>
                 <div>
                   <div className="review-name">{r.name}</div>
-                  <div className="review-source">VIA GOOGLE</div>
+                  <div className="review-source">{h.reviewsSource}</div>
                 </div>
               </div>
             </div>
@@ -398,6 +399,6 @@ export default function Home() {
       >
         ↑
       </button>
-    </>
+    </div>
   );
 }
