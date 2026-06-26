@@ -3,15 +3,15 @@ import { useGetFeaturedLaptop } from "@workspace/api-client-react";
 import { Link } from "wouter";
 
 const BRAND_LOGOS = [
-  { name: "Dell", img: "/brand-dell3.png" },
-  { name: "HP", img: "/brand-hp.png" },
-  { name: "Lenovo", img: "/brand-lenovo3.png" },
-  { name: "ASUS", img: "/brand-asus.png" },
-  { name: "MSI", img: "/brand-msi.png" },
-  { name: "Apple", img: "/brand-apple3.png" },
-  { name: "Acer", img: "/brand-acer.png" },
-  { name: "Samsung", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/24/Samsung_Logo.svg/200px-Samsung_Logo.svg.png" },
-  { name: "Huawei", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e8/Huawei_Logo.svg/200px-Huawei_Logo.svg.png" },
+  { name: "Dell", img: "https://upload.wikimedia.org/wikipedia/commons/4/48/Dell_Logo.svg" },
+  { name: "HP", img: "https://upload.wikimedia.org/wikipedia/commons/a/ad/HP_logo_2012.svg" },
+  { name: "Lenovo", img: "/brand-lenovo-logo.png" },
+  { name: "ASUS", img: "https://upload.wikimedia.org/wikipedia/commons/2/2e/ASUS_Logo.svg" },
+  { name: "MSI", img: "https://upload.wikimedia.org/wikipedia/commons/1/13/MSI_Logo.svg" },
+  { name: "Apple", img: "https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg" },
+  { name: "Acer", img: "https://upload.wikimedia.org/wikipedia/commons/0/00/Acer_2011.svg" },
+  { name: "Samsung", img: "https://upload.wikimedia.org/wikipedia/commons/2/24/Samsung_Logo.svg" },
+  { name: "Huawei", img: "https://upload.wikimedia.org/wikipedia/commons/e/e8/Huawei_Logo.svg" },
 ];
 
 const LAPTOP_GRID = [
@@ -122,14 +122,14 @@ export default function Home() {
         <div className="brand-marquee">
           <div className="marquee-track">
             {[...BRAND_LOGOS, ...BRAND_LOGOS, ...BRAND_LOGOS].map((b, i) => (
-              <span key={i} className="brand-item" style={{ display: "inline-flex", alignItems: "center", gap: "6px", padding: "0 4px" }}>
+              <span key={i} className="brand-item" style={{ display: "inline-flex", alignItems: "center", padding: "0 16px" }}>
                 <img
                   src={b.img}
                   alt={b.name}
-                  style={{ height: "20px", width: "auto", maxWidth: "64px", objectFit: "contain", background: "rgba(255,255,255,0.12)", borderRadius: "4px", padding: "2px 5px" }}
-                  onError={e => { (e.currentTarget as HTMLImageElement).style.display = "none"; }}
+                  style={{ height: "22px", width: "auto", maxWidth: "80px", objectFit: "contain", filter: "brightness(0) invert(1)", opacity: 0.75 }}
+                  onError={e => { const el = e.currentTarget as HTMLImageElement; el.style.display = "none"; el.nextElementSibling && ((el.nextElementSibling as HTMLElement).style.display = "inline"); }}
                 />
-                <span style={{ fontSize: "0.65rem" }}>{b.name}</span>
+                <span style={{ display: "none", fontSize: "0.8rem", fontWeight: 700, letterSpacing: "1px", opacity: 0.7 }}>{b.name}</span>
               </span>
             ))}
           </div>
@@ -190,7 +190,7 @@ export default function Home() {
         <div className="looking-grid">
           <Link href="/models?condition=new" className="tilt-card fade-left">
             <div className="badge badge-new">Neuf</div>
-            <img src="/laptop-neuf.png" alt="Laptops Neufs" onError={e => { (e.currentTarget as HTMLImageElement).src = "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=600&q=80"; }} />
+            <img src="/laptop-occasion.png" alt="Laptops Neufs" onError={e => { (e.currentTarget as HTMLImageElement).src = "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=600&q=80"; }} />
             <div className="tilt-card-body">
               <h3>Laptops Neufs</h3>
               <div className="sub">Sous emballage d'origine</div>
@@ -203,7 +203,7 @@ export default function Home() {
           </Link>
           <Link href="/models?condition=refurbished" className="tilt-card fade-right">
             <div className="badge badge-refurb" style={{ background: "linear-gradient(135deg,#f59e0b,#d97706)" }}>Occasion</div>
-            <img src="/laptop-occasion.png" alt="Bonne Occasion" onError={e => { (e.currentTarget as HTMLImageElement).src = "https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=600&q=80"; }} />
+            <img src="/laptop-neuf.png" alt="Bonne Occasion" onError={e => { (e.currentTarget as HTMLImageElement).src = "https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=600&q=80"; }} />
             <div className="tilt-card-body">
               <h3>Bonne Occasion</h3>
               <div className="sub">Certifié &amp; garanti ROC DZ</div>

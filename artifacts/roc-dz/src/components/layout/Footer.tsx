@@ -1,9 +1,11 @@
 import { Link } from "wouter";
 import { useLang } from "@/context/LangContext";
-import { Phone, MapPin, Clock, Instagram } from "lucide-react";
+import { Phone, MapPin, Clock, Instagram, Facebook, Youtube } from "lucide-react";
 
 const MAPS_URL = "https://maps.app.goo.gl/oSViRUVb9935mY6z9";
-const INSTAGRAM_URL = "https://www.instagram.com/rocdz";
+const INSTAGRAM_URL = "https://www.instagram.com/rocdz_/";
+const FACEBOOK_URL = "https://web.facebook.com/republicofcomputerdz";
+const YOUTUBE_URL = "https://www.youtube.com/@republicofcomputerdz";
 const DEV_WHATSAPP = "https://wa.me/213796238304";
 
 export function Footer() {
@@ -52,7 +54,15 @@ export function Footer() {
               </a>
               <a href={INSTAGRAM_URL} target="_blank" rel="noopener noreferrer"
                 style={{ color: "#e1306c", textDecoration: "none", fontWeight: 600, fontSize: "0.9rem", display: "flex", alignItems: "center", gap: "6px" }}>
-                <Instagram size={16} /> {c.instagram}
+                <Instagram size={16} /> Instagram
+              </a>
+              <a href={FACEBOOK_URL} target="_blank" rel="noopener noreferrer"
+                style={{ color: "#1877f2", textDecoration: "none", fontWeight: 600, fontSize: "0.9rem", display: "flex", alignItems: "center", gap: "6px" }}>
+                <Facebook size={16} /> Facebook
+              </a>
+              <a href={YOUTUBE_URL} target="_blank" rel="noopener noreferrer"
+                style={{ color: "#ff0000", textDecoration: "none", fontWeight: 600, fontSize: "0.9rem", display: "flex", alignItems: "center", gap: "6px" }}>
+                <Youtube size={16} /> YouTube
               </a>
             </div>
           </div>

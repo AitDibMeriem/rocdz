@@ -1,7 +1,9 @@
 import { useLang } from "@/context/LangContext";
-import { Instagram, MapPin, CheckCircle2 } from "lucide-react";
+import { Instagram, MapPin, CheckCircle2, Facebook, Youtube } from "lucide-react";
 
-const INSTAGRAM_URL = "https://www.instagram.com/rocdz";
+const INSTAGRAM_URL = "https://www.instagram.com/rocdz_/";
+const FACEBOOK_URL = "https://web.facebook.com/republicofcomputerdz";
+const YOUTUBE_URL = "https://www.youtube.com/@republicofcomputerdz";
 const MAPS_URL = "https://maps.app.goo.gl/oSViRUVb9935mY6z9";
 
 export default function About() {
@@ -30,16 +32,38 @@ export default function About() {
           </p>
         </div>
 
-        <a
-          href={INSTAGRAM_URL}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="flex items-center gap-3 px-6 py-4 rounded-2xl font-bold text-white transition-all hover:scale-[1.02]"
-          style={{ background: "linear-gradient(135deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888)", textDecoration: "none" }}
-        >
-          <Instagram size={22} />
-          <span>{a.followUs} — @rocdz</span>
-        </a>
+        <div className="flex flex-col sm:flex-row gap-3">
+          <a
+            href={INSTAGRAM_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-3 px-6 py-4 rounded-2xl font-bold text-white transition-all hover:scale-[1.02] flex-1 justify-center"
+            style={{ background: "linear-gradient(135deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888)", textDecoration: "none" }}
+          >
+            <Instagram size={20} />
+            <span>@rocdz_</span>
+          </a>
+          <a
+            href={FACEBOOK_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-3 px-6 py-4 rounded-2xl font-bold text-white transition-all hover:scale-[1.02] flex-1 justify-center"
+            style={{ background: "#1877f2", textDecoration: "none" }}
+          >
+            <Facebook size={20} />
+            <span>Facebook</span>
+          </a>
+          <a
+            href={YOUTUBE_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-3 px-6 py-4 rounded-2xl font-bold text-white transition-all hover:scale-[1.02] flex-1 justify-center"
+            style={{ background: "#ff0000", textDecoration: "none" }}
+          >
+            <Youtube size={20} />
+            <span>YouTube</span>
+          </a>
+        </div>
 
         <div className="rounded-2xl p-8 border space-y-4" style={{ background: "var(--card)", borderColor: "var(--border-raw)" }}>
           <h2 className="text-2xl font-bold" style={{ color: "var(--text)" }}>{a.catalogTitle}</h2>
@@ -53,17 +77,6 @@ export default function About() {
         <div className="rounded-2xl p-8 border" style={{ background: "var(--card)", borderColor: "var(--border-raw)" }}>
           <p className="leading-relaxed" style={{ color: "var(--text-muted)" }}>{a.community}</p>
         </div>
-
-        <a
-          href={INSTAGRAM_URL}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="flex items-center gap-3 px-6 py-4 rounded-2xl font-bold text-white transition-all hover:scale-[1.02]"
-          style={{ background: "linear-gradient(135deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888)", textDecoration: "none" }}
-        >
-          <Instagram size={22} />
-          <span>{a.followUs} — @rocdz</span>
-        </a>
 
         <div className="rounded-2xl p-8 border" style={{ background: "var(--card)", borderColor: "var(--border-raw)" }}>
           <h2 className="text-2xl font-bold mb-6" style={{ color: "var(--text)" }}>{a.whyTitle}</h2>
@@ -79,6 +92,39 @@ export default function About() {
 
         <div className="rounded-2xl p-8 border" style={{ background: "linear-gradient(135deg,rgba(232,33,160,0.08),rgba(139,59,221,0.08))", borderColor: "rgba(232,33,160,0.25)" }}>
           <p className="text-lg font-medium leading-relaxed" style={{ color: "var(--text)" }}>{a.closing}</p>
+        </div>
+
+        <div className="flex flex-col sm:flex-row gap-3">
+          <a
+            href={INSTAGRAM_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-3 px-6 py-4 rounded-2xl font-bold text-white transition-all hover:scale-[1.02] flex-1 justify-center"
+            style={{ background: "linear-gradient(135deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888)", textDecoration: "none" }}
+          >
+            <Instagram size={20} />
+            <span>Instagram</span>
+          </a>
+          <a
+            href={FACEBOOK_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-3 px-6 py-4 rounded-2xl font-bold text-white transition-all hover:scale-[1.02] flex-1 justify-center"
+            style={{ background: "#1877f2", textDecoration: "none" }}
+          >
+            <Facebook size={20} />
+            <span>Facebook</span>
+          </a>
+          <a
+            href={YOUTUBE_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-3 px-6 py-4 rounded-2xl font-bold text-white transition-all hover:scale-[1.02] flex-1 justify-center"
+            style={{ background: "#ff0000", textDecoration: "none" }}
+          >
+            <Youtube size={20} />
+            <span>YouTube</span>
+          </a>
         </div>
 
         <a
