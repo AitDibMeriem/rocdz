@@ -2,6 +2,8 @@ import { useState, useRef } from "react";
 import { Upload, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
+const BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
+
 interface ImageUploadProps {
   value?: string;
   onChange: (url: string) => void;
@@ -22,14 +24,28 @@ export function ImageUpload({ value, onChange, label = "image or video", accept 
     setError(null);
     setUploading(true);
     try {
-      const formData = new FormData();
-      formData.append("file", file);
-      const res = await fetch("/api/upload", { method: "POST", body: formData });
-      if (!res.ok) throw new Error("Upload failed");
-      const data = (await res.json()) as { url: string };
-      onChange(data.url);
-    } catch {
-      setError("Upload failed. Please try again.");
+      const urlRes = await fetch(`${BASE}/api/storage/uploads/request-url`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: file.name,
+          size: file.size,
+          contentType: file.type || "application/octet-stream",
+        }),
+      });
+      if (!urlRes.ok) throw new Error("Impossible d'obtenir l'URL d'upload");
+      const { uploadURL, objectPath } = await urlRes.json() as { uploadURL: string; objectPath: string };
+
+      const putRes = await fetch(uploadURL, {
+        method: "PUT",
+        body: file,
+        headers: { "Content-Type": file.type || "application/octet-stream" },
+      });
+      if (!putRes.ok) throw new Error("Échec de l'upload");
+
+      onChange(`${BASE}/api/storage${objectPath}`);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Erreur d'upload");
     } finally {
       setUploading(false);
       if (inputRef.current) inputRef.current.value = "";
@@ -67,13 +83,13 @@ export function ImageUpload({ value, onChange, label = "image or video", accept 
           className="border-2 border-dashed border-white/10 rounded-lg p-6 flex flex-col items-center gap-2 cursor-pointer hover:border-primary/50 hover:bg-primary/5 transition-colors"
         >
           <Upload className="w-8 h-8 text-muted-foreground" />
-          <span className="text-sm text-muted-foreground">Click to upload {label}</span>
-          <span className="text-xs text-muted-foreground/50">Images & videos · max 100 MB</span>
+          <span className="text-sm text-muted-foreground">Cliquer pour uploader {label}</span>
+          <span className="text-xs text-muted-foreground/50">Images & vidéos · max 100 MB</span>
         </div>
       )}
 
       {error && <p className="text-xs text-destructive">{error}</p>}
-      {uploading && <p className="text-xs text-primary animate-pulse">Uploading…</p>}
+      {uploading && <p className="text-xs text-primary animate-pulse">Upload en cours…</p>}
 
       <Button
         type="button"
@@ -83,7 +99,7 @@ export function ImageUpload({ value, onChange, label = "image or video", accept 
         disabled={uploading}
         className="text-xs"
       >
-        {uploading ? "Uploading…" : value ? "Replace file" : "Choose file"}
+        {uploading ? "Upload en cours…" : value ? "Remplacer le fichier" : "Choisir un fichier"}
       </Button>
     </div>
   );

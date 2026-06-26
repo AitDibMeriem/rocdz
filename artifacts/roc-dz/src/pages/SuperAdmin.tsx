@@ -16,6 +16,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { useGetLaptopStats, useListLaptops } from "@workspace/api-client-react";
+import { ImageUpload } from "@/components/ImageUpload";
 
 const BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 
@@ -458,6 +459,7 @@ function CategoriesSA() {
   const [filterType, setFilterType] = useState<"all" | "laptop" | "accessory">("all");
   const [open, setOpen] = useState(false);
   const [editItem, setEditItem] = useState<any | null>(null);
+  const [editImageUrl, setEditImageUrl] = useState("");
   const [form, setForm] = useState({ name: "", type: "accessory", imageUrl: "" });
 
   const { data: categories = [], isLoading } = useQuery({
@@ -562,7 +564,7 @@ function CategoriesSA() {
                   </Badge>
                 </div>
                 <div className="flex gap-2 mt-2">
-                  <button onClick={() => setEditItem(cat)} className="flex-1 text-xs text-muted-foreground hover:text-primary transition-colors py-1.5 rounded-lg border border-border hover:border-primary/30 flex items-center justify-center gap-1">
+                  <button onClick={() => { setEditItem(cat); setEditImageUrl(cat.imageUrl || ""); }} className="flex-1 text-xs text-muted-foreground hover:text-primary transition-colors py-1.5 rounded-lg border border-border hover:border-primary/30 flex items-center justify-center gap-1">
                     <Edit className="w-3 h-3" />Modifier
                   </button>
                   <button onClick={() => deleteMutation.mutate(cat.id)} className="text-xs text-muted-foreground hover:text-red-400 transition-colors py-1.5 px-2 rounded-lg border border-border hover:border-red-400/30">
@@ -595,11 +597,10 @@ function CategoriesSA() {
               <Input value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} placeholder="Ex: Keyboards, HP, MSI..." className="bg-background mt-1" />
             </div>
             <div>
-              <Label>URL Photo (optionnel)</Label>
-              <Input value={form.imageUrl} onChange={e => setForm(f => ({ ...f, imageUrl: e.target.value }))} placeholder="https://..." className="bg-background mt-1" />
-              {form.imageUrl && (
-                <img src={form.imageUrl} alt="preview" className="mt-2 w-full h-24 object-cover rounded-lg bg-black/30" onError={e => (e.currentTarget.style.display = "none")} />
-              )}
+              <Label>Photo (optionnel)</Label>
+              <div className="mt-1">
+                <ImageUpload value={form.imageUrl} onChange={url => setForm(f => ({ ...f, imageUrl: url }))} label="photo de catégorie" accept="image/*" />
+              </div>
             </div>
           </div>
           <DialogFooter>
@@ -626,8 +627,10 @@ function CategoriesSA() {
                 <Input defaultValue={editItem.name} id="edit-name" className="bg-background mt-1" />
               </div>
               <div>
-                <Label>URL Photo</Label>
-                <Input defaultValue={editItem.imageUrl || ""} id="edit-img" placeholder="https://..." className="bg-background mt-1" />
+                <Label>Photo</Label>
+                <div className="mt-1">
+                  <ImageUpload value={editImageUrl} onChange={setEditImageUrl} label="photo de catégorie" accept="image/*" />
+                </div>
               </div>
             </div>
             <DialogFooter>
@@ -637,8 +640,7 @@ function CategoriesSA() {
                 disabled={editMutation.isPending}
                 onClick={() => {
                   const name = (document.getElementById("edit-name") as HTMLInputElement)?.value;
-                  const imageUrl = (document.getElementById("edit-img") as HTMLInputElement)?.value;
-                  editMutation.mutate({ id: editItem.id, name, imageUrl });
+                  editMutation.mutate({ id: editItem.id, name, imageUrl: editImageUrl });
                 }}
               >
                 {editMutation.isPending ? "Sauvegarde..." : "Sauvegarder"}
