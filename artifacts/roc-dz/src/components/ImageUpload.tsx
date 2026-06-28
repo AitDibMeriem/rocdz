@@ -43,7 +43,7 @@ export function ImageUpload({ value, onChange, label = "image or video", accept 
       });
       if (!putRes.ok) throw new Error("Échec de l'upload");
 
-      onChange(`${BASE}/api/storage${objectPath}`);
+      onChange(`/api/storage${objectPath}`);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Erreur d'upload");
     } finally {

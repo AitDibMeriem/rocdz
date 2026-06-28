@@ -1,24 +1,9 @@
 import { Router } from "express";
 import multer from "multer";
-import path from "path";
-import fs from "fs";
-import express from "express";
-
-const uploadsDir = path.resolve(process.cwd(), "uploads");
-if (!fs.existsSync(uploadsDir)) {
-  fs.mkdirSync(uploadsDir, { recursive: true });
-}
-
-const storage = multer.diskStorage({
-  destination: uploadsDir,
-  filename: (_req, file, cb) => {
-    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
-    cb(null, uniqueSuffix + path.extname(file.originalname));
-  },
-});
+import { ObjectStorageService } from "../lib/objectStorage";
 
 const upload = multer({
-  storage,
+  storage: multer.memoryStorage(),
   limits: { fileSize: 100 * 1024 * 1024 },
   fileFilter: (_req, file, cb) => {
     if (/^(image|video)\//.test(file.mimetype)) {
@@ -29,16 +14,35 @@ const upload = multer({
   },
 });
 
+const objectStorageService = new ObjectStorageService();
 const router = Router();
 
-router.use("/uploads", express.static(uploadsDir));
-
-router.post("/upload", upload.single("file"), (req, res) => {
+router.post("/upload", upload.single("file"), async (req, res) => {
   if (!req.file) {
     res.status(400).json({ error: "No file uploaded" });
     return;
   }
-  res.json({ url: `/api/uploads/${req.file.filename}` });
+  try {
+    const uploadURL = await objectStorageService.getObjectEntityUploadURL();
+    const objectPath = objectStorageService.normalizeObjectEntityPath(uploadURL);
+
+    const putRes = await fetch(uploadURL, {
+      method: "PUT",
+      body: req.file.buffer,
+      headers: { "Content-Type": req.file.mimetype || "application/octet-stream" },
+    });
+
+    if (!putRes.ok) {
+      req.log.error({ status: putRes.status }, "Object storage PUT failed");
+      res.status(500).json({ error: "Upload to storage failed" });
+      return;
+    }
+
+    res.json({ url: `/api/storage${objectPath}` });
+  } catch (err) {
+    req.log.error({ err }, "Upload to object storage failed");
+    res.status(500).json({ error: "Upload failed" });
+  }
 });
 
 export default router;
