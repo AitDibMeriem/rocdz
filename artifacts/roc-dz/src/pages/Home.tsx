@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, useCallback } from "react";
-import { useGetFeaturedLaptop } from "@workspace/api-client-react";
+import { useGetFeaturedLaptop, useListLaptops } from "@workspace/api-client-react";
 import { Link } from "wouter";
 import { useLang } from "@/context/LangContext";
 
@@ -31,15 +31,15 @@ function useCountUp(target: number, decimals = 0) {
 }
 
 const BRAND_LOGOS = [
-  { name: "Dell", img: "https://upload.wikimedia.org/wikipedia/commons/4/48/Dell_Logo.svg" },
-  { name: "HP", img: "https://upload.wikimedia.org/wikipedia/commons/a/ad/HP_logo_2012.svg" },
+  { name: "Dell", img: "/logo-dell.svg" },
+  { name: "HP", img: "/logo-hp.svg" },
   { name: "Lenovo", img: "/brand-lenovo-logo.png" },
-  { name: "ASUS", img: "https://upload.wikimedia.org/wikipedia/commons/2/2e/ASUS_Logo.svg" },
-  { name: "MSI", img: "https://upload.wikimedia.org/wikipedia/commons/1/13/MSI_Logo.svg" },
-  { name: "Apple", img: "https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg" },
-  { name: "Acer", img: "https://upload.wikimedia.org/wikipedia/commons/0/00/Acer_2011.svg" },
-  { name: "Samsung", img: "https://upload.wikimedia.org/wikipedia/commons/2/24/Samsung_Logo.svg" },
-  { name: "Huawei", img: "https://upload.wikimedia.org/wikipedia/commons/e/e8/Huawei_Logo.svg" },
+  { name: "ASUS", img: "/logo-asus.svg" },
+  { name: "MSI", img: "/logo-msi.svg" },
+  { name: "Apple", img: "/logo-apple.svg" },
+  { name: "Acer", img: "/logo-acer.svg" },
+  { name: "Samsung", img: "/logo-samsung.svg" },
+  { name: "Huawei", img: "/logo-huawei.svg" },
 ];
 
 const LAPTOP_GRID = [
@@ -80,8 +80,17 @@ const REVIEWS = [
 
 export default function Home() {
   const { data: featured } = useGetFeaturedLaptop();
+  const { data: allLaptops } = useListLaptops();
   const { t, isRTL } = useLang();
   const h = t.home;
+
+  // Dynamic brand grid: only show brands that have at least one laptop in DB
+  const activeBrands = new Set(
+    (allLaptops as { brand: string }[] ?? []).map(l => l.brand)
+  );
+  const dynamicLaptopGrid = LAPTOP_GRID.filter(item =>
+    activeBrands.size === 0 || activeBrands.has(item.name)
+  );
 
   const getTag = (key: string) => (h as Record<string, string>)[key] ?? key;
   const getName = (key: string) => (h as Record<string, string>)[key] ?? key;
@@ -169,6 +178,51 @@ export default function Home() {
 
       {/* STATS COUNTERS — ChiffresQuiParlent */}
       <StatsSection isRTL={isRTL} />
+
+      {/* CATEGORIES */}
+      <section className="categories" id="categories">
+        <div className="category-header">
+          <div className="section-label">{h.catLabel}</div>
+          <h2>{h.catTitle}<br /><span className="gradient">{h.catTitleGrad}</span></h2>
+        </div>
+
+        <div className="category-subtitle">{h.catLaptopSub}</div>
+        <div className="category-subtitle-desc">{h.catLaptopDesc}</div>
+
+        <div className="brand-grid">
+          {dynamicLaptopGrid.map((item) => (
+            <Link key={item.name} href={item.href} className="brand-card">
+              <div className="brand-card-img">
+                <img src={item.img} alt={item.name} />
+              </div>
+              <div className="brand-card-body">
+                <div className={`card-tag ${item.tag}`}><span className="dot" />{getTag(item.tagKey)}</div>
+                <h3>{item.name}</h3>
+                <div className="explore">{h.catExplore}</div>
+              </div>
+            </Link>
+          ))}
+        </div>
+
+        <div style={{ marginTop: "3rem" }}>
+          <div className="category-subtitle">{h.catAccSub}</div>
+          <div className="category-subtitle-desc">{h.catAccDesc}</div>
+          <div className="brand-grid">
+            {ACC_GRID.map((item) => (
+              <Link key={item.nameKey} href={item.href} className="brand-card">
+                <div className="brand-card-img">
+                  <img src={item.img} alt={getName(item.nameKey)} />
+                </div>
+                <div className="brand-card-body">
+                  <div className={`card-tag ${item.tag}`}><span className="dot" />{getTag(item.tagKey)}</div>
+                  <h3>{getName(item.nameKey)}</h3>
+                  <div className="explore">{h.catExplore}</div>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
 
       {/* LOOKING FOR */}
       <section className="looking-for">

@@ -65,6 +65,7 @@
 }
 
 :root {
+  color-scheme: dark;
   /* Using the dark theme colors by default as requested */
   --background: 266 88% 6%;
   --foreground: 0 0% 100%;
@@ -2081,3 +2082,30 @@ section { position: relative; z-index: 2; }
 .light-mode .card-title { color: rgba(20,16,16,0.85) !important; }
 /* product spec text */
 .light-mode .spec-badge { color: rgba(20,16,16,0.6) !important; }
+
+/* ── LOGO dark/light mode adjustments ───────────── */
+.nav-logo img {
+  filter: drop-shadow(0 0 8px rgba(232,33,160,0.25));
+  transition: filter 0.3s;
+}
+.light-mode .nav-logo img {
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.15));
+}
+
+/* ── SELECT native dropdown dark mode ────────────── */
+select {
+  color-scheme: dark;
+}
+.light-mode select {
+  color-scheme: light;
+}
+/* Admin select in light mode */
+.light-mode select option {
+  background: #fff0f8;
+  color: #141010;
+}
+
+/* ── DASHBOARD light mode: admin card borders ───── */
+.light-mode .bg-card { 
+  background-color: hsl(var(--card)) !important; 
+}
