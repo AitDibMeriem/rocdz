@@ -6,7 +6,7 @@ export const T = {
     home: {
       heroLabel: "REPUBLIC OF COMPUTER",
       heroH1: "L'Élite du", heroH2: "PC Portable.",
-      heroDesc: "Découvrez notre sélection de PC portables (neufs et d'occasion) testés et garantis, accompagnés d'accessoires premium. Livraison disponible dans les 68 wilayas.",
+      heroDesc: "Découvrez notre sélection de PC portables (neufs et d'occasion) testés et garantis, accompagnés d'accessoires premium. Livraison disponible dans les 58 wilayas.",
       heroCta: "Voir les modèles", heroScroll: "Défiler pour explorer",
       catLabel: "Catégories", catTitle: "Explorez nos", catTitleGrad: "univers.",
       catLaptopSub: "LAPTOPS", catLaptopDesc: "Marques disponibles",
@@ -41,7 +41,7 @@ export const T = {
       whyC1Title: "PC Testés & Certifiés", whyC1Desc: "Chaque ordinateur est vérifié et testé pour garantir performance et fiabilité.",
       whyC2Title: "Garantie ROC DZ", whyC2Desc: "Achetez en toute confiance avec une garantie sur nos produits.",
       whyC3Title: "Meilleur rapport qualité-prix", whyC3Desc: "PC neufs et d'occasion sélectionnés pour offrir la meilleure performance au meilleur prix.",
-      whyC4Title: "Livraison dans les 68 wilayas", whyC4Desc: "Recevez votre commande partout en Algérie, rapidement et en toute sécurité.",
+      whyC4Title: "Livraison dans les 58 wilayas", whyC4Desc: "Recevez votre commande partout en Algérie, rapidement et en toute sécurité.",
       trackTitle: "Suivre ma commande", trackDesc: "Entrez votre numéro de téléphone pour voir l'état de votre commande en temps réel.", trackBtn: "🔍 Suivre ma commande",
       reviewsLabel: "Avis Clients", reviewsTitle: "Ils nous font", reviewsTitleGrad: "confiance.",
       reviewsGoogle: "Voir sur Google Maps", reviewsSource: "VIA GOOGLE",
@@ -49,13 +49,13 @@ export const T = {
     hero: {
       label: "REPUBLIC OF COMPUTER",
       t1: "L'Élite du", t2: "PC Portable.",
-      desc: "Découvrez notre sélection de PC portables (neufs et d'occasion) testés et garantis, accompagnés d'accessoires premium. Livraison disponible dans les 68 wilayas.",
+      desc: "Découvrez notre sélection de PC portables (neufs et d'occasion) testés et garantis, accompagnés d'accessoires premium. Livraison disponible dans les 58 wilayas.",
       cta: "Voir les modèles", scroll: "Défiler pour explorer",
     },
     brands: { title: "Nos Marques", subtitle: "Les plus grandes marques disponibles", explore: "Explorer" },
     pick: { label: "SÉLECTION DU JOUR", badge: "Coup de cœur", outOfStock: "Rupture de stock", addToCart: "Ajouter au panier", buyNow: "Commander maintenant" },
     categories: { title: "Nos Collections", subtitle: "Catégories", keyboards: "Claviers", mice: "Souris", headsets: "Casques", monitors: "Écrans", controllers: "Manettes", bags: "Sacs", chargers: "Chargeurs", hubs: "Hubs & Adaptateurs", other: "Autre" },
-    why: { title: "Pourquoi ROC DZ ?", subtitle: "Confiance & Excellence", q1t: "Produits Authentiques", q1d: "Tous nos produits sont vérifiés et garantis. Aucun article défectueux ne quitte nos entrepôts.", q2t: "Livraison Rapide", q2d: "Livraison dans les 68 wilayas d'Algérie, avec suivi en temps réel.", q3t: "Support Client 7j/7", q3d: "Notre équipe est disponible tous les jours pour répondre à vos questions." },
+    why: { title: "Pourquoi ROC DZ ?", subtitle: "Confiance & Excellence", q1t: "Produits Authentiques", q1d: "Tous nos produits sont vérifiés et garantis. Aucun article défectueux ne quitte nos entrepôts.", q2t: "Livraison Rapide", q2d: "Livraison dans les 58 wilayas d'Algérie, avec suivi en temps réel.", q3t: "Support Client 7j/7", q3d: "Notre équipe est disponible tous les jours pour répondre à vos questions." },
     shop: {
       title: "Tous les modèles", filters: "Filtres", close: "Fermer", apply: "Appliquer", reset: "Réinitialiser",
       brand: "Marque", condition: "État", all: "Tous", newCond: "Neuf", refurbished: "Occasion", inStock: "En stock", price: "Prix (DA)", search: "Rechercher...",

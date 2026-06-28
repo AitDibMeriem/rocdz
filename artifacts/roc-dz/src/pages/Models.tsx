@@ -43,7 +43,7 @@ function usePerPage() {
 type Draft = { condition: ListLaptopsCondition | "all"; brand: string; priceRange: number[]; inStock: boolean };
 
 export default function Models() {
-  const { t, isRTL } = useLang();
+  const { t } = useLang();
   const perPage = usePerPage();
 
   const [search, setSearch] = useState(() => getURLParam("search"));
@@ -128,8 +128,7 @@ export default function Models() {
             <img
               src={BRAND_LOGOS[b]}
               alt={b}
-              className="brand-logo"
-              style={{ height: "16px", width: "36px", objectFit: "contain", opacity: draft.brand === b ? 1 : 0.5, transition: "opacity 0.15s" }}
+              style={{ height: "16px", width: "36px", objectFit: "contain", filter: "brightness(0) invert(1)", opacity: draft.brand === b ? 1 : 0.5, transition: "opacity 0.15s" }}
               onError={e => { (e.currentTarget as HTMLImageElement).style.display = "none"; }}
             />
             <span style={{ fontSize: "0.78rem", fontWeight: draft.brand === b ? 700 : 400, color: draft.brand === b ? "var(--pink)" : "rgba(255,255,255,0.55)" }}>{b}</span>
@@ -264,28 +263,19 @@ export default function Models() {
               </div>
             )}
 
-            {/* Mobile filter — left side panel */}
+            {/* Mobile filter panel */}
             {filtersOpen && (
-              <>
-                <div className="shop-mobile-overlay" onClick={() => setFiltersOpen(false)} />
-                <div className="shop-mobile-panel">
-                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "1.25rem" }}>
-                    <span style={{ fontWeight: 800, fontSize: "0.9rem", color: "var(--text)" }}>{isRTL ? "الفلاتر" : "Filtres"}</span>
-                    <button onClick={() => setFiltersOpen(false)} style={{ background: "none", border: "none", cursor: "pointer", color: "var(--text-muted)", padding: "4px", display: "flex" }}>
-                      ✕
-                    </button>
-                  </div>
-                  <FilterContent />
-                  <div style={{ display: "flex", gap: "0.6rem", paddingTop: "1rem", borderTop: "1px solid rgba(255,255,255,0.06)", marginTop: "0.5rem" }}>
-                    <button onClick={applyDraft} style={{ flex: 1, background: "linear-gradient(135deg,#e821a0,#a855f7)", color: "white", border: "none", borderRadius: "10px", padding: "0.7rem", fontWeight: 700, fontSize: "0.82rem", cursor: "pointer" }}>
-                      {t.shop.apply}
-                    </button>
-                    <button onClick={() => { resetFilters(); setFiltersOpen(false); }} style={{ padding: "0 1rem", background: "none", border: "1px solid rgba(255,255,255,0.12)", borderRadius: "10px", color: "rgba(255,255,255,0.45)", cursor: "pointer", fontSize: "0.82rem" }}>
-                      {t.shop.reset}
-                    </button>
-                  </div>
+              <div className="shop-mobile-filters" style={{ background: "rgba(12,4,24,0.97)", backdropFilter: "blur(24px)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: "16px", padding: "1.25rem", marginBottom: "1rem" }}>
+                <FilterContent />
+                <div style={{ display: "flex", gap: "0.6rem", paddingTop: "1rem", borderTop: "1px solid rgba(255,255,255,0.06)", marginTop: "1rem" }}>
+                  <button onClick={applyDraft} style={{ flex: 1, background: "linear-gradient(135deg,#e821a0,#a855f7)", color: "white", border: "none", borderRadius: "10px", padding: "0.65rem", fontWeight: 700, fontSize: "0.82rem", cursor: "pointer" }}>
+                    {t.shop.apply}
+                  </button>
+                  <button onClick={() => { resetFilters(); setFiltersOpen(false); }} style={{ padding: "0 1rem", background: "none", border: "1px solid rgba(255,255,255,0.12)", borderRadius: "10px", color: "rgba(255,255,255,0.45)", cursor: "pointer", fontSize: "0.82rem" }}>
+                    {t.shop.reset}
+                  </button>
                 </div>
-              </>
+              </div>
             )}
 
             {/* Grid */}

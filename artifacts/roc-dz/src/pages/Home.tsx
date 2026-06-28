@@ -156,8 +156,7 @@ export default function Home() {
                 <img
                   src={b.img}
                   alt={b.name}
-                  className="brand-logo"
-                  style={{ height: "22px", width: "auto", maxWidth: "80px", objectFit: "contain", opacity: 0.75 }}
+                  style={{ height: "22px", width: "auto", maxWidth: "80px", objectFit: "contain", filter: "brightness(0) invert(1)", opacity: 0.75 }}
                   onError={e => { const el = e.currentTarget as HTMLImageElement; el.style.display = "none"; el.nextElementSibling && ((el.nextElementSibling as HTMLElement).style.display = "inline"); }}
                 />
                 <span style={{ display: "none", fontSize: "0.8rem", fontWeight: 700, letterSpacing: "1px", opacity: 0.7 }}>{b.name}</span>
@@ -375,6 +374,9 @@ export default function Home() {
         </div>
       </section>
 
+      {/* TRACKING FEATURE VISUAL */}
+      <TrackingFeatureSection h={h} />
+
       {/* SUIVI COMMANDE CTA */}
       <div className="tracking-cta fade-up">
         <div className="tracking-cta-card">
@@ -461,8 +463,8 @@ function StatsSection({ isRTL }: { isRTL: boolean }) {
           {isRTL ? "ثقة عشرات الآلاف من الزبائن" : "La confiance de milliers d'Algériens"}
         </h2>
         <div className="stats-grid">
-          <StatCard target={2} suffix="M+" label={isRTL ? "متابع على وسائل التواصل" : "Abonnés réseaux sociaux"} />
-          <StatCard target={68} suffix="" label={isRTL ? "ولاية نوصلها" : "Wilayas livrées"} />
+          <StatCard target={1000000} suffix="+" label={isRTL ? "متابع على وسائل التواصل" : "Abonnés réseaux sociaux"} />
+          <StatCard target={58} suffix="" label={isRTL ? "ولاية نوصلها" : "Wilayas livrées"} />
           <StatCard target={5000} suffix="+" label={isRTL ? "طلب منجز" : "Commandes livrées"} />
           <StatCard target={4.9} suffix="/5" label={isRTL ? "تقييم جوجل" : "Note Google"} decimals={1} />
         </div>
@@ -499,6 +501,17 @@ function TrackingFeatureSection({ h }: { h: Record<string, string> }) {
         </div>
 
         <div style={{ background: "rgba(255,255,255,0.025)", border: "1px solid rgba(255,255,255,0.07)", borderRadius: "20px", padding: "1.5rem 1rem" }}>
+          {/* Demo order header */}
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "1.25rem", flexWrap: "wrap", gap: "0.5rem" }}>
+            <div>
+              <span style={{ fontSize: "0.7rem", color: "rgba(255,255,255,0.35)", letterSpacing: "1px", textTransform: "uppercase" }}>{isRTL ? "مثال على الطلب" : "Exemple de commande"}</span>
+              <div style={{ fontWeight: 800, fontSize: "1rem" }}>ROC DZ #0042</div>
+            </div>
+            <span style={{ padding: "5px 14px", borderRadius: "999px", background: "rgba(45,212,191,0.12)", border: "1px solid rgba(45,212,191,0.3)", color: "#2dd4bf", fontSize: "0.75rem", fontWeight: 700 }}>
+              💰 {isRTL ? "مدفوع" : "Versé"}
+            </span>
+          </div>
+
           {/* Steps row */}
           <div className="tracking-steps-row">
             {TRACKING_STEPS.map((step, i) => (
@@ -533,19 +546,26 @@ function StoreSection({ isRTL }: { isRTL: boolean }) {
   return (
     <section className="store-section">
       <div className="store-inner">
-        {/* Store photo */}
-        <div className={`store-visual ${isRTL ? "order-last" : ""}`} style={{ padding: 0, overflow: "hidden", borderRadius: "20px" }}>
-          <img src="/store-photo.jpg" alt="Boutique ROC DZ" style={{ width: "100%", height: "100%", minHeight: "220px", objectFit: "cover", display: "block" }} />
-          <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(0,0,0,0.6) 0%, transparent 60%)", borderRadius: "20px", pointerEvents: "none" }} />
-          <a
-            href="https://maps.app.goo.gl/GaKYnMnz1H6QiXjHA"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="store-map-btn"
-            style={{ position: "absolute", bottom: "1rem", left: "50%", transform: "translateX(-50%)", whiteSpace: "nowrap" }}
-          >
-            📍 {isRTL ? "عرض على الخريطة" : "Voir sur la carte"}
-          </a>
+        {/* Visual / Map placeholder */}
+        <div className={`store-visual ${isRTL ? "order-last" : ""}`}>
+          <div className="store-visual-inner">
+            <div style={{ fontSize: "4rem" }}>🏪</div>
+            <div style={{ fontWeight: 700, fontSize: "1.1rem", textAlign: "center" }}>
+              {isRTL ? "محلنا في الجزائر" : "Notre boutique en Algérie"}
+            </div>
+            <a
+              href="https://maps.app.goo.gl/GaKYnMnz1H6QiXjHA"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="store-map-btn"
+              style={{ marginTop: 0 }}
+            >
+              📍 {isRTL ? "عرض على الخريطة" : "Voir sur la carte"}
+            </a>
+          </div>
+          {/* Glow accents */}
+          <div style={{ position: "absolute", top: "-20px", right: "-20px", width: "120px", height: "120px", background: "rgba(232,33,160,0.3)", borderRadius: "50%", filter: "blur(40px)", pointerEvents: "none" }} />
+          <div style={{ position: "absolute", bottom: "-20px", left: "-20px", width: "100px", height: "100px", background: "rgba(168,85,247,0.25)", borderRadius: "50%", filter: "blur(35px)", pointerEvents: "none" }} />
         </div>
 
         {/* Info */}
@@ -561,20 +581,17 @@ function StoreSection({ isRTL }: { isRTL: boolean }) {
             <div className="store-info-icon">📍</div>
             <div>
               <div className="store-info-text-title">{isRTL ? "العنوان" : "Adresse"}</div>
-              <div className="store-info-text-val">Algérie — 68 wilayas livrées</div>
+              <div className="store-info-text-val">Algérie — 58 wilayas livrées</div>
             </div>
           </div>
 
           <div className="store-info-row">
             <div className="store-info-icon">📞</div>
             <div>
-              <div className="store-info-text-title">{isRTL ? "اتصل بنا" : "Contact"}</div>
-              <div className="store-info-text-val" style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
-                <a href="tel:0562854820" style={{ color: "inherit", textDecoration: "none" }}>
-                  0562 854 820 <span style={{ fontSize: "0.72rem", opacity: 0.6 }}>8h–16h</span>
-                </a>
-                <a href="tel:0553207730" style={{ color: "inherit", textDecoration: "none" }}>
-                  0553 207 730 <span style={{ fontSize: "0.72rem", opacity: 0.6 }}>16h–minuit</span>
+              <div className="store-info-text-title">{isRTL ? "الهاتف" : "Contact WhatsApp"}</div>
+              <div className="store-info-text-val">
+                <a href="https://wa.me/213796238304" target="_blank" rel="noopener noreferrer" style={{ color: "#4ade80", textDecoration: "none" }}>
+                  +213 796 238 304
                 </a>
               </div>
             </div>
@@ -584,7 +601,7 @@ function StoreSection({ isRTL }: { isRTL: boolean }) {
             <div className="store-info-icon">🕐</div>
             <div>
               <div className="store-info-text-title">{isRTL ? "ساعات العمل" : "Horaires"}</div>
-              <div className="store-info-text-val">{isRTL ? "6/7 أيام : 9h → 20h" : "6/7 jours — 9h à 20h"}</div>
+              <div className="store-info-text-val">{isRTL ? "الأحد – الخميس : 9h → 17h" : "Dim – Jeu : 9h → 17h"}</div>
             </div>
           </div>
 
