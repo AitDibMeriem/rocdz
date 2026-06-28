@@ -75,7 +75,7 @@ export function Navbar() {
   return (
     <nav className="navbar">
       <div className="nav-logo" onClick={() => { navigate("/"); setMenuOpen(false); }} style={{ cursor: "pointer" }}>
-        <img src="/logo.png" alt="ROC DZ" style={{ height: "56px", width: "auto", objectFit: "contain" }} />
+        <img src="/logo.png" alt="ROC DZ" style={{ height: "72px", width: "auto", objectFit: "contain" }} />
       </div>
 
       <ul className="nav-links">
@@ -114,22 +114,32 @@ export function Navbar() {
           </button>
 
           {bellOpen && (
-            <div style={{ position: "absolute", top: "calc(100% + 12px)", right: 0, width: "320px", background: "var(--card)", border: "1px solid var(--border-raw)", borderRadius: "12px", boxShadow: "0 8px 32px rgba(0,0,0,0.4)", zIndex: 1000, overflow: "hidden" }}>
-              <div style={{ padding: "12px 16px", borderBottom: "1px solid var(--border-raw)", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-                <span style={{ fontWeight: 700, fontSize: "0.9rem", color: "var(--text)" }}>{t.notifications.title}</span>
+            <div style={{ position: "absolute", top: "calc(100% + 14px)", right: 0, width: "330px", background: "rgba(14,6,28,0.97)", backdropFilter: "blur(24px)", border: "1px solid rgba(232,33,160,0.18)", borderRadius: "16px", boxShadow: "0 16px 48px rgba(0,0,0,0.7), 0 0 0 1px rgba(232,33,160,0.08)", zIndex: 1000, overflow: "hidden" }}>
+              <div style={{ padding: "14px 18px", borderBottom: "1px solid rgba(255,255,255,0.07)", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                  <Bell size={15} style={{ color: "var(--pink)" }} />
+                  <span style={{ fontWeight: 700, fontSize: "0.88rem", color: "#fff", letterSpacing: "0.3px" }}>{t.notifications.title}</span>
+                </div>
+                {notifications.length > 0 && <span style={{ fontSize: "0.68rem", color: "var(--pink)", fontWeight: 600, background: "rgba(232,33,160,0.12)", padding: "2px 8px", borderRadius: "999px" }}>{notifications.length}</span>}
               </div>
-              <div style={{ maxHeight: "320px", overflowY: "auto" }}>
+              <div style={{ maxHeight: "360px", overflowY: "auto" }}>
                 {notifications.length === 0 ? (
-                  <div style={{ padding: "24px", textAlign: "center", color: "var(--text-muted)", fontSize: "0.85rem" }}>
-                    <Bell size={28} style={{ margin: "0 auto 8px", opacity: 0.3, display: "block" }} />
-                    {t.notifications.empty}
+                  <div style={{ padding: "36px 24px", textAlign: "center" }}>
+                    <Bell size={32} style={{ margin: "0 auto 10px", opacity: 0.2, display: "block", color: "var(--pink)" }} />
+                    <p style={{ color: "rgba(255,255,255,0.35)", fontSize: "0.82rem" }}>{t.notifications.empty}</p>
                   </div>
                 ) : (
                   notifications.map((n) => (
-                    <div key={n.id} style={{ padding: "12px 16px", borderBottom: "1px solid var(--border-raw)", background: n.read ? "transparent" : "rgba(232,33,160,0.04)" }}>
-                      <div style={{ fontWeight: 600, fontSize: "0.85rem", color: "var(--text)", marginBottom: "2px" }}>{n.title}</div>
-                      <div style={{ fontSize: "0.78rem", color: "var(--text-muted)", marginBottom: "4px" }}>{n.message}</div>
-                      <div style={{ fontSize: "0.7rem", color: "var(--pink)", opacity: 0.7 }}>{formatTime(n.timestamp)}</div>
+                    <div key={n.id} style={{ padding: "13px 18px", borderBottom: "1px solid rgba(255,255,255,0.05)", background: n.read ? "transparent" : "rgba(232,33,160,0.06)", transition: "background 0.2s" }}>
+                      <div style={{ display: "flex", alignItems: "flex-start", gap: "10px" }}>
+                        <span style={{ width: "32px", height: "32px", borderRadius: "50%", background: "rgba(232,33,160,0.15)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, fontSize: "0.9rem" }}>✅</span>
+                        <div style={{ flex: 1 }}>
+                          <div style={{ fontWeight: 700, fontSize: "0.83rem", color: "#fff", marginBottom: "2px" }}>{n.title}</div>
+                          <div style={{ fontSize: "0.76rem", color: "rgba(255,255,255,0.5)", lineHeight: 1.4 }}>{n.message}</div>
+                          <div style={{ fontSize: "0.68rem", color: "var(--pink)", marginTop: "4px", opacity: 0.8 }}>{formatTime(n.timestamp)}</div>
+                        </div>
+                        {!n.read && <span style={{ width: "7px", height: "7px", borderRadius: "50%", background: "var(--pink)", flexShrink: 0, marginTop: "4px" }} />}
+                      </div>
                     </div>
                   ))
                 )}

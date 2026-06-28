@@ -1,7 +1,34 @@
-import { useEffect } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import { useGetFeaturedLaptop } from "@workspace/api-client-react";
 import { Link } from "wouter";
 import { useLang } from "@/context/LangContext";
+
+function useCountUp(target: number, decimals = 0) {
+  const [val, setVal] = useState(0);
+  const ref = useRef<HTMLDivElement>(null);
+  const started = useRef(false);
+  const animate = useCallback(() => {
+    if (started.current) return;
+    started.current = true;
+    const duration = 2000;
+    const step = 16;
+    const inc = target / (duration / step);
+    let cur = 0;
+    const t = setInterval(() => {
+      cur = Math.min(cur + inc, target);
+      setVal(decimals > 0 ? Math.round(cur * 10) / 10 : Math.floor(cur));
+      if (cur >= target) clearInterval(t);
+    }, step);
+  }, [target, decimals]);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(([e]) => { if (e.isIntersecting) animate(); }, { threshold: 0.3 });
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, [animate]);
+  return { val, ref };
+}
 
 const BRAND_LOGOS = [
   { name: "Dell", img: "https://upload.wikimedia.org/wikipedia/commons/4/48/Dell_Logo.svg" },
@@ -138,6 +165,9 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* STATS COUNTERS — ChiffresQuiParlent */}
+      <StatsSection isRTL={isRTL} />
 
       {/* CATEGORIES */}
       <section className="categories" id="categories">
@@ -344,6 +374,9 @@ export default function Home() {
         </div>
       </section>
 
+      {/* TRACKING FEATURE VISUAL */}
+      <TrackingFeatureSection h={h} />
+
       {/* SUIVI COMMANDE CTA */}
       <div className="tracking-cta fade-up">
         <div className="tracking-cta-card">
@@ -359,6 +392,9 @@ export default function Home() {
           </Link>
         </div>
       </div>
+
+      {/* MAGASIN PHYSIQUE — SplitReveal */}
+      <StoreSection isRTL={isRTL} />
 
       {/* AVIS CLIENTS */}
       <section className="reviews-section">
@@ -400,5 +436,185 @@ export default function Home() {
         ↑
       </button>
     </div>
+  );
+}
+
+/* ── STATS SECTION ─────────────────────────────── */
+function StatCard({ target, suffix, label, decimals = 0 }: { target: number; suffix: string; label: string; decimals?: number }) {
+  const { val, ref } = useCountUp(target, decimals);
+  return (
+    <div className="stat-card" ref={ref}>
+      <div className="stat-number">
+        {decimals > 0 ? val.toFixed(1) : val.toLocaleString("fr-DZ")}{suffix}
+      </div>
+      <div className="stat-label">{label}</div>
+    </div>
+  );
+}
+
+function StatsSection({ isRTL }: { isRTL: boolean }) {
+  return (
+    <section className="stats-section">
+      <div className="stats-container">
+        <div className="stats-label" dir={isRTL ? "rtl" : "ltr"}>
+          {isRTL ? "أرقام تتحدث عن نفسها" : "Des chiffres qui parlent"}
+        </div>
+        <h2 className="stats-title" dir={isRTL ? "rtl" : "ltr"}>
+          {isRTL ? "ثقة عشرات الآلاف من الزبائن" : "La confiance de milliers d'Algériens"}
+        </h2>
+        <div className="stats-grid">
+          <StatCard target={1000000} suffix="+" label={isRTL ? "متابع على وسائل التواصل" : "Abonnés réseaux sociaux"} />
+          <StatCard target={58} suffix="" label={isRTL ? "ولاية نوصلها" : "Wilayas livrées"} />
+          <StatCard target={5000} suffix="+" label={isRTL ? "طلب منجز" : "Commandes livrées"} />
+          <StatCard target={4.9} suffix="/5" label={isRTL ? "تقييم جوجل" : "Note Google"} decimals={1} />
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ── TRACKING FEATURE SECTION ──────────────────── */
+const TRACKING_STEPS = [
+  { icon: "📋", label_fr: "Réservé",   label_ar: "محجوز",   color: "#eab308", active: true },
+  { icon: "✅", label_fr: "Confirmé",  label_ar: "مؤكد",    color: "#60a5fa", active: true },
+  { icon: "💰", label_fr: "Versé",     label_ar: "مدفوع",   color: "#2dd4bf", active: true },
+  { icon: "📦", label_fr: "Préparé",   label_ar: "محضر",    color: "#c084fc", active: false },
+  { icon: "🚚", label_fr: "Expédié",   label_ar: "مشحون",   color: "#22d3ee", active: false },
+  { icon: "🎉", label_fr: "Livré",     label_ar: "مسلم",    color: "#4ade80", active: false },
+];
+
+function TrackingFeatureSection({ h }: { h: Record<string, string> }) {
+  const { isRTL } = useLang();
+  return (
+    <section className="tracking-feature">
+      <div className="tracking-feature-inner">
+        <div style={{ textAlign: "center", marginBottom: "1rem" }}>
+          <div className="section-label">{isRTL ? "تتبع طلبك" : "Suivi en temps réel"}</div>
+          <h2 style={{ fontSize: "clamp(1.3rem,3vw,2rem)", fontWeight: 900, marginBottom: "0.5rem" }}>
+            {isRTL ? "اعرف أين طلبك في أي لحظة" : <><span className="gradient">Votre commande</span> en temps réel</>}
+          </h2>
+          <p style={{ color: "rgba(255,255,255,0.45)", fontSize: "0.88rem", maxWidth: "500px", margin: "0 auto" }}>
+            {isRTL
+              ? "تابع حالة طلبك من الحجز حتى التسليم، بشفافية تامة"
+              : "Suivez l'état de votre commande de la réservation jusqu'à la livraison, en toute transparence."}
+          </p>
+        </div>
+
+        <div style={{ background: "rgba(255,255,255,0.025)", border: "1px solid rgba(255,255,255,0.07)", borderRadius: "20px", padding: "1.5rem 1rem" }}>
+          {/* Demo order header */}
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "1.25rem", flexWrap: "wrap", gap: "0.5rem" }}>
+            <div>
+              <span style={{ fontSize: "0.7rem", color: "rgba(255,255,255,0.35)", letterSpacing: "1px", textTransform: "uppercase" }}>{isRTL ? "مثال على الطلب" : "Exemple de commande"}</span>
+              <div style={{ fontWeight: 800, fontSize: "1rem" }}>ROC DZ #0042</div>
+            </div>
+            <span style={{ padding: "5px 14px", borderRadius: "999px", background: "rgba(45,212,191,0.12)", border: "1px solid rgba(45,212,191,0.3)", color: "#2dd4bf", fontSize: "0.75rem", fontWeight: 700 }}>
+              💰 {isRTL ? "مدفوع" : "Versé"}
+            </span>
+          </div>
+
+          {/* Steps row */}
+          <div className="tracking-steps-row">
+            {TRACKING_STEPS.map((step, i) => (
+              <div key={i} style={{ display: "flex", alignItems: "center", flex: 1 }}>
+                <div className="tracking-step-item">
+                  <div className="tracking-step-dot" style={{ background: step.active ? `${step.color}22` : "transparent", borderColor: step.active ? step.color : "rgba(255,255,255,0.12)", color: step.color, opacity: step.active ? 1 : 0.45 }}>
+                    {step.icon}
+                  </div>
+                  <span className="tracking-step-name" style={{ color: step.active ? step.color : "rgba(255,255,255,0.3)" }}>
+                    {isRTL ? step.label_ar : step.label_fr}
+                  </span>
+                </div>
+                {i < TRACKING_STEPS.length - 1 && <div className="tracking-step-line" style={{ opacity: step.active ? 1 : 0.3 }} />}
+              </div>
+            ))}
+          </div>
+
+          {/* CTA */}
+          <div style={{ textAlign: "center", marginTop: "1rem" }}>
+            <Link href="/suivi" style={{ display: "inline-flex", alignItems: "center", gap: "6px", padding: "0.6rem 1.5rem", borderRadius: "10px", border: "1px solid rgba(232,33,160,0.35)", color: "var(--pink)", textDecoration: "none", fontSize: "0.84rem", fontWeight: 700, transition: "all 0.2s" }}>
+              {isRTL ? "تتبع طلبي ←" : "Suivre ma commande →"}
+            </Link>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ── STORE SECTION ─────────────────────────────── */
+function StoreSection({ isRTL }: { isRTL: boolean }) {
+  return (
+    <section className="store-section">
+      <div className="store-inner">
+        {/* Visual / Map placeholder */}
+        <div className={`store-visual ${isRTL ? "order-last" : ""}`}>
+          <div className="store-visual-inner">
+            <div style={{ fontSize: "4rem" }}>🏪</div>
+            <div style={{ fontWeight: 700, fontSize: "1.1rem", textAlign: "center" }}>
+              {isRTL ? "محلنا في الجزائر" : "Notre boutique en Algérie"}
+            </div>
+            <a
+              href="https://maps.app.goo.gl/GaKYnMnz1H6QiXjHA"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="store-map-btn"
+              style={{ marginTop: 0 }}
+            >
+              📍 {isRTL ? "عرض على الخريطة" : "Voir sur la carte"}
+            </a>
+          </div>
+          {/* Glow accents */}
+          <div style={{ position: "absolute", top: "-20px", right: "-20px", width: "120px", height: "120px", background: "rgba(232,33,160,0.3)", borderRadius: "50%", filter: "blur(40px)", pointerEvents: "none" }} />
+          <div style={{ position: "absolute", bottom: "-20px", left: "-20px", width: "100px", height: "100px", background: "rgba(168,85,247,0.25)", borderRadius: "50%", filter: "blur(35px)", pointerEvents: "none" }} />
+        </div>
+
+        {/* Info */}
+        <div>
+          <div className="store-info-label">{isRTL ? "محل فيزيائي" : "Boutique physique"}</div>
+          <h2 className="store-info-title">
+            {isRTL
+              ? <>تسوق <span className="gradient">بشكل مباشر</span> في متجرنا</>
+              : <>Venez nous voir <span className="gradient">en boutique</span></>}
+          </h2>
+
+          <div className="store-info-row">
+            <div className="store-info-icon">📍</div>
+            <div>
+              <div className="store-info-text-title">{isRTL ? "العنوان" : "Adresse"}</div>
+              <div className="store-info-text-val">Algérie — 58 wilayas livrées</div>
+            </div>
+          </div>
+
+          <div className="store-info-row">
+            <div className="store-info-icon">📞</div>
+            <div>
+              <div className="store-info-text-title">{isRTL ? "الهاتف" : "Contact WhatsApp"}</div>
+              <div className="store-info-text-val">
+                <a href="https://wa.me/213796238304" target="_blank" rel="noopener noreferrer" style={{ color: "#4ade80", textDecoration: "none" }}>
+                  +213 796 238 304
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <div className="store-info-row">
+            <div className="store-info-icon">🕐</div>
+            <div>
+              <div className="store-info-text-title">{isRTL ? "ساعات العمل" : "Horaires"}</div>
+              <div className="store-info-text-val">{isRTL ? "الأحد – الخميس : 9h → 17h" : "Dim – Jeu : 9h → 17h"}</div>
+            </div>
+          </div>
+
+          <a
+            href="https://maps.app.goo.gl/GaKYnMnz1H6QiXjHA"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="store-map-btn"
+          >
+            🗺️ {isRTL ? "الوصول للمحل" : "Itinéraire vers la boutique"}
+          </a>
+        </div>
+      </div>
+    </section>
   );
 }

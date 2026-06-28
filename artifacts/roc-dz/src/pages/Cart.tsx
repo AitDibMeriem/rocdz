@@ -34,7 +34,7 @@ function validatePhone(phone: string) { return DZ_PHONE.test(phone.replace(/\s/g
 export default function Cart() {
   const { items, removeItem, updateQty, clearCart, total } = useCart();
   const { toast } = useToast();
-  const { t } = useLang();
+  const { t, lang } = useLang();
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [deliveryType, setDeliveryType] = useState<"domicile" | "bureau">("bureau");
@@ -102,6 +102,9 @@ export default function Cart() {
       e.phone2 = t.cart.errors.phone2;
     } else if (!validatePhone(form.phone2)) {
       e.phone2 = t.cart.errors.phone2Invalid;
+    }
+    if (!e.phone && !e.phone2 && form.phone.replace(/\s/g,"") === form.phone2.replace(/\s/g,"")) {
+      e.phone2 = lang === "ar" ? "يجب أن يكون الرقمان مختلفَين" : "Les deux numéros doivent être différents";
     }
     if (!form.address.trim()) e.address = t.cart.errors.address;
     if (!form.wilaya) e.wilaya = t.cart.errors.wilaya;
