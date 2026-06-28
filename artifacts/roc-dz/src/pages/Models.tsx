@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
 import { useListLaptops, ListLaptopsCondition } from "@workspace/api-client-react";
 import { ProductCard } from "@/components/ProductCard";
 import { Slider } from "@/components/ui/slider";
@@ -55,6 +55,13 @@ export default function Models() {
   const [brand, setBrand] = useState(() => getURLParam("brand") || "all");
   const [priceRange, setPriceRange] = useState([0, 1000000]);
   const [sortBy, setSortBy] = useState<"default" | "price-asc" | "price-desc">("default");
+  const [sortOpen, setSortOpen] = useState(false);
+  const sortRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const handler = (e: MouseEvent) => { if (sortRef.current && !sortRef.current.contains(e.target as Node)) setSortOpen(false); };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, []);
   const [filtersOpen, setFiltersOpen] = useState(false);
   const [page, setPage] = useState(1);
 
@@ -236,15 +243,37 @@ export default function Models() {
 
               {/* Row 2: sort (left) + filter button (right, mobile only) */}
               <div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
-                <select
-                  value={sortBy}
-                  onChange={e => { setSortBy(e.target.value as "default" | "price-asc" | "price-desc"); setPage(1); }}
-                  style={{ flex: 1, padding: "0 12px", height: "38px", borderRadius: "11px", background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.09)", color: "var(--text)", fontSize: "0.8rem", cursor: "pointer", outline: "none" }}
-                >
-                  <option value="default">Trier par</option>
-                  <option value="price-asc">Prix ↑ croissant</option>
-                  <option value="price-desc">Prix ↓ décroissant</option>
-                </select>
+                {/* Custom sort dropdown — replaces native <select> so it's themeable */}
+                <div ref={sortRef} style={{ position: "relative", flex: 1 }}>
+                  <button
+                    onClick={() => setSortOpen(o => !o)}
+                    style={{ width: "100%", display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0 12px", height: "38px", borderRadius: "11px", background: "var(--card)", border: "1px solid var(--border-raw,.12)", borderColor: "rgba(255,255,255,0.09)", color: "var(--text)", fontSize: "0.8rem", cursor: "pointer", outline: "none", transition: "border-color 0.15s", gap: "6px" }}
+                  >
+                    <span>
+                      {sortBy === "default" ? "Trier par" : sortBy === "price-asc" ? "Prix ↑ croissant" : "Prix ↓ décroissant"}
+                    </span>
+                    <svg width="12" height="12" viewBox="0 0 12 12" fill="none" style={{ flexShrink: 0, opacity: 0.5, transform: sortOpen ? "rotate(180deg)" : "none", transition: "transform 0.2s" }}>
+                      <path d="M2 4l4 4 4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                  </button>
+                  {sortOpen && (
+                    <div style={{ position: "absolute", top: "calc(100% + 4px)", left: 0, right: 0, background: "var(--card)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: "11px", zIndex: 50, overflow: "hidden", boxShadow: "0 8px 24px rgba(0,0,0,0.3)" }}>
+                      {([
+                        { val: "default", label: "Par défaut" },
+                        { val: "price-asc", label: "Prix ↑ croissant" },
+                        { val: "price-desc", label: "Prix ↓ décroissant" },
+                      ] as const).map(o => (
+                        <button
+                          key={o.val}
+                          onClick={() => { setSortBy(o.val); setPage(1); setSortOpen(false); }}
+                          style={{ width: "100%", textAlign: "left", padding: "9px 14px", fontSize: "0.8rem", cursor: "pointer", border: "none", background: sortBy === o.val ? "rgba(232,33,160,0.12)" : "transparent", color: sortBy === o.val ? "var(--pink)" : "var(--text)", fontWeight: sortBy === o.val ? 700 : 400, transition: "background 0.15s" }}
+                        >
+                          {o.label}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
 
                 <button
                   className="shop-filter-toggle"
