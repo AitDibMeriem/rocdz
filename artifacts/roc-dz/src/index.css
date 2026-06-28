@@ -1956,3 +1956,42 @@ section { position: relative; z-index: 2; }
 .light-mode .store-info-text-val { color: rgba(20,16,16,0.55); }
 .store-map-btn { display: inline-flex; align-items: center; gap: 8px; background: linear-gradient(135deg,#e821a0,#a855f7); color: white; border: none; border-radius: 12px; padding: 0.7rem 1.5rem; font-weight: 700; font-size: 0.85rem; cursor: pointer; text-decoration: none; margin-top: 0.5rem; transition: transform 0.2s, box-shadow 0.2s; }
 .store-map-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(232,33,160,0.35); }
+
+/* ── BRAND LOGOS (dark/light mode) ──────────────────────── */
+.brand-logo { filter: brightness(0) invert(1); }
+.light-mode .brand-logo { filter: brightness(0); opacity: 0.75; }
+
+/* ── MOBILE FILTER SIDE PANEL ───────────────────────────── */
+@media (max-width: 1023px) {
+  .shop-mobile-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.55);
+    z-index: 9998;
+    animation: overlayFadeIn 0.2s ease;
+  }
+  .shop-mobile-panel {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: min(300px, 88vw);
+    background: rgba(10,3,20,0.98);
+    backdrop-filter: blur(24px);
+    border-right: 1px solid rgba(255,255,255,0.08);
+    z-index: 9999;
+    overflow-y: auto;
+    padding: 1.5rem 1.25rem;
+    animation: panelSlideIn 0.25s ease;
+  }
+  .light-mode .shop-mobile-panel {
+    background: rgba(255,245,252,0.98);
+    border-right-color: rgba(199,25,93,0.1);
+  }
+  @keyframes overlayFadeIn { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes panelSlideIn { from { transform: translateX(-100%); } to { transform: translateX(0); } }
+}
+
+/* ── LIGHT MODE: tracking step inactive text ─────────────── */
+.light-mode .tracking-step-name { color: rgba(20,16,16,0.5); }
+.light-mode .tracking-step-line { background: linear-gradient(90deg, rgba(199,25,93,0.3), rgba(139,59,221,0.15)); }
