@@ -1995,3 +1995,29 @@ section { position: relative; z-index: 2; }
 /* ── LIGHT MODE: tracking step inactive text ─────────────── */
 .light-mode .tracking-step-name { color: rgba(20,16,16,0.5); }
 .light-mode .tracking-step-line { background: linear-gradient(90deg, rgba(199,25,93,0.3), rgba(139,59,221,0.15)); }
+
+/* ── LIGHT MODE: shop sidebar & filter panel text ─── */
+.light-mode .shop-sidebar p,
+.light-mode .shop-mobile-panel p {
+  color: rgba(20,16,16,0.55) !important;
+}
+.light-mode .shop-sidebar button span,
+.light-mode .shop-mobile-panel button span {
+  color: rgba(20,16,16,0.65) !important;
+}
+.light-mode .shop-sidebar button[style*="rgba(232,33,160"] span,
+.light-mode .shop-mobile-panel button[style*="rgba(232,33,160"] span {
+  color: var(--pink) !important;
+}
+/* Marquee fallback text + global brand-logo text */
+.light-mode .brand-item span { color: rgba(20,16,16,0.7) !important; }
+/* Shop heading text (Trier par, labels) */
+.light-mode .shop-topbar { color: rgba(20,16,16,0.8); }
+/* Pagination count text */
+.light-mode .shop-main > p { color: rgba(20,16,16,0.4) !important; }
+/* stat-card border in light mode */
+.light-mode .stat-card { background: rgba(20,16,16,0.03); border-color: rgba(20,16,16,0.08); }
+/* tracking step colors in light mode (inactive) */
+.light-mode .tracking-step-dot { border-color: rgba(20,16,16,0.15) !important; }
+/* footer border */
+.light-mode footer { border-top-color: rgba(20,16,16,0.08) !important; }
