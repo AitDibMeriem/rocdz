@@ -13,15 +13,15 @@ function getURLParam(key: string) {
 
 const BRANDS = ["HP", "Dell", "Lenovo", "ASUS", "MSI", "Apple", "Acer", "Samsung", "Huawei"];
 const BRAND_LOGOS: Record<string, string> = {
-  HP: "https://upload.wikimedia.org/wikipedia/commons/a/ad/HP_logo_2012.svg",
-  Dell: "https://upload.wikimedia.org/wikipedia/commons/4/48/Dell_Logo.svg",
+  HP: "/brand-hp.png",
+  Dell: "/brand-dell.png",
   Lenovo: "/brand-lenovo-logo.png",
-  ASUS: "https://upload.wikimedia.org/wikipedia/commons/2/2e/ASUS_Logo.svg",
-  MSI: "https://upload.wikimedia.org/wikipedia/commons/1/13/MSI_Logo.svg",
-  Apple: "https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg",
-  Acer: "https://upload.wikimedia.org/wikipedia/commons/0/00/Acer_2011.svg",
-  Samsung: "https://upload.wikimedia.org/wikipedia/commons/2/24/Samsung_Logo.svg",
-  Huawei: "https://upload.wikimedia.org/wikipedia/commons/e/e8/Huawei_Logo.svg",
+  ASUS: "/brand-asus.png",
+  MSI: "/brand-msi.png",
+  Apple: "/brand-apple.png",
+  Acer: "/brand-acer.png",
+  Samsung: "/brand-samsung.png",
+  Huawei: "/brand-huawei.png",
 };
 
 function usePerPage() {
@@ -221,9 +221,10 @@ export default function Models() {
               </Link>
             </div>
 
-            {/* Search + mobile filter toggle + sort */}
-            <div style={{ display: "flex", gap: "0.5rem", marginBottom: "0.75rem", flexWrap: "wrap" }}>
-              <div style={{ position: "relative", flex: 1, minWidth: "140px" }}>
+            {/* Search + sort + mobile filter toggle */}
+            <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem", marginBottom: "0.75rem" }}>
+              {/* Row 1: search input (full width) */}
+              <div style={{ position: "relative" }}>
                 <Search style={{ position: "absolute", left: "11px", top: "50%", transform: "translateY(-50%)", width: "15px", height: "15px", color: "rgba(255,255,255,0.35)" }} />
                 <input
                   placeholder={t.shop.search}
@@ -233,25 +234,28 @@ export default function Models() {
                 />
               </div>
 
-              <button
-                className="shop-filter-toggle"
-                onClick={() => setFiltersOpen(o => !o)}
-                style={{ display: "none", alignItems: "center", gap: "6px", padding: "0 14px", height: "38px", borderRadius: "11px", border: "1px solid", fontWeight: 700, fontSize: "0.8rem", cursor: "pointer", transition: "all 0.15s", ...(filtersOpen || activeCount > 0 ? { background: "rgba(232,33,160,0.12)", borderColor: "rgba(232,33,160,0.35)", color: "var(--pink)" } : { background: "rgba(255,255,255,0.04)", borderColor: "rgba(255,255,255,0.09)", color: "rgba(255,255,255,0.5)" }) }}
-              >
-                <SlidersHorizontal size={14} />
-                {t.shop.filters}
-                {activeCount > 0 && <span style={{ background: "var(--pink)", color: "white", borderRadius: "50%", fontSize: "0.58rem", fontWeight: 900, width: "15px", height: "15px", display: "flex", alignItems: "center", justifyContent: "center" }}>{activeCount}</span>}
-              </button>
+              {/* Row 2: sort (left) + filter button (right, mobile only) */}
+              <div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
+                <select
+                  value={sortBy}
+                  onChange={e => { setSortBy(e.target.value as "default" | "price-asc" | "price-desc"); setPage(1); }}
+                  style={{ flex: 1, padding: "0 12px", height: "38px", borderRadius: "11px", background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.09)", color: "var(--text)", fontSize: "0.8rem", cursor: "pointer", outline: "none" }}
+                >
+                  <option value="default">Trier par</option>
+                  <option value="price-asc">Prix ↑ croissant</option>
+                  <option value="price-desc">Prix ↓ décroissant</option>
+                </select>
 
-              <select
-                value={sortBy}
-                onChange={e => { setSortBy(e.target.value as "default" | "price-asc" | "price-desc"); setPage(1); }}
-                style={{ padding: "0 12px", height: "38px", borderRadius: "11px", background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.09)", color: "var(--text)", fontSize: "0.8rem", cursor: "pointer", outline: "none" }}
-              >
-                <option value="default">Trier par</option>
-                <option value="price-asc">Prix ↑ croissant</option>
-                <option value="price-desc">Prix ↓ décroissant</option>
-              </select>
+                <button
+                  className="shop-filter-toggle"
+                  onClick={() => setFiltersOpen(o => !o)}
+                  style={{ display: "none", alignItems: "center", gap: "6px", padding: "0 14px", height: "38px", borderRadius: "11px", border: "1px solid", fontWeight: 700, fontSize: "0.8rem", cursor: "pointer", transition: "all 0.15s", flexShrink: 0, ...(filtersOpen || activeCount > 0 ? { background: "rgba(232,33,160,0.12)", borderColor: "rgba(232,33,160,0.35)", color: "var(--pink)" } : { background: "rgba(255,255,255,0.04)", borderColor: "rgba(255,255,255,0.09)", color: "rgba(255,255,255,0.5)" }) }}
+                >
+                  <SlidersHorizontal size={14} />
+                  {t.shop.filters}
+                  {activeCount > 0 && <span style={{ background: "var(--pink)", color: "white", borderRadius: "50%", fontSize: "0.58rem", fontWeight: 900, width: "15px", height: "15px", display: "flex", alignItems: "center", justifyContent: "center" }}>{activeCount}</span>}
+                </button>
+              </div>
             </div>
 
             {/* Active filter chips */}
