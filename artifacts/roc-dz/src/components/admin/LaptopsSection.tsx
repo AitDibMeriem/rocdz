@@ -51,7 +51,7 @@ const formSchema = z.object({
   batteryEstimation: z.string().optional(),
   weight: z.string().optional(),
   condition: z.enum(["new", "refurbished"]),
-  conditionScore: z.number().int().min(1).max(10).optional(),
+  conditionScore: z.number().min(1).max(10).optional(),
   conditionDescription: z.string().optional(),
   warrantyMonths: z.number().int().positive().optional(),
   price: z.number().int().min(0, "Price is required"),
@@ -502,7 +502,7 @@ export function LaptopsSection() {
                   {conditionWatch === "refurbished" && (
                     <div className="grid grid-cols-1 gap-4 p-4 border border-orange-500/20 bg-orange-500/5 rounded-md">
                       <FormField control={form.control} name="conditionScore" render={({ field }) => (
-                        <FormItem><FormLabel>Condition Score (1-10)</FormLabel><FormControl><Input type="number" min="1" max="10" {...field} onChange={e => field.onChange(e.target.value ? Number(e.target.value) : undefined)} /></FormControl><FormMessage /></FormItem>
+                        <FormItem><FormLabel>Condition Score (1-10)</FormLabel><FormControl><Input type="number" min="1" max="10" step="0.1" {...field} onChange={e => field.onChange(e.target.value ? Number(e.target.value) : undefined)} /></FormControl><FormMessage /></FormItem>
                       )} />
                       <FormField control={form.control} name="conditionDescription" render={({ field }) => (
                         <FormItem><FormLabel>Condition Details</FormLabel><FormControl><Textarea {...field} placeholder="Describe scratches, dents, battery wear..." /></FormControl><FormMessage /></FormItem>

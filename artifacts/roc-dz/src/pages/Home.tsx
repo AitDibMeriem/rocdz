@@ -170,51 +170,6 @@ export default function Home() {
       {/* STATS COUNTERS — ChiffresQuiParlent */}
       <StatsSection isRTL={isRTL} />
 
-      {/* CATEGORIES */}
-      <section className="categories" id="categories">
-        <div className="category-header">
-          <div className="section-label">{h.catLabel}</div>
-          <h2>{h.catTitle}<br /><span className="gradient">{h.catTitleGrad}</span></h2>
-        </div>
-
-        <div className="category-subtitle">{h.catLaptopSub}</div>
-        <div className="category-subtitle-desc">{h.catLaptopDesc}</div>
-
-        <div className="brand-grid">
-          {LAPTOP_GRID.map((item) => (
-            <Link key={item.name} href={item.href} className="brand-card">
-              <div className="brand-card-img">
-                <img src={item.img} alt={item.name} />
-              </div>
-              <div className="brand-card-body">
-                <div className={`card-tag ${item.tag}`}><span className="dot" />{getTag(item.tagKey)}</div>
-                <h3>{item.name}</h3>
-                <div className="explore">{h.catExplore}</div>
-              </div>
-            </Link>
-          ))}
-        </div>
-
-        <div style={{ marginTop: "3rem" }}>
-          <div className="category-subtitle">{h.catAccSub}</div>
-          <div className="category-subtitle-desc">{h.catAccDesc}</div>
-          <div className="brand-grid">
-            {ACC_GRID.map((item) => (
-              <Link key={item.nameKey} href={item.href} className="brand-card">
-                <div className="brand-card-img">
-                  <img src={item.img} alt={getName(item.nameKey)} />
-                </div>
-                <div className="brand-card-body">
-                  <div className={`card-tag ${item.tag}`}><span className="dot" />{getTag(item.tagKey)}</div>
-                  <h3>{getName(item.nameKey)}</h3>
-                  <div className="explore">{h.catExplore}</div>
-                </div>
-              </Link>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* LOOKING FOR */}
       <section className="looking-for">
         <div className="section-title fade-up">
