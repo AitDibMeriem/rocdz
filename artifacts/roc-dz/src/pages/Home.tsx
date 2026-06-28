@@ -156,7 +156,8 @@ export default function Home() {
                 <img
                   src={b.img}
                   alt={b.name}
-                  style={{ height: "22px", width: "auto", maxWidth: "80px", objectFit: "contain", filter: "brightness(0) invert(1)", opacity: 0.75 }}
+                  className="brand-logo"
+                  style={{ height: "22px", width: "auto", maxWidth: "80px", objectFit: "contain", opacity: 0.75 }}
                   onError={e => { const el = e.currentTarget as HTMLImageElement; el.style.display = "none"; el.nextElementSibling && ((el.nextElementSibling as HTMLElement).style.display = "inline"); }}
                 />
                 <span style={{ display: "none", fontSize: "0.8rem", fontWeight: 700, letterSpacing: "1px", opacity: 0.7 }}>{b.name}</span>
@@ -373,9 +374,6 @@ export default function Home() {
           </div>
         </div>
       </section>
-
-      {/* TRACKING FEATURE VISUAL */}
-      <TrackingFeatureSection h={h} />
 
       {/* SUIVI COMMANDE CTA */}
       <div className="tracking-cta fade-up">
