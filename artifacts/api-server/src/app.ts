@@ -6,23 +6,23 @@ import { logger } from "./lib/logger";
 
 const app: Express = express();
 
+// pino-http v10 TypeScript compatibility workaround
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
+const httpLogger = pinoHttp as unknown as (opts: any) => any;
 app.use(
-  (pinoHttp as any)({
+  httpLogger({
     logger,
     serializers: {
-      req(req: any) {
-        return {
-          id: req.id,
-          method: req.method,
-          url: req.url?.split("?")[0],
-        };
-      },
-      res(res: any) {
-        return {
-          statusCode: res.statusCode,
-        };
-      },
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      req: (req: any) => ({
+        id: req.id,
+        method: req.method,
+        url: req.url?.split("?")[0],
+      }),
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      res: (res: any) => ({
+        statusCode: res.statusCode,
+      }),
     },
   }),
 );

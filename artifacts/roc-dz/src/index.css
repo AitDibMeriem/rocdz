@@ -2021,3 +2021,63 @@ section { position: relative; z-index: 2; }
 .light-mode .tracking-step-dot { border-color: rgba(20,16,16,0.15) !important; }
 /* footer border */
 .light-mode footer { border-top-color: rgba(20,16,16,0.08) !important; }
+
+/* ── SHOP LIGHT MODE: comprehensive deep fix ──────── */
+/* All filter sidebar inline white colors → dark */
+.light-mode .shop-sidebar > div > div,
+.light-mode .shop-mobile-panel > div:first-child ~ * {
+  color: rgba(20,16,16,0.8);
+}
+/* Section labels (MARQUE, ÉTAT, PRIX…) */
+.light-mode .shop-sidebar div > p,
+.light-mode .shop-mobile-panel div > p {
+  color: rgba(20,16,16,0.45) !important;
+}
+/* All button spans inside filter */
+.light-mode .shop-sidebar div button span,
+.light-mode .shop-mobile-panel div button span {
+  color: rgba(20,16,16,0.7) !important;
+}
+/* Price range values */
+.light-mode .shop-sidebar div div[style],
+.light-mode .shop-mobile-panel div div[style] {
+  color: rgba(20,16,16,0.5);
+}
+/* Back button border */
+.light-mode .shop-back-btn { border-color: rgba(20,16,16,0.15) !important; }
+/* Search input placeholder */
+.light-mode ::placeholder { color: rgba(20,16,16,0.35) !important; }
+/* Search icon */
+.light-mode .shop-sidebar svg,
+.light-mode input + svg { color: rgba(20,16,16,0.35) !important; }
+/* Sort select */
+.light-mode select { 
+  background: rgba(20,16,16,0.04) !important; 
+  border-color: rgba(20,16,16,0.12) !important; 
+  color: rgba(20,16,16,0.8) !important; 
+}
+/* filter toggle button */
+.light-mode .shop-filter-toggle {
+  background: rgba(20,16,16,0.04) !important;
+  border-color: rgba(20,16,16,0.12) !important;
+  color: rgba(20,16,16,0.6) !important;
+}
+/* shop sidebar card background */
+.light-mode .shop-sidebar > div {
+  background: rgba(20,16,16,0.03) !important;
+  border-color: rgba(20,16,16,0.08) !important;
+}
+/* shop mobile panel */
+.light-mode .shop-mobile-panel {
+  background: #f8f4f9 !important;
+  border-right-color: rgba(20,16,16,0.08) !important;
+}
+/* inactive condition dot */
+.light-mode .shop-sidebar div[style*="rgba(255,255,255,0.25)"],
+.light-mode .shop-mobile-panel div[style*="rgba(255,255,255,0.25)"] {
+  background: rgba(20,16,16,0.2) !important;
+}
+/* product card title text */
+.light-mode .card-title { color: rgba(20,16,16,0.85) !important; }
+/* product spec text */
+.light-mode .spec-badge { color: rgba(20,16,16,0.6) !important; }

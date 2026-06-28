@@ -13,15 +13,15 @@ function getURLParam(key: string) {
 
 const BRANDS = ["HP", "Dell", "Lenovo", "ASUS", "MSI", "Apple", "Acer", "Samsung", "Huawei"];
 const BRAND_LOGOS: Record<string, string> = {
-  HP: "/brand-hp.png",
-  Dell: "/brand-dell.png",
+  HP: "/logo-hp.svg",
+  Dell: "/logo-dell.svg",
   Lenovo: "/brand-lenovo-logo.png",
-  ASUS: "/brand-asus.png",
-  MSI: "/brand-msi.png",
-  Apple: "/brand-apple.png",
-  Acer: "/brand-acer.png",
-  Samsung: "/brand-samsung.png",
-  Huawei: "/brand-huawei.png",
+  ASUS: "/logo-asus.svg",
+  MSI: "/logo-msi.svg",
+  Apple: "/logo-apple.svg",
+  Acer: "/logo-acer.svg",
+  Samsung: "/logo-samsung.svg",
+  Huawei: "/logo-huawei.svg",
 };
 
 function usePerPage() {
