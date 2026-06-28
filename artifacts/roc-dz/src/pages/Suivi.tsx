@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link } from "wouter";
+import { useLang } from "@/context/LangContext";
 
 const BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 
@@ -13,6 +14,30 @@ const STATUS_LABELS: Record<string, string> = {
   delivered: "Livré",
   cancelled: "Annulé",
   returned: "Retourné",
+};
+
+const STATUS_LABELS_AR: Record<string, string> = {
+  reserved: "محجوز",
+  confirmed: "مؤكد",
+  advance_paid: "دفعة مقدمة",
+  verse: "مدفوع",
+  prepared: "جاهز",
+  shipped: "مشحون",
+  delivered: "مُسلَّم",
+  cancelled: "ملغى",
+  returned: "مُرجَع",
+};
+
+const STATUS_LABELS_EN: Record<string, string> = {
+  reserved: "Reserved",
+  confirmed: "Confirmed",
+  advance_paid: "Advance paid",
+  verse: "Paid",
+  prepared: "Prepared",
+  shipped: "Shipped",
+  delivered: "Delivered",
+  cancelled: "Cancelled",
+  returned: "Returned",
 };
 
 const STATUS_STEPS = ["reserved", "confirmed", "verse", "prepared", "shipped", "delivered"];
@@ -54,6 +79,18 @@ function stepIndex(status: string) {
 
 function OrderCard({ order }: { order: any }) {
   const [copied, setCopied] = useState(false);
+  const { lang } = useLang();
+  const labels = lang === "ar" ? STATUS_LABELS_AR : lang === "en" ? STATUS_LABELS_EN : STATUS_LABELS;
+  const txt = {
+    delivery: lang === "ar" ? "التوصيل" : lang === "en" ? "Delivery" : "Livraison",
+    total: lang === "ar" ? "المجموع" : lang === "en" ? "Total" : "Total",
+    paid: lang === "ar" ? "✓ مدفوع" : lang === "en" ? "✓ Paid" : "✓ Versé",
+    remaining: lang === "ar" ? "⏳ المتبقي" : lang === "en" ? "⏳ Remaining" : "⏳ Reste à payer",
+    bureau: lang === "ar" ? "نقطة التسليم" : lang === "en" ? "Office / Stop Desk" : "Bureau / Stop Desk",
+    home: lang === "ar" ? "توصيل إلى المنزل" : lang === "en" ? "Home delivery" : "À domicile",
+    copy: lang === "ar" ? "📋 نسخ الرسالة" : lang === "en" ? "📋 Copy message" : "📋 Copier le message",
+    copiedTxt: lang === "ar" ? "✓ تم النسخ" : lang === "en" ? "✓ Copied" : "✓ Copié !",
+  };
   const colors = STATUS_COLORS[order.status] || STATUS_COLORS.reserved;
   const isVersed = (order.status === "verse" || order.status === "advance_paid") && (order.advancePaid || 0) > 0;
   const isCancelled = order.status === "cancelled" || order.status === "returned";
@@ -70,13 +107,13 @@ function OrderCard({ order }: { order: any }) {
       <div className="suivi-order-header">
         <div className="suivi-order-ref">
           <span className="suivi-order-num">#{String(order.id).padStart(4, "0")}</span>
-          <span className="suivi-order-date">{new Date(order.createdAt).toLocaleDateString("fr-DZ", { day: "2-digit", month: "long", year: "numeric" })}</span>
+          <span className="suivi-order-date">{new Date(order.createdAt).toLocaleDateString(lang === "ar" ? "ar-DZ" : "fr-DZ", { day: "2-digit", month: "long", year: "numeric" })}</span>
         </div>
         <span
           className="suivi-status-badge"
           style={{ background: colors.bg, color: colors.text, border: `1px solid ${colors.border}` }}
         >
-          {STATUS_ICONS[order.status]} {STATUS_LABELS[order.status] || order.status}
+          {STATUS_ICONS[order.status]} {labels[order.status] || order.status}
         </span>
       </div>
 
@@ -119,7 +156,7 @@ function OrderCard({ order }: { order: any }) {
       {/* Totals */}
       <div className="suivi-totals">
         <div className="suivi-total-row">
-          <span>Livraison</span>
+          <span>{txt.delivery}</span>
           <span>{(order.deliveryFee || 0).toLocaleString("fr-DZ")} DA</span>
         </div>
         {order.promoCode && (
@@ -129,17 +166,17 @@ function OrderCard({ order }: { order: any }) {
           </div>
         )}
         <div className="suivi-total-row suivi-grand-total">
-          <span>Total</span>
+          <span>{txt.total}</span>
           <span>{(order.totalPrice || 0).toLocaleString("fr-DZ")} DA</span>
         </div>
         {isVersed && (
           <>
             <div className="suivi-total-row suivi-versed">
-              <span>✓ Versé</span>
+              <span>{txt.paid}</span>
               <span>{(order.advancePaid || 0).toLocaleString("fr-DZ")} DA</span>
             </div>
             <div className="suivi-total-row suivi-remaining">
-              <span>⏳ Reste à payer</span>
+              <span>{txt.remaining}</span>
               <span>{(order.remainingAmount || 0).toLocaleString("fr-DZ")} DA</span>
             </div>
           </>
@@ -152,13 +189,13 @@ function OrderCard({ order }: { order: any }) {
           <p className="suivi-verse-title">💬 Message de confirmation — ROC DZ</p>
           <pre className="suivi-verse-msg">{buildVerseMessage(order)}</pre>
           <button className="suivi-copy-btn" onClick={copyMsg}>
-            {copied ? "✓ Copié !" : "📋 Copier le message"}
+            {copied ? txt.copiedTxt : txt.copy}
           </button>
         </div>
       )}
 
       <div className="suivi-wilaya">
-        📍 {order.wilaya || "—"} — {order.deliveryType === "bureau" ? "Bureau / Stop Desk" : "À domicile"}
+        📍 {order.wilaya || "—"} — {order.deliveryType === "bureau" ? txt.bureau : txt.home}
       </div>
     </div>
   );
@@ -170,6 +207,22 @@ export default function Suivi() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [searched, setSearched] = useState(false);
+  const { lang, isRTL } = useLang();
+
+  const ui = {
+    title: lang === "ar" ? "تتبع طلبي" : lang === "en" ? "Track my order" : "Suivre ma commande",
+    desc: lang === "ar" ? "أدخل رقم هاتفك لعرض طلباتك من ROC DZ." : lang === "en" ? "Enter your phone number to view your ROC DZ orders." : "Entrez votre numéro de téléphone pour voir l'état de vos commandes ROC DZ.",
+    placeholder: lang === "ar" ? "مثال: 0555 12 34 56" : "Ex: 0555 12 34 56",
+    searching: lang === "ar" ? "جارٍ البحث..." : lang === "en" ? "Searching..." : "Recherche...",
+    search: lang === "ar" ? "🔍 بحث" : lang === "en" ? "🔍 Search" : "🔍 Rechercher",
+    connError: lang === "ar" ? "خطأ في الاتصال. تحقق من اتصالك بالإنترنت." : lang === "en" ? "Connection error. Check your internet connection." : "Erreur de connexion. Vérifiez votre connexion internet.",
+    noOrders: lang === "ar" ? "لا توجد طلبات" : lang === "en" ? "No orders found" : "Aucune commande trouvée",
+    noOrdersDesc: lang === "ar" ? "تحقق من أن الرقم المُدخل هو نفس المستخدم عند الطلب." : lang === "en" ? "Make sure the number entered matches the one used when ordering." : "Vérifiez que le numéro entré correspond à celui utilisé lors de la commande.",
+    orderNow: lang === "ar" ? "اطلب الآن ←" : lang === "en" ? "Place an order →" : "Passer une commande →",
+    back: lang === "ar" ? "→ العودة للرئيسية" : lang === "en" ? "← Back to home" : "← Retour à l'accueil",
+    foundSingle: lang === "ar" ? "طلب واحد تم العثور عليه" : lang === "en" ? "order found" : "commande trouvée",
+    foundPlural: lang === "ar" ? "طلبات تم العثور عليها" : lang === "en" ? "orders found" : "commandes trouvées",
+  };
 
   const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -183,24 +236,24 @@ export default function Suivi() {
       const r = await fetch(`${BASE}/api/orders/track?phone=${encodeURIComponent(q)}`);
       if (!r.ok) {
         const d = await r.json();
-        setError(d.error || "Erreur lors de la recherche");
+        setError(d.error || (lang === "ar" ? "خطأ في البحث" : lang === "en" ? "Search error" : "Erreur lors de la recherche"));
       } else {
         const data = await r.json();
         setOrders(data);
       }
     } catch {
-      setError("Erreur de connexion. Vérifiez votre connexion internet.");
+      setError(ui.connError);
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="suivi-wrap">
+    <div className="suivi-wrap" dir={isRTL ? "rtl" : "ltr"}>
       <div className="suivi-hero">
         <div className="suivi-icon">📦</div>
-        <h1 className="suivi-title">Suivre ma commande</h1>
-        <p className="suivi-desc">Entrez votre numéro de téléphone pour voir l'état de vos commandes ROC DZ.</p>
+        <h1 className="suivi-title">{ui.title}</h1>
+        <p className="suivi-desc">{ui.desc}</p>
       </div>
 
       <div className="suivi-container">
@@ -208,13 +261,13 @@ export default function Suivi() {
           <input
             className="suivi-input"
             type="tel"
-            placeholder="Ex: 0555 12 34 56"
+            placeholder={ui.placeholder}
             value={phone}
             onChange={e => setPhone(e.target.value)}
             required
           />
           <button className="suivi-btn" type="submit" disabled={loading}>
-            {loading ? "Recherche..." : "🔍 Rechercher"}
+            {loading ? ui.searching : ui.search}
           </button>
         </form>
 
@@ -226,13 +279,13 @@ export default function Suivi() {
           orders.length === 0 ? (
             <div className="suivi-empty">
               <div className="suivi-empty-icon">🔍</div>
-              <p className="suivi-empty-title">Aucune commande trouvée</p>
-              <p className="suivi-empty-desc">Vérifiez que le numéro entré correspond à celui utilisé lors de la commande.</p>
-              <Link href="/cart" className="suivi-empty-link">Passer une commande →</Link>
+              <p className="suivi-empty-title">{ui.noOrders}</p>
+              <p className="suivi-empty-desc">{ui.noOrdersDesc}</p>
+              <Link href="/cart" className="suivi-empty-link">{ui.orderNow}</Link>
             </div>
           ) : (
             <div className="suivi-results">
-              <p className="suivi-results-count">{orders.length} commande{orders.length > 1 ? "s" : ""} trouvée{orders.length > 1 ? "s" : ""}</p>
+              <p className="suivi-results-count">{orders.length} {orders.length > 1 ? ui.foundPlural : ui.foundSingle}</p>
               {orders.map((order: any) => (
                 <OrderCard key={order.id} order={order} />
               ))}
@@ -241,7 +294,7 @@ export default function Suivi() {
         )}
 
         <div className="suivi-back">
-          <Link href="/" className="suivi-back-link">← Retour à l'accueil</Link>
+          <Link href="/" className="suivi-back-link">{ui.back}</Link>
         </div>
       </div>
     </div>

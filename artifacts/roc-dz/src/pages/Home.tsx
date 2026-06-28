@@ -80,7 +80,7 @@ const REVIEWS = [
 
 export default function Home() {
   const { data: featured } = useGetFeaturedLaptop();
-  const { t, isRTL } = useLang();
+  const { t, isRTL, lang } = useLang();
   const h = t.home;
 
   const getTag = (key: string) => (h as Record<string, string>)[key] ?? key;
@@ -374,24 +374,8 @@ export default function Home() {
         </div>
       </section>
 
-      {/* TRACKING FEATURE VISUAL */}
-      <TrackingFeatureSection h={h} />
-
-      {/* SUIVI COMMANDE CTA */}
-      <div className="tracking-cta fade-up">
-        <div className="tracking-cta-card">
-          <div className="tracking-cta-left">
-            <div className="tracking-cta-icon">📦</div>
-            <div className="tracking-cta-text">
-              <h3>{h.trackTitle}</h3>
-              <p>{h.trackDesc}</p>
-            </div>
-          </div>
-          <Link href="/suivi" className="tracking-cta-btn">
-            {h.trackBtn}
-          </Link>
-        </div>
-      </div>
+      {/* CONTACT INFO BANNER */}
+      <ContactBannerSection lang={lang} isRTL={isRTL} />
 
       {/* MAGASIN PHYSIQUE — SplitReveal */}
       <StoreSection isRTL={isRTL} />
@@ -453,76 +437,63 @@ function StatCard({ target, suffix, label, decimals = 0 }: { target: number; suf
 }
 
 function StatsSection({ isRTL }: { isRTL: boolean }) {
+  const { lang } = useLang();
   return (
     <section className="stats-section">
       <div className="stats-container">
         <div className="stats-label" dir={isRTL ? "rtl" : "ltr"}>
-          {isRTL ? "أرقام تتحدث عن نفسها" : "Des chiffres qui parlent"}
+          {lang === "ar" ? "أرقام تتحدث عن نفسها" : lang === "en" ? "Numbers that speak" : "Des chiffres qui parlent"}
         </div>
         <h2 className="stats-title" dir={isRTL ? "rtl" : "ltr"}>
-          {isRTL ? "ثقة عشرات الآلاف من الزبائن" : "La confiance de milliers d'Algériens"}
+          {lang === "ar" ? "ثقة عشرات الآلاف من الزبائن" : lang === "en" ? "The trust of thousands of Algerians" : "La confiance de milliers d'Algériens"}
         </h2>
         <div className="stats-grid">
-          <StatCard target={2} suffix="M+" label={isRTL ? "متابع على وسائل التواصل" : "Abonnés réseaux sociaux"} />
-          <StatCard target={68} suffix="" label={isRTL ? "ولاية نوصلها" : "Wilayas livrées"} />
-          <StatCard target={5000} suffix="+" label={isRTL ? "طلب منجز" : "Commandes livrées"} />
-          <StatCard target={4.9} suffix="/5" label={isRTL ? "تقييم جوجل" : "Note Google"} decimals={1} />
+          <StatCard target={2} suffix="M+" label={lang === "ar" ? "متابع على وسائل التواصل" : lang === "en" ? "Social followers" : "Abonnés réseaux sociaux"} />
+          <StatCard target={68} suffix="" label={lang === "ar" ? "ولاية نوصلها" : lang === "en" ? "Wilayas covered" : "Wilayas livrées"} />
+          <StatCard target={2000} suffix="+" label={lang === "ar" ? "منتج مُباع" : lang === "en" ? "Products sold" : "Produits vendus"} />
+          <StatCard target={4.9} suffix="/5" label={lang === "ar" ? "تقييم جوجل" : lang === "en" ? "Google rating" : "Note Google"} decimals={1} />
         </div>
       </div>
     </section>
   );
 }
 
-/* ── TRACKING FEATURE SECTION ──────────────────── */
-const TRACKING_STEPS = [
-  { icon: "📋", label_fr: "Réservé",   label_ar: "محجوز",   color: "#eab308", active: true },
-  { icon: "✅", label_fr: "Confirmé",  label_ar: "مؤكد",    color: "#60a5fa", active: true },
-  { icon: "💰", label_fr: "Versé",     label_ar: "مدفوع",   color: "#2dd4bf", active: true },
-  { icon: "📦", label_fr: "Préparé",   label_ar: "محضر",    color: "#c084fc", active: false },
-  { icon: "🚚", label_fr: "Expédié",   label_ar: "مشحون",   color: "#22d3ee", active: false },
-  { icon: "🎉", label_fr: "Livré",     label_ar: "مسلم",    color: "#4ade80", active: false },
-];
-
-function TrackingFeatureSection({ h }: { h: Record<string, string> }) {
-  const { isRTL } = useLang();
+/* ── CONTACT BANNER SECTION ────────────────────── */
+function ContactBannerSection({ lang, isRTL }: { lang: string; isRTL: boolean }) {
+  const MAPS_URL = "https://maps.app.goo.gl/GaKYnMnz1H6QiXjHA";
+  const labels = {
+    fr: { hours: "HORAIRES D'OUVERTURE", schedule: "6/7 jours — 9h à 20h", contact: "CONTACTEZ-NOUS", location: "NOTRE LOCALISATION", maps: "Voir sur Google Maps", p1h: "de 8h à 16h", p2h: "de 16h à minuit" },
+    ar: { hours: "ساعات العمل", schedule: "6/7 أيام — من 9ص إلى 8م", contact: "اتصل بنا", location: "موقعنا", maps: "عرض على خرائط Google", p1h: "من 8ص إلى 4م", p2h: "من 4م إلى منتصف الليل" },
+    en: { hours: "OPENING HOURS", schedule: "6/7 days — 9am to 8pm", contact: "CONTACT US", location: "OUR LOCATION", maps: "View on Google Maps", p1h: "8am – 4pm", p2h: "4pm – midnight" },
+  };
+  const l = labels[lang as keyof typeof labels] || labels.fr;
   return (
-    <section className="tracking-feature">
-      <div className="tracking-feature-inner">
-        <div style={{ textAlign: "center", marginBottom: "1rem" }}>
-          <div className="section-label">{isRTL ? "تتبع طلبك" : "Suivi en temps réel"}</div>
-          <h2 style={{ fontSize: "clamp(1.3rem,3vw,2rem)", fontWeight: 900, marginBottom: "0.5rem" }}>
-            {isRTL ? "اعرف أين طلبك في أي لحظة" : <><span className="gradient">Votre commande</span> en temps réel</>}
-          </h2>
-          <p style={{ color: "rgba(255,255,255,0.45)", fontSize: "0.88rem", maxWidth: "500px", margin: "0 auto" }}>
-            {isRTL
-              ? "تابع حالة طلبك من الحجز حتى التسليم، بشفافية تامة"
-              : "Suivez l'état de votre commande de la réservation jusqu'à la livraison, en toute transparence."}
-          </p>
+    <section className="contact-banner-section fade-up" dir={isRTL ? "rtl" : "ltr"}>
+      <div className="contact-banner-inner">
+        <div className="contact-banner-col">
+          <div className="contact-banner-label">⏰ {l.hours}</div>
+          <div className="contact-banner-value">{l.schedule}</div>
         </div>
-
-        <div style={{ background: "rgba(255,255,255,0.025)", border: "1px solid rgba(255,255,255,0.07)", borderRadius: "20px", padding: "1.5rem 1rem" }}>
-          {/* Steps row */}
-          <div className="tracking-steps-row">
-            {TRACKING_STEPS.map((step, i) => (
-              <div key={i} style={{ display: "flex", alignItems: "center", flex: 1 }}>
-                <div className="tracking-step-item">
-                  <div className="tracking-step-dot" style={{ background: step.active ? `${step.color}22` : "transparent", borderColor: step.active ? step.color : "rgba(255,255,255,0.12)", color: step.color, opacity: step.active ? 1 : 0.45 }}>
-                    {step.icon}
-                  </div>
-                  <span className="tracking-step-name" style={{ color: step.active ? step.color : "rgba(255,255,255,0.3)" }}>
-                    {isRTL ? step.label_ar : step.label_fr}
-                  </span>
-                </div>
-                {i < TRACKING_STEPS.length - 1 && <div className="tracking-step-line" style={{ opacity: step.active ? 1 : 0.3 }} />}
-              </div>
-            ))}
-          </div>
-
-          {/* CTA */}
-          <div style={{ textAlign: "center", marginTop: "1rem" }}>
-            <Link href="/suivi" style={{ display: "inline-flex", alignItems: "center", gap: "6px", padding: "0.6rem 1.5rem", borderRadius: "10px", border: "1px solid rgba(232,33,160,0.35)", color: "var(--pink)", textDecoration: "none", fontSize: "0.84rem", fontWeight: 700, transition: "all 0.2s" }}>
-              {isRTL ? "تتبع طلبي ←" : "Suivre ma commande →"}
-            </Link>
+        <div className="contact-banner-col">
+          <div className="contact-banner-label">📞 {l.contact}</div>
+          <a href="tel:+213562854820" className="contact-banner-phone">
+            <span className="contact-banner-num">0562 854 820</span>
+            <span className="contact-banner-hours">{l.p1h}</span>
+          </a>
+          <a href="tel:+213553207730" className="contact-banner-phone">
+            <span className="contact-banner-num">0553 207 730</span>
+            <span className="contact-banner-hours">{l.p2h}</span>
+          </a>
+        </div>
+        <div className="contact-banner-col">
+          <div className="contact-banner-label">📍 {l.location}</div>
+          <a href={MAPS_URL} target="_blank" rel="noopener noreferrer" className="contact-banner-map">
+            📍 {l.maps}
+          </a>
+          <div className="contact-banner-socials">
+            <a href="https://www.instagram.com/roc.dz/" target="_blank" rel="noopener noreferrer" className="contact-banner-social ig">Instagram</a>
+            <a href="https://www.facebook.com/rocdz" target="_blank" rel="noopener noreferrer" className="contact-banner-social fb">Facebook</a>
+            <a href="https://www.youtube.com/@ROCDZ" target="_blank" rel="noopener noreferrer" className="contact-banner-social yt">YouTube</a>
           </div>
         </div>
       </div>

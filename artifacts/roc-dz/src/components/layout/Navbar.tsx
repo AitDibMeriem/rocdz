@@ -54,7 +54,8 @@ export function Navbar() {
   };
 
   const toggleLang = () => {
-    setLang(lang === "fr" ? "ar" : "fr");
+    const next = lang === "fr" ? "en" : lang === "en" ? "ar" : "fr";
+    setLang(next);
   };
 
   const handleBellClick = () => {
@@ -94,8 +95,8 @@ export function Navbar() {
           {theme === "dark" ? <Sun size={18} /> : <Moon size={18} />}
         </button>
 
-        <button onClick={toggleLang} title={lang === "fr" ? "Switch to Arabic" : "Switch to French"} className="lang-btn">
-          {lang === "fr" ? <><span className="lang-flag">🇫🇷</span><span className="lang-label">FR</span></> : <><span className="lang-flag">🇩🇿</span><span className="lang-label">AR</span></>}
+        <button onClick={toggleLang} title="Change language" className="lang-btn">
+          {lang === "fr" ? <><span className="lang-flag">🇫🇷</span><span className="lang-label">FR</span></> : lang === "en" ? <><span className="lang-flag">🇬🇧</span><span className="lang-label">EN</span></> : <><span className="lang-flag">🇩🇿</span><span className="lang-label">AR</span></>}
         </button>
 
         <div ref={bellRef} style={{ position: "relative" }}>
@@ -178,8 +179,8 @@ export function Navbar() {
             <li><Link href="/about" onClick={() => setMenuOpen(false)}>{t.nav.about}</Link></li>
             <li>
               <button onClick={() => { toggleLang(); setMenuOpen(false); }} style={{ background: "none", border: "none", cursor: "pointer", color: "var(--text)", fontSize: "1rem", fontWeight: 700, padding: "0.8rem 0", width: "100%", textAlign: "left", display: "flex", alignItems: "center", gap: "8px", borderBottom: "1px solid var(--border-raw)" }}>
-                {lang === "fr" ? "🇫🇷 Français" : "🇩🇿 العربية"}
-                <span style={{ fontSize: "0.7rem", color: "var(--pink)", marginLeft: "auto" }}>→ {lang === "fr" ? "عربي" : "FR"}</span>
+                {lang === "fr" ? "🇫🇷 Français" : lang === "en" ? "🇬🇧 English" : "🇩🇿 العربية"}
+                <span style={{ fontSize: "0.7rem", color: "var(--pink)", marginLeft: "auto" }}>→ {lang === "fr" ? "EN" : lang === "en" ? "AR" : "FR"}</span>
               </button>
             </li>
             <li>
