@@ -191,12 +191,12 @@ export default function Models() {
 
   return (
     <div style={{ position: "relative", zIndex: 10 }}>
-      <div style={{ maxWidth: "1440px", margin: "0 auto", padding: "2rem 1rem 3rem" }}>
-        <div style={{ display: "flex", gap: "1.5rem", alignItems: "flex-start" }}>
+      <div style={{ maxWidth: "1440px", margin: "0 auto", padding: "5.5rem 1.5rem 3rem" }}>
+        <div style={{ display: "flex", gap: "2rem", alignItems: "flex-start" }}>
 
           {/* Desktop sidebar — hidden on mobile via class */}
           <aside className="shop-sidebar">
-            <div style={{ position: "sticky", top: "5.5rem", width: "210px", flexShrink: 0, background: "rgba(255,255,255,0.025)", backdropFilter: "blur(16px)", border: "1px solid rgba(255,255,255,0.07)", borderRadius: "16px", padding: "1.25rem" }}>
+            <div style={{ position: "sticky", top: "5.5rem", width: "230px", flexShrink: 0, background: "rgba(255,255,255,0.025)", backdropFilter: "blur(16px)", border: "1px solid rgba(255,255,255,0.07)", borderRadius: "16px", padding: "1.25rem" }}>
               <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "1.25rem", paddingBottom: "0.75rem", borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
                 <span style={{ fontWeight: 800, fontSize: "0.82rem", letterSpacing: "0.5px", display: "flex", alignItems: "center", gap: "6px" }}>
                   <SlidersHorizontal size={14} style={{ color: "var(--pink)" }} />
