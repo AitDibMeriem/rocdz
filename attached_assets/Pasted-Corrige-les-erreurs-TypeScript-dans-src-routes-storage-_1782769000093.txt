@@ -1,0 +1,53 @@
+Corrige les erreurs TypeScript dans src/routes/storage.ts (lignes 78-82 et 124-128).
+Le fichier confond le type Response d'Express avec la réponse d'un appel HTTP externe (probablement fetch ou une API comme Google Cloud Storage).
+Actions demandées :
+Renommer l'import Express pour éviter le conflit avec le type global Response du fetch :
+TypeScript
+import { Request, Response as ExpressResponse } from 'express';
+Et utiliser ExpressResponse uniquement pour le paramètre res du route handler.
+Pour la réponse externe, ne pas typer explicitement avec Response d'Express. Laisser TypeScript inférer le type, ou utiliser globalThis.Response si nécessaire :
+TypeScript
+const externalResponse = await fetch(signedUrl); // ou l'appel API
+Corriger l'accès aux propriétés sur la réponse externe :
+externalResponse.status (number)
+externalResponse.headers (type Headers)
+externalResponse.body (ReadableStream ou null)
+Typer explicitement le callback .forEach() pour corriger l'erreur implicitly any :
+TypeScript
+externalResponse.headers.forEach((value: string, key: string) => {
+  res.setHeader(key, value);
+});
+Si tu pipes le body vers la réponse Express, assure-toi que externalResponse.body est bien un stream compatible. Avec le fetch natif de Node.js, body est un ReadableStream. Utilise Readable.fromWeb() si nécessaire, ou convertis en buffer avant d'envoyer.
+Résultat attendu : zéro erreur TypeScript (tsc --noEmit ou pnpm run build doit passer).
+🛠️ Exemple de code corrigé (pattern probable)
+TypeScript
+import { Request, Response as ExpressResponse } from 'express';
+import { Readable } from 'stream';
+
+export const getFile = async (req: Request, res: ExpressResponse) => {
+  // ... logique pour obtenir l'URL signée GCS ...
+  const signedUrl = 'https://storage.googleapis.com/...';
+
+  // 1. Appel externe : type inféré = globalThis.Response (fetch)
+  const fetchRes = await fetch(signedUrl);
+
+  // 2. Forward du status
+  res.status(fetchRes.status);
+
+  // 3. Forward des headers (typage explicite des params)
+  fetchRes.headers.forEach((value: string, key: string) => {
+    res.setHeader(key, value);
+  });
+
+  // 4. Forward du body (ReadableStream -> Node Stream -> Express)
+  if (fetchRes.body) {
+    const nodeStream = Readable.fromWeb(fetchRes.body as any);
+    nodeStream.pipe(res);
+  } else {
+    res.end();
+  }
+};
+🚀 Pour déployer sur Vercel
+Applique la correction dans Replit (ou ton IDE).
+Commit & push sur GitHub.
+Le build Vercel relancera automatiquement et ces erreurs TS doivent disparaître.
