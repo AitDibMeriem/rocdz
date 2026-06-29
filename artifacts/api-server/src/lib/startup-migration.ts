@@ -1,6 +1,6 @@
 import { db } from "@workspace/db";
 import { laptopsTable, accessoriesTable } from "@workspace/db";
-import { sql } from "drizzle-orm";
+import { eq, like } from "drizzle-orm";
 import { logger } from "./logger";
 
 const LAPTOP_URL_MAP: Record<string, string> = {
@@ -16,46 +16,50 @@ const ACCESSORY_URL_MAP: Record<string, string> = {
   "/api/uploads/1782393716773-255154417.png": "/api/storage/objects/uploads/d0abe59c-763c-42b8-9932-48150271aaa1",
 };
 
-async function migrateTable(
-  tableName: string,
-  table: typeof laptopsTable | typeof accessoriesTable,
-  urlMap: Record<string, string>,
-) {
-  let fixed = 0;
-  let nulled = 0;
-
-  for (const [oldUrl, newUrl] of Object.entries(urlMap)) {
-    const result = await db.execute(
-      sql`UPDATE ${sql.raw(tableName)} SET image_url = ${newUrl} WHERE image_url = ${oldUrl}`,
-    );
-    const count = (result as unknown as { rowCount?: number }).rowCount ?? 0;
-    if (count > 0) {
-      logger.info({ tableName, oldUrl, newUrl, count }, "Migrated image URL");
-      fixed += count;
-    }
-  }
-
-  // Null out any remaining /api/uploads/ URLs that have no known mapping (files don't exist in production)
-  const nullResult = await db.execute(
-    sql`UPDATE ${sql.raw(tableName)} SET image_url = NULL WHERE image_url LIKE '/api/uploads/%'`,
-  );
-  nulled = (nullResult as unknown as { rowCount?: number }).rowCount ?? 0;
-  if (nulled > 0) {
-    logger.warn({ tableName, nulled }, "Cleared unmapped local upload URLs (files missing in production)");
-  }
-
-  return { fixed, nulled };
-}
-
-export async function runStartupMigration() {
+export async function runStartupMigration(): Promise<void> {
   try {
-    const laptops = await migrateTable("laptops", laptopsTable, LAPTOP_URL_MAP);
-    const accessories = await migrateTable("accessories", accessoriesTable, ACCESSORY_URL_MAP);
-    const total = laptops.fixed + accessories.fixed + laptops.nulled + accessories.nulled;
-    if (total > 0) {
-      logger.info({ laptops, accessories }, "Startup image migration complete");
+    // Fix laptops
+    for (const [oldUrl, newUrl] of Object.entries(LAPTOP_URL_MAP)) {
+      const rows = await db
+        .update(laptopsTable)
+        .set({ imageUrl: newUrl })
+        .where(eq(laptopsTable.imageUrl, oldUrl))
+        .returning({ id: laptopsTable.id });
+      if (rows.length > 0) {
+        logger.info({ ids: rows.map((r) => r.id), newUrl }, "Migrated laptop image URL");
+      }
+    }
+    // Clear any remaining unmapped /api/uploads/ URLs (files don't exist in production)
+    const nulledLaptops = await db
+      .update(laptopsTable)
+      .set({ imageUrl: null })
+      .where(like(laptopsTable.imageUrl, "/api/uploads/%"))
+      .returning({ id: laptopsTable.id });
+    if (nulledLaptops.length > 0) {
+      logger.warn({ ids: nulledLaptops.map((r) => r.id) }, "Cleared unmapped laptop upload URLs");
+    }
+
+    // Fix accessories
+    for (const [oldUrl, newUrl] of Object.entries(ACCESSORY_URL_MAP)) {
+      const rows = await db
+        .update(accessoriesTable)
+        .set({ imageUrl: newUrl })
+        .where(eq(accessoriesTable.imageUrl, oldUrl))
+        .returning({ id: accessoriesTable.id });
+      if (rows.length > 0) {
+        logger.info({ ids: rows.map((r) => r.id), newUrl }, "Migrated accessory image URL");
+      }
+    }
+    // Clear unmapped accessory upload URLs
+    const nulledAcc = await db
+      .update(accessoriesTable)
+      .set({ imageUrl: null })
+      .where(like(accessoriesTable.imageUrl, "/api/uploads/%"))
+      .returning({ id: accessoriesTable.id });
+    if (nulledAcc.length > 0) {
+      logger.warn({ ids: nulledAcc.map((r) => r.id) }, "Cleared unmapped accessory upload URLs");
     }
   } catch (err) {
-    logger.error({ err }, "Startup migration failed — continuing server startup");
+    logger.error({ err }, "Startup migration failed — server continues normally");
   }
 }
