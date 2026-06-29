@@ -30,7 +30,7 @@ router.post("/upload", upload.single("file"), async (req, res) => {
       method: "PUT",
       body: req.file.buffer,
       headers: { "Content-Type": req.file.mimetype || "application/octet-stream" },
-    });
+    }) as unknown as { ok: boolean; status: number };
 
     if (!putRes.ok) {
       req.log.error({ status: putRes.status }, "Object storage PUT failed");
