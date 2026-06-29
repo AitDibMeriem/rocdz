@@ -1,0 +1,44 @@
+
+Corrige le fichier `src/routes/storage.ts` dans mon projet Express + TypeScript déployé sur Vercel.
+
+PROBLÈME EXACT :
+Aux lignes 78-82 et 124-128, TypeScript retourne ces erreurs :
+- TS2339: Property 'status' does not exist on type 'Response'.
+- TS2339: Property 'headers' does not exist on type 'Response'.
+- TS2339: Property 'body' does not exist on type 'Response'.
+
+CAUSE :
+Le type `Response` importé depuis `'express'` est utilisé pour typer la réponse d'un appel HTTP externe (fetch vers Google Cloud Storage). Le `Response` d'Express n'a pas les propriétés `.status`, `.headers`, `.body` comme un `Response` natif de fetch.
+
+INSTRUCTIONS DE CORRECTION (à appliquer strictement) :
+
+1. RENOMMER l'import Express pour éviter tout conflit :
+   Remplace : `import { Request, Response } from 'express';`
+   Par :      `import { Request, Response as ExpressResponse } from 'express';`
+
+2. Dans TOUTES les fonctions route handlers du fichier, remplace le type `Response` par `ExpressResponse` pour le paramètre `res`.
+
+3. Pour la réponse de l'appel externe (fetch vers GCS), NE PAS la typer avec `Response` d'Express. Laisse TypeScript inférer le type `globalThis.Response` ou utilise explicitement `globalThis.Response` si nécessaire.
+
+4. Corrige l'accès aux propriétés sur la réponse externe :
+   - `externalResponse.status`  (number)
+   - `externalResponse.headers` (Headers)
+   - `externalResponse.body`    (ReadableStream | null)
+
+5. Corrige le typage du callback `.forEach()` sur les headers pour éviter l'erreur `implicitly any` :
+   ```typescript
+   externalResponse.headers.forEach((value: string, key: string) => {
+     res.setHeader(key, value);
+   });
+Pour le pipe du body vers Express, fetchRes.body est un ReadableStream (Web API). Convertis-le en stream Node.js avec Readable.fromWeb() avant de le piper vers res :
+TypeScript
+import { Readable } from 'stream';
+// ...
+if (fetchRes.body) {
+  Readable.fromWeb(fetchRes.body as any).pipe(res);
+}
+Fournis le CODE COMPLET ET CORRIGÉ du fichier src/routes/storage.ts, prêt à être commité et pushé sur GitHub pour le build Vercel.
+CONTRAINTES :
+Ne change pas la logique métier (upload/download GCS).
+Garde les mêmes noms de variables sauf le renommage Response → ExpressResponse.
+Assure-toi qu'il n'y ait plus aucune erreur TypeScript (tsc --noEmit doit passer).
