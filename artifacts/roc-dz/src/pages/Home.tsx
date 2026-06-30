@@ -2,6 +2,7 @@ import { useEffect, useRef, useState, useCallback } from "react";
 import { useGetFeaturedLaptop } from "@workspace/api-client-react";
 import { Link } from "wouter";
 import { useLang } from "@/context/LangContext";
+import { CategorySwiper } from "@/components/CategorySwiper";
 
 function useCountUp(target: number, decimals = 0) {
   const [val, setVal] = useState(0);
@@ -180,7 +181,7 @@ export default function Home() {
         <div className="category-subtitle">{h.catLaptopSub}</div>
         <div className="category-subtitle-desc">{h.catLaptopDesc}</div>
 
-        <div className="brand-grid">
+        <CategorySwiper>
           {LAPTOP_GRID.map((item) => (
             <Link key={item.name} href={item.href} className="brand-card">
               <div className="brand-card-img">
@@ -193,12 +194,12 @@ export default function Home() {
               </div>
             </Link>
           ))}
-        </div>
+        </CategorySwiper>
 
         <div style={{ marginTop: "3rem" }}>
           <div className="category-subtitle">{h.catAccSub}</div>
           <div className="category-subtitle-desc">{h.catAccDesc}</div>
-          <div className="brand-grid">
+          <CategorySwiper>
             {ACC_GRID.map((item) => (
               <Link key={item.nameKey} href={item.href} className="brand-card">
                 <div className="brand-card-img">
@@ -211,7 +212,7 @@ export default function Home() {
                 </div>
               </Link>
             ))}
-          </div>
+          </CategorySwiper>
         </div>
       </section>
 

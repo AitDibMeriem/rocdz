@@ -944,6 +944,38 @@ section { position: relative; z-index: 2; }
 
 .brand-grid::-webkit-scrollbar { display: none; }
 
+/* ── Category Swiper arrows ── */
+.category-swiper-wrap { position: relative; }
+
+.brand-grid-swipe { padding-left: 2.5rem; padding-right: 2.5rem; }
+
+.swiper-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-60%);
+  z-index: 10;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--bg-card-raw);
+  border: 1px solid var(--border-raw);
+  color: var(--foreground);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: opacity 0.2s ease, background 0.2s ease, border-color 0.2s ease;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+}
+.swiper-arrow:hover { background: var(--pink); border-color: var(--pink); color: #fff; }
+.swiper-arrow-prev { left: 0; }
+.swiper-arrow-next { right: 0; }
+
+@media (max-width: 600px) {
+  .swiper-arrow { width: 28px; height: 28px; }
+  .brand-grid-swipe { padding-left: 1.5rem; padding-right: 1.5rem; }
+}
+
 .brand-card {
   position: relative;
   border-radius: 20px;
