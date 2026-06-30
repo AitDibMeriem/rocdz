@@ -42,3 +42,5 @@ channel = "stable-25_05"
 
 [userenv.shared]
 CLOUDINARY_CLOUD_NAME = "xzxojfxv"
+CLOUDINARY_API_KEY = "675515369814135"
+CLOUDINARY_API_SECRET = "kP5vdZ3aCE2sCJ_Lu4qhr3BwMGc"
