@@ -78,14 +78,10 @@ const REVIEWS = [
   { name: "Djamel T.", rating: 5, text: "Meilleur magasin de PC à Alger. Des prix compétitifs, du matériel de qualité, et une équipe qui connaît son métier. 10/10." },
 ];
 
-const PREVIEW = 3;
-
 export default function Home() {
   const { data: featured } = useGetFeaturedLaptop();
   const { t, isRTL } = useLang();
   const h = t.home;
-  const [laptopExpanded, setLaptopExpanded] = useState(false);
-  const [accExpanded, setAccExpanded] = useState(false);
 
   const getTag = (key: string) => (h as Record<string, string>)[key] ?? key;
   const getName = (key: string) => (h as Record<string, string>)[key] ?? key;
@@ -184,12 +180,7 @@ export default function Home() {
         <div className="category-subtitle">{h.catLaptopSub}</div>
         <div className="category-subtitle-desc">{h.catLaptopDesc}</div>
 
-        <div
-          className="brand-grid"
-          style={laptopExpanded
-            ? { flexWrap: "wrap", overflowX: "visible", transition: "all 0.45s ease" }
-            : { flexWrap: "nowrap", overflowX: "auto", transition: "all 0.45s ease" }}
-        >
+        <div className="brand-grid">
           {LAPTOP_GRID.map((item) => (
             <Link key={item.name} href={item.href} className="brand-card">
               <div className="brand-card-img">
@@ -204,42 +195,10 @@ export default function Home() {
           ))}
         </div>
 
-        {LAPTOP_GRID.length > PREVIEW && (
-          <div style={{ display: "flex", justifyContent: "center", marginTop: "1.4rem" }}>
-            <button
-              onClick={() => setLaptopExpanded(v => !v)}
-              style={{
-                display: "inline-flex", alignItems: "center", gap: "0.5rem",
-                background: "linear-gradient(135deg,var(--pink),#a21caf)",
-                color: "#fff", border: "none", borderRadius: "999px",
-                padding: "0.6rem 1.5rem", fontWeight: 700, fontSize: "0.8rem",
-                letterSpacing: "1.5px", textTransform: "uppercase", cursor: "pointer",
-                boxShadow: "0 4px 24px rgba(232,33,160,0.35)",
-                transition: "transform 0.2s, box-shadow 0.2s",
-              }}
-              onMouseEnter={e => (e.currentTarget.style.transform = "translateY(-2px)")}
-              onMouseLeave={e => (e.currentTarget.style.transform = "translateY(0)")}
-            >
-              <span style={{
-                display: "inline-block",
-                transform: laptopExpanded ? "rotate(180deg)" : "rotate(0deg)",
-                transition: "transform 0.35s cubic-bezier(0.4,0,0.2,1)",
-                fontSize: "1rem", lineHeight: 1,
-              }}>↑</span>
-              {laptopExpanded ? "Réduire" : `Voir tout (${LAPTOP_GRID.length})`}
-            </button>
-          </div>
-        )}
-
         <div style={{ marginTop: "3rem" }}>
           <div className="category-subtitle">{h.catAccSub}</div>
           <div className="category-subtitle-desc">{h.catAccDesc}</div>
-          <div
-            className="brand-grid"
-            style={accExpanded
-              ? { flexWrap: "wrap", overflowX: "visible", transition: "all 0.45s ease" }
-              : { flexWrap: "nowrap", overflowX: "auto", transition: "all 0.45s ease" }}
-          >
+          <div className="brand-grid">
             {ACC_GRID.map((item) => (
               <Link key={item.nameKey} href={item.href} className="brand-card">
                 <div className="brand-card-img">
@@ -253,33 +212,6 @@ export default function Home() {
               </Link>
             ))}
           </div>
-
-          {ACC_GRID.length > PREVIEW && (
-            <div style={{ display: "flex", justifyContent: "center", marginTop: "1.4rem" }}>
-              <button
-                onClick={() => setAccExpanded(v => !v)}
-                style={{
-                  display: "inline-flex", alignItems: "center", gap: "0.5rem",
-                  background: "linear-gradient(135deg,var(--pink),#a21caf)",
-                  color: "#fff", border: "none", borderRadius: "999px",
-                  padding: "0.6rem 1.5rem", fontWeight: 700, fontSize: "0.8rem",
-                  letterSpacing: "1.5px", textTransform: "uppercase", cursor: "pointer",
-                  boxShadow: "0 4px 24px rgba(232,33,160,0.35)",
-                  transition: "transform 0.2s, box-shadow 0.2s",
-                }}
-                onMouseEnter={e => (e.currentTarget.style.transform = "translateY(-2px)")}
-                onMouseLeave={e => (e.currentTarget.style.transform = "translateY(0)")}
-              >
-                <span style={{
-                  display: "inline-block",
-                  transform: accExpanded ? "rotate(180deg)" : "rotate(0deg)",
-                  transition: "transform 0.35s cubic-bezier(0.4,0,0.2,1)",
-                  fontSize: "1rem", lineHeight: 1,
-                }}>↑</span>
-                {accExpanded ? "Réduire" : `Voir tout (${ACC_GRID.length})`}
-              </button>
-            </div>
-          )}
         </div>
       </section>
 
