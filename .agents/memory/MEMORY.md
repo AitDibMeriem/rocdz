@@ -1,0 +1,1 @@
+- [MongoDB+Cloudinary migration](mongo-cloudinary-migration.md) — replaced Drizzle/PostgreSQL+Replit Storage; models local to api-server, CartItem IDs now strings
