@@ -1,28 +1,23 @@
 import { Router } from "express";
-import { db } from "@workspace/db";
-import { accessoriesTable } from "@workspace/db";
-import { eq } from "drizzle-orm";
-import { ListAccessoriesQueryParams, CreateAccessoryBody } from "@workspace/api-zod";
+import { Accessory } from "../models/accessory";
 
 const router = Router();
 
 router.get("/", async (req, res) => {
   try {
-    const query = ListAccessoriesQueryParams.parse(req.query);
-    const accessories = query.category
-      ? await db.select().from(accessoriesTable).where(eq(accessoriesTable.category, query.category))
-      : await db.select().from(accessoriesTable);
+    const { category } = req.query;
+    const filter = category ? { category: String(category) } : {};
+    const accessories = await Accessory.find(filter);
     res.json(accessories);
   } catch (err) {
     req.log.error(err);
-    res.status(400).json({ error: "Invalid query" });
+    res.status(500).json({ error: "Internal server error" });
   }
 });
 
 router.post("/", async (req, res) => {
   try {
-    const body = CreateAccessoryBody.parse(req.body);
-    const [created] = await db.insert(accessoriesTable).values(body as any).returning();
+    const created = await Accessory.create(req.body);
     res.status(201).json(created);
   } catch (err) {
     req.log.error(err);
@@ -32,9 +27,8 @@ router.post("/", async (req, res) => {
 
 router.patch("/:id", async (req, res) => {
   try {
-    const id = Number(req.params.id);
+    const updates: Record<string, unknown> = {};
     const { name, category, description, price, salePrice, stock, imageUrl, color, brand, warranty, compatibility, specifications } = req.body;
-    const updates: Record<string, any> = {};
     if (name !== undefined) updates.name = name;
     if (category !== undefined) updates.category = category;
     if (description !== undefined) updates.description = description;
@@ -47,7 +41,8 @@ router.patch("/:id", async (req, res) => {
     if (warranty !== undefined) updates.warranty = warranty || null;
     if (compatibility !== undefined) updates.compatibility = compatibility || null;
     if (specifications !== undefined) updates.specifications = specifications || null;
-    const [updated] = await db.update(accessoriesTable).set(updates).where(eq(accessoriesTable.id, id)).returning();
+
+    const updated = await Accessory.findByIdAndUpdate(req.params.id, updates, { new: true });
     if (!updated) { res.status(404).json({ error: "Accessory not found" }); return; }
     res.json(updated);
   } catch (err) {
@@ -58,7 +53,7 @@ router.patch("/:id", async (req, res) => {
 
 router.delete("/:id", async (req, res) => {
   try {
-    await db.delete(accessoriesTable).where(eq(accessoriesTable.id, Number(req.params.id)));
+    await Accessory.findByIdAndDelete(req.params.id);
     res.status(204).send();
   } catch (err) {
     req.log.error(err);

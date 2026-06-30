@@ -67,7 +67,7 @@ export default function LaptopDetail() {
 
   const handleAddToCart = () => {
     addItem({
-      laptopId: laptop.id,
+      laptopId: String(laptop.id),
       title: laptop.title,
       price: laptop.price,
       advance: (laptop as any).advance || 0,
@@ -85,7 +85,7 @@ export default function LaptopDetail() {
 
   const handleBuyNow = () => {
     addItem({
-      laptopId: laptop.id,
+      laptopId: String(laptop.id),
       title: laptop.title,
       price: laptop.price,
       advance: (laptop as any).advance || 0,

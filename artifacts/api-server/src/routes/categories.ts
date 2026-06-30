@@ -1,16 +1,13 @@
 import { Router } from "express";
-import { db } from "@workspace/db";
-import { categoriesTable } from "@workspace/db";
-import { eq } from "drizzle-orm";
+import { Category } from "../models/category";
 
 const router = Router();
 
 router.get("/", async (req, res) => {
   try {
     const { type } = req.query;
-    const cats = type
-      ? await db.select().from(categoriesTable).where(eq(categoriesTable.type, String(type)))
-      : await db.select().from(categoriesTable).orderBy(categoriesTable.createdAt);
+    const filter = type ? { type: String(type) } : {};
+    const cats = await Category.find(filter).sort({ createdAt: 1 });
     res.json(cats);
   } catch (err) {
     req.log.error(err);
@@ -22,23 +19,23 @@ router.post("/", async (req, res) => {
   try {
     const { name, type, imageUrl } = req.body;
     if (!name || !type) { res.status(400).json({ error: "name and type required" }); return; }
-    const [created] = await db.insert(categoriesTable).values({ name, type, imageUrl: imageUrl || null }).returning();
+    const created = await Category.create({ name, type, imageUrl: imageUrl || null });
     res.status(201).json(created);
-  } catch (err: any) {
+  } catch (err: unknown) {
     req.log.error(err);
-    if (err.code === "23505") { res.status(409).json({ error: "Category already exists" }); return; }
+    const code = (err as Record<string, unknown>)?.code;
+    if (code === 11000) { res.status(409).json({ error: "Category already exists" }); return; }
     res.status(400).json({ error: "Invalid data" });
   }
 });
 
 router.patch("/:id", async (req, res) => {
   try {
-    const id = Number(req.params.id);
     const { name, imageUrl } = req.body;
-    const updates: Record<string, any> = {};
+    const updates: Record<string, unknown> = {};
     if (name !== undefined) updates.name = name;
     if (imageUrl !== undefined) updates.imageUrl = imageUrl || null;
-    const [updated] = await db.update(categoriesTable).set(updates).where(eq(categoriesTable.id, id)).returning();
+    const updated = await Category.findByIdAndUpdate(req.params.id, updates, { new: true });
     if (!updated) { res.status(404).json({ error: "Not found" }); return; }
     res.json(updated);
   } catch (err) {
@@ -49,7 +46,7 @@ router.patch("/:id", async (req, res) => {
 
 router.delete("/:id", async (req, res) => {
   try {
-    await db.delete(categoriesTable).where(eq(categoriesTable.id, Number(req.params.id)));
+    await Category.findByIdAndDelete(req.params.id);
     res.status(204).send();
   } catch (err) {
     req.log.error(err);

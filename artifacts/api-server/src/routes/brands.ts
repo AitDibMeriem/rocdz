@@ -1,7 +1,5 @@
 import { Router } from "express";
-import { db } from "@workspace/db";
-import { laptopsTable } from "@workspace/db";
-import { sql } from "drizzle-orm";
+import { Laptop } from "../models/laptop";
 
 const router = Router();
 
@@ -17,20 +15,16 @@ const BRAND_META: Record<string, { imageUrl: string; tag: string }> = {
 
 router.get("/", async (req, res) => {
   try {
-    const brands = await db
-      .select({
-        brand: laptopsTable.brand,
-        count: sql<number>`count(*)::int`,
-      })
-      .from(laptopsTable)
-      .groupBy(laptopsTable.brand)
-      .orderBy(sql`count(*) DESC`);
+    const brands = await Laptop.aggregate([
+      { $group: { _id: "$brand", count: { $sum: 1 } } },
+      { $sort: { count: -1 } },
+    ]);
 
     const result = brands.map((b) => ({
-      brand: b.brand,
+      brand: b._id,
       count: b.count,
-      imageUrl: BRAND_META[b.brand]?.imageUrl ?? "https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=400&q=80",
-      tag: BRAND_META[b.brand]?.tag ?? "Laptop",
+      imageUrl: BRAND_META[b._id]?.imageUrl ?? "https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=400&q=80",
+      tag: BRAND_META[b._id]?.tag ?? "Laptop",
     }));
 
     res.json(result);

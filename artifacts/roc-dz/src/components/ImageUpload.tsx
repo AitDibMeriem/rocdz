@@ -16,7 +16,7 @@ export function ImageUpload({ value, onChange, label = "image or video", accept 
   const [error, setError] = useState<string | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const isVideo = (url: string) => /\.(mp4|webm|ogg|mov)$/i.test(url);
+  const isVideo = (url: string) => /\.(mp4|webm|ogg|mov)$/i.test(url) || url.includes("/video/");
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -24,26 +24,21 @@ export function ImageUpload({ value, onChange, label = "image or video", accept 
     setError(null);
     setUploading(true);
     try {
-      const urlRes = await fetch(`${BASE}/api/storage/uploads/request-url`, {
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const res = await fetch(`${BASE}/api/upload`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name: file.name,
-          size: file.size,
-          contentType: file.type || "application/octet-stream",
-        }),
+        body: formData,
       });
-      if (!urlRes.ok) throw new Error("Impossible d'obtenir l'URL d'upload");
-      const { uploadURL, objectPath } = await urlRes.json() as { uploadURL: string; objectPath: string };
 
-      const putRes = await fetch(uploadURL, {
-        method: "PUT",
-        body: file,
-        headers: { "Content-Type": file.type || "application/octet-stream" },
-      });
-      if (!putRes.ok) throw new Error("Échec de l'upload");
+      if (!res.ok) {
+        const body = await res.json().catch(() => ({})) as { error?: string };
+        throw new Error(body?.error ?? "Échec de l'upload");
+      }
 
-      onChange(`/api/storage${objectPath}`);
+      const { url } = await res.json() as { url: string };
+      onChange(url);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Erreur d'upload");
     } finally {

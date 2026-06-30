@@ -1,6 +1,12 @@
 import { Router } from "express";
 import multer from "multer";
-import { ObjectStorageService } from "../lib/objectStorage";
+import { v2 as cloudinary } from "cloudinary";
+
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
 
 const upload = multer({
   storage: multer.memoryStorage(),
@@ -14,7 +20,6 @@ const upload = multer({
   },
 });
 
-const objectStorageService = new ObjectStorageService();
 const router = Router();
 
 router.post("/upload", upload.single("file"), async (req, res) => {
@@ -23,24 +28,24 @@ router.post("/upload", upload.single("file"), async (req, res) => {
     return;
   }
   try {
-    const uploadURL = await objectStorageService.getObjectEntityUploadURL();
-    const objectPath = objectStorageService.normalizeObjectEntityPath(uploadURL);
+    const isVideo = req.file.mimetype.startsWith("video/");
+    const result = await new Promise<{ secure_url: string }>((resolve, reject) => {
+      const stream = cloudinary.uploader.upload_stream(
+        {
+          folder: "rocdz",
+          resource_type: isVideo ? "video" : "image",
+        },
+        (err, result) => {
+          if (err || !result) reject(err ?? new Error("Upload failed"));
+          else resolve(result as { secure_url: string });
+        },
+      );
+      stream.end(req.file!.buffer);
+    });
 
-    const putRes = await fetch(uploadURL, {
-      method: "PUT",
-      body: req.file.buffer,
-      headers: { "Content-Type": req.file.mimetype || "application/octet-stream" },
-    }) as unknown as { ok: boolean; status: number };
-
-    if (!putRes.ok) {
-      req.log.error({ status: putRes.status }, "Object storage PUT failed");
-      res.status(500).json({ error: "Upload to storage failed" });
-      return;
-    }
-
-    res.json({ url: `/api/storage${objectPath}` });
+    res.json({ url: result.secure_url });
   } catch (err) {
-    req.log.error({ err }, "Upload to object storage failed");
+    req.log.error({ err }, "Cloudinary upload failed");
     res.status(500).json({ error: "Upload failed" });
   }
 });

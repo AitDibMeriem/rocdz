@@ -141,7 +141,7 @@ export default function Accessories() {
     const hasPromo = acc.salePrice != null && acc.salePrice > 0 && acc.salePrice < acc.price;
     const displayPrice = hasPromo ? acc.salePrice! : acc.price;
     addItem({
-      laptopId: acc.id + 100000,
+      laptopId: String(acc.id),
       title: acc.name,
       price: displayPrice,
       advance: 0,

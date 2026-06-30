@@ -81,7 +81,7 @@ export function getAccessoryFee(wilaya: string, type: "domicile" | "bureau"): nu
 }
 
 export interface CartItem {
-  laptopId: number;
+  laptopId: string;
   title: string;
   price: number;
   advance: number;

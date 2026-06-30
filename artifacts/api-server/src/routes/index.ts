@@ -21,6 +21,6 @@ router.use("/promo-codes", promoCodesRouter);
 router.use("/orders", ordersRouter);
 router.use("/categories", categoriesRouter);
 router.use(uploadRouter);
-router.use(storageRouter);
+router.use("/storage", storageRouter);
 
 export default router;
