@@ -1,15 +1,19 @@
-// CommonJS wrapper for Vercel — dynamically imports the pre-built ESM bundle
-let _app;
+// Vercel serverless entry — loads the pre-built ESM bundle from dist/
+const path = require("path");
+const { pathToFileURL } = require("url");
 
-async function getApp() {
-  if (!_app) {
-    const mod = await import("../dist/handler.mjs");
-    _app = mod.default;
+let _handler;
+
+async function getHandler() {
+  if (!_handler) {
+    const handlerPath = path.resolve(__dirname, "..", "dist", "handler.mjs");
+    const mod = await import(pathToFileURL(handlerPath).href);
+    _handler = mod.default;
   }
-  return _app;
+  return _handler;
 }
 
 module.exports = async (req, res) => {
-  const handler = await getApp();
+  const handler = await getHandler();
   handler(req, res);
 };
