@@ -1,0 +1,99 @@
+The deployment is STILL failing on Vercel.
+
+Current error:
+
+Error:
+No Output Directory named "public" found after the Build completed.
+
+This error MUST be fixed completely.
+
+Do NOT stop after changing one file.
+Inspect the ENTIRE project and keep fixing until the project deploys successfully.
+
+==================================================
+TASKS
+==================================================
+
+1. Inspect the repository structure.
+
+2. Inspect ALL of these files if they exist:
+- vercel.json
+- package.json
+- pnpm-workspace.yaml
+- turbo.json
+- tsconfig.json
+- vite.config.*
+- next.config.*
+- artifacts/api-server/package.json
+- artifacts/api-server/vercel.json
+
+3. Detect automatically whether this project is:
+- Express
+- Hono
+- Fastify
+- Node API
+- Vite
+- React
+- Next.js
+- Remix
+- Astro
+- Monorepo
+- or another framework.
+
+4. Find EVERY reason Vercel expects a "public" directory.
+
+5. Remove any invalid configuration including:
+- outputDirectory
+- framework preset
+- build output
+- static export
+- incorrect root
+- legacy Vercel configuration
+
+6. If this is a Node backend:
+Configure it as a Node.js Serverless Function.
+DO NOT configure it as a static website.
+
+7. Generate the correct vercel.json.
+
+8. Fix package.json scripts if needed.
+
+9. Ensure Build Command, Install Command and Output Directory match the project.
+
+10. Run locally:
+
+pnpm install
+pnpm build
+vercel build
+
+11. If vercel build fails:
+Fix the problem.
+Run it again.
+
+Repeat until:
+
+vercel build succeeds with ZERO errors.
+
+==================================================
+OUTPUT
+==================================================
+
+At the end provide:
+
+• repository type
+• detected framework
+• every modified file
+• complete vercel.json
+• complete package.json changes
+• Build Command
+• Install Command
+• Output Directory
+• Root Directory
+
+Finally explain WHY Vercel was looking for "public" and what permanently fixed it.
+
+DO NOT stop until vercel build succeeds.
+
+If the project should NOT have an Output Directory because it is an API, remove it completely instead of inventing one.
+
+The final project must deploy successfully on Vercel with no manual edits required.
