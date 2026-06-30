@@ -430,7 +430,7 @@ export function useGetLaptopStats<TData = Awaited<ReturnType<typeof getLaptopSta
 
 
 
-export const getGetLaptopUrl = (id: number,) => {
+export const getGetLaptopUrl = (id: string,) => {
 
 
 
@@ -441,7 +441,7 @@ export const getGetLaptopUrl = (id: number,) => {
 /**
  * @summary Get a laptop by ID
  */
-export const getLaptop = async (id: number, options?: RequestInit): Promise<Laptop> => {
+export const getLaptop = async (id: string, options?: RequestInit): Promise<Laptop> => {
 
   return customFetch<Laptop>(getGetLaptopUrl(id),
   {
@@ -456,14 +456,14 @@ export const getLaptop = async (id: number, options?: RequestInit): Promise<Lapt
 
 
 
-export const getGetLaptopQueryKey = (id: number,) => {
+export const getGetLaptopQueryKey = (id: string,) => {
     return [
     `/api/laptops/${id}`
     ] as const;
     }
 
 
-export const getGetLaptopQueryOptions = <TData = Awaited<ReturnType<typeof getLaptop>>, TError = ErrorType<void>>(id: number, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getLaptop>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+export const getGetLaptopQueryOptions = <TData = Awaited<ReturnType<typeof getLaptop>>, TError = ErrorType<void>>(id: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getLaptop>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -490,7 +490,7 @@ export type GetLaptopQueryError = ErrorType<void>
  */
 
 export function useGetLaptop<TData = Awaited<ReturnType<typeof getLaptop>>, TError = ErrorType<void>>(
- id: number, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getLaptop>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+ id: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getLaptop>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
 
  ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
 
@@ -507,7 +507,7 @@ export function useGetLaptop<TData = Awaited<ReturnType<typeof getLaptop>>, TErr
 
 
 
-export const getUpdateLaptopUrl = (id: number,) => {
+export const getUpdateLaptopUrl = (id: string,) => {
 
 
 
@@ -518,7 +518,7 @@ export const getUpdateLaptopUrl = (id: number,) => {
 /**
  * @summary Update a laptop
  */
-export const updateLaptop = async (id: number,
+export const updateLaptop = async (id: string,
     laptopUpdate: LaptopUpdate, options?: RequestInit): Promise<Laptop> => {
 
   return customFetch<Laptop>(getUpdateLaptopUrl(id),
@@ -535,8 +535,8 @@ export const updateLaptop = async (id: number,
 
 
 export const getUpdateLaptopMutationOptions = <TError = ErrorType<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateLaptop>>, TError,{id: number;data: BodyType<LaptopUpdate>}, TContext>, request?: SecondParameter<typeof customFetch>}
-): UseMutationOptions<Awaited<ReturnType<typeof updateLaptop>>, TError,{id: number;data: BodyType<LaptopUpdate>}, TContext> => {
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateLaptop>>, TError,{id: string;data: BodyType<LaptopUpdate>}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof updateLaptop>>, TError,{id: string;data: BodyType<LaptopUpdate>}, TContext> => {
 
 const mutationKey = ['updateLaptop'];
 const {mutation: mutationOptions, request: requestOptions} = options ?
@@ -548,7 +548,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof updateLaptop>>, {id: number;data: BodyType<LaptopUpdate>}> = (props) => {
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof updateLaptop>>, {id: string;data: BodyType<LaptopUpdate>}> = (props) => {
           const {id,data} = props ?? {};
 
           return  updateLaptop(id,data,requestOptions)
@@ -569,17 +569,17 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
  * @summary Update a laptop
  */
 export const useUpdateLaptop = <TError = ErrorType<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateLaptop>>, TError,{id: number;data: BodyType<LaptopUpdate>}, TContext>, request?: SecondParameter<typeof customFetch>}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateLaptop>>, TError,{id: string;data: BodyType<LaptopUpdate>}, TContext>, request?: SecondParameter<typeof customFetch>}
  ): UseMutationResult<
         Awaited<ReturnType<typeof updateLaptop>>,
         TError,
-        {id: number;data: BodyType<LaptopUpdate>},
+        {id: string;data: BodyType<LaptopUpdate>},
         TContext
       > => {
       return useMutation(getUpdateLaptopMutationOptions(options));
     }
 
-export const getDeleteLaptopUrl = (id: number,) => {
+export const getDeleteLaptopUrl = (id: string,) => {
 
 
 
@@ -590,7 +590,7 @@ export const getDeleteLaptopUrl = (id: number,) => {
 /**
  * @summary Delete a laptop
  */
-export const deleteLaptop = async (id: number, options?: RequestInit): Promise<void> => {
+export const deleteLaptop = async (id: string, options?: RequestInit): Promise<void> => {
 
   return customFetch<void>(getDeleteLaptopUrl(id),
   {
@@ -605,8 +605,8 @@ export const deleteLaptop = async (id: number, options?: RequestInit): Promise<v
 
 
 export const getDeleteLaptopMutationOptions = <TError = ErrorType<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteLaptop>>, TError,{id: number}, TContext>, request?: SecondParameter<typeof customFetch>}
-): UseMutationOptions<Awaited<ReturnType<typeof deleteLaptop>>, TError,{id: number}, TContext> => {
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteLaptop>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof deleteLaptop>>, TError,{id: string}, TContext> => {
 
 const mutationKey = ['deleteLaptop'];
 const {mutation: mutationOptions, request: requestOptions} = options ?
@@ -618,7 +618,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteLaptop>>, {id: number}> = (props) => {
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteLaptop>>, {id: string}> = (props) => {
           const {id} = props ?? {};
 
           return  deleteLaptop(id,requestOptions)
@@ -639,11 +639,11 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
  * @summary Delete a laptop
  */
 export const useDeleteLaptop = <TError = ErrorType<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteLaptop>>, TError,{id: number}, TContext>, request?: SecondParameter<typeof customFetch>}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteLaptop>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customFetch>}
  ): UseMutationResult<
         Awaited<ReturnType<typeof deleteLaptop>>,
         TError,
-        {id: number},
+        {id: string},
         TContext
       > => {
       return useMutation(getDeleteLaptopMutationOptions(options));

@@ -18,7 +18,7 @@ export const LaptopCondition = {
 } as const;
 
 export interface Laptop {
-  id: number;
+  id: string;
   /** @nullable */
   sku?: string | null;
   brand: string;
@@ -156,7 +156,7 @@ export interface LaptopStats {
 }
 
 export interface Accessory {
-  id: number;
+  id: string;
   name: string;
   category: string;
   /** @nullable */

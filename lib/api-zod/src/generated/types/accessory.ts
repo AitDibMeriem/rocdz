@@ -7,7 +7,7 @@
  */
 
 export interface Accessory {
-  id: number;
+  id: string;
   name: string;
   category: string;
   /** @nullable */

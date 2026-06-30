@@ -30,7 +30,7 @@ export const ListLaptopsQueryParams = zod.object({
 })
 
 export const ListLaptopsResponseItem = zod.object({
-  "id": zod.number(),
+  "id": zod.string(),
   "sku": zod.string().nullish(),
   "brand": zod.string(),
   "model": zod.string(),
@@ -111,7 +111,7 @@ export const CreateLaptopBody = zod.object({
  * @summary Get the featured laptop of the day
  */
 export const GetFeaturedLaptopResponse = zod.object({
-  "id": zod.number(),
+  "id": zod.string(),
   "sku": zod.string().nullish(),
   "brand": zod.string(),
   "model": zod.string(),
@@ -164,11 +164,11 @@ export const GetLaptopStatsResponse = zod.object({
  * @summary Get a laptop by ID
  */
 export const GetLaptopParams = zod.object({
-  "id": zod.coerce.number()
+  "id": zod.coerce.string()
 })
 
 export const GetLaptopResponse = zod.object({
-  "id": zod.number(),
+  "id": zod.string(),
   "sku": zod.string().nullish(),
   "brand": zod.string(),
   "model": zod.string(),
@@ -209,7 +209,7 @@ export const GetLaptopResponse = zod.object({
  * @summary Update a laptop
  */
 export const UpdateLaptopParams = zod.object({
-  "id": zod.coerce.number()
+  "id": zod.coerce.string()
 })
 
 export const UpdateLaptopBody = zod.object({
@@ -231,7 +231,7 @@ export const UpdateLaptopBody = zod.object({
 })
 
 export const UpdateLaptopResponse = zod.object({
-  "id": zod.number(),
+  "id": zod.string(),
   "sku": zod.string().nullish(),
   "brand": zod.string(),
   "model": zod.string(),
@@ -272,7 +272,7 @@ export const UpdateLaptopResponse = zod.object({
  * @summary Delete a laptop
  */
 export const DeleteLaptopParams = zod.object({
-  "id": zod.coerce.number()
+  "id": zod.coerce.string()
 })
 
 
@@ -284,7 +284,7 @@ export const ListAccessoriesQueryParams = zod.object({
 })
 
 export const ListAccessoriesResponseItem = zod.object({
-  "id": zod.number(),
+  "id": zod.string(),
   "name": zod.string(),
   "category": zod.string(),
   "description": zod.string().nullish(),

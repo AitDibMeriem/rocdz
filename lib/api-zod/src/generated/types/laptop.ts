@@ -8,7 +8,7 @@
 import type { LaptopCondition } from './laptopCondition';
 
 export interface Laptop {
-  id: number;
+  id: string;
   /** @nullable */
   sku?: string | null;
   brand: string;

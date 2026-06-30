@@ -71,7 +71,7 @@ export function AccessoriesSection() {
   });
 
   const deleteAccessory = useMutation({
-    mutationFn: async (id: number) => {
+    mutationFn: async (id: string) => {
       const r = await fetch(`${BASE}/api/accessories/${id}`, { method: "DELETE" });
       if (!r.ok && r.status !== 204) throw new Error("Failed to delete");
     },

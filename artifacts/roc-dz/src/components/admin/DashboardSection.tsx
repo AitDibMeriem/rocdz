@@ -77,7 +77,7 @@ export function DashboardSection() {
     { label: "Marques", value: statsLoading ? "…" : (stats?.brands ?? 0), icon: LayoutGrid, color: "from-rose-500/20 to-pink-500/20 border-rose-500/30", text: "text-rose-400" },
   ];
 
-  const handleSetFeatured = (id: number) => {
+  const handleSetFeatured = (id: string) => {
     updateLaptop.mutate({ id, data: { featured: true } }, {
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: getGetFeaturedLaptopQueryKey() });

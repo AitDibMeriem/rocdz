@@ -69,7 +69,7 @@ export function LaptopsSection() {
   const [conditionFilter, setConditionFilter] = useState<string>("all");
   const [inStockOnly, setInStockOnly] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
-  const [editingLaptopId, setEditingLaptopId] = useState<number | null>(null);
+  const [editingLaptopId, setEditingLaptopId] = useState<string | null>(null);
   const [mediaUrls, setMediaUrls] = useState<string[]>([]);
 
   const queryClient = useQueryClient();
@@ -162,7 +162,7 @@ export function LaptopsSection() {
     setModalOpen(true);
   };
 
-  const saveMedia = async (laptopId: number) => {
+  const saveMedia = async (laptopId: string) => {
     if (mediaUrls.length > 0) {
       await fetch(`${BASE}/api/laptops/${laptopId}/media`, {
         method: "PATCH",
@@ -187,7 +187,7 @@ export function LaptopsSection() {
     });
   };
 
-  const handleDelete = (id: number) => {
+  const handleDelete = (id: string) => {
     deleteLaptop.mutate({ id }, {
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: getListLaptopsQueryKey() });

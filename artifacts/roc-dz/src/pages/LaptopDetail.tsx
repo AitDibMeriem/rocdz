@@ -18,7 +18,7 @@ const COLOR_HEX_MAP: Record<string, string> = {
 export default function LaptopDetail() {
   const [, params] = useRoute("/laptop/:id");
   const [, navigate] = useLocation();
-  const id = params?.id ? parseInt(params.id, 10) : 0;
+  const id = params?.id ?? "";
   const [activeIdx, setActiveIdx] = useState(0);
   const { addItem } = useCart();
   const { toast } = useToast();
