@@ -1,6 +1,9 @@
 import express, { type Express } from "express";
 import cors from "cors";
 import pinoHttp from "pino-http";
+import { fileURLToPath } from "url";
+import path from "path";
+import { existsSync } from "fs";
 import router from "./routes";
 import { logger } from "./lib/logger";
 
@@ -30,10 +33,24 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.get("/", (_req, res) => {
-  res.json({ status: "ok", name: "ROC DZ API", version: "1.0.0" });
-});
+const __dirname_app = path.dirname(fileURLToPath(import.meta.url));
+const publicDir = path.join(__dirname_app, "public");
+const hasFrontend = existsSync(path.join(publicDir, "index.html"));
+
+if (hasFrontend) {
+  app.use(express.static(publicDir));
+}
 
 app.use("/api", router);
+
+if (hasFrontend) {
+  app.get("/{*path}", (_req, res) => {
+    res.sendFile(path.join(publicDir, "index.html"));
+  });
+} else {
+  app.get("/", (_req, res) => {
+    res.json({ status: "ok", name: "ROC DZ API", version: "1.0.0" });
+  });
+}
 
 export default app;

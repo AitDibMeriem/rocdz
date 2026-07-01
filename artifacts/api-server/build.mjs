@@ -3,12 +3,14 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { build as esbuild } from "esbuild";
 import esbuildPluginPino from "esbuild-plugin-pino";
-import { rm } from "node:fs/promises";
+import { rm, cp } from "node:fs/promises";
+import { execSync } from "node:child_process";
 
 // Plugins (e.g. 'esbuild-plugin-pino') may use `require` to resolve dependencies
 globalThis.require = createRequire(import.meta.url);
 
 const artifactDir = path.dirname(fileURLToPath(import.meta.url));
+const repoRoot = path.resolve(artifactDir, "../..");
 
 async function buildAll() {
   const distDir = path.resolve(artifactDir, "dist");
@@ -129,6 +131,19 @@ globalThis.__dirname = __bannerPath.dirname(globalThis.__filename);
     ...sharedConfig,
     entryPoints: [path.resolve(artifactDir, "src/handler.ts")],
   });
+
+  // Build the React frontend and bundle it into dist/public
+  console.log("Building frontend (roc-dz)...");
+  execSync("pnpm --filter @workspace/roc-dz run build", {
+    cwd: repoRoot,
+    stdio: "inherit",
+    env: { ...process.env, NODE_ENV: "production" },
+  });
+
+  const frontendDist = path.resolve(artifactDir, "../roc-dz/dist/public");
+  const frontendOut = path.resolve(distDir, "public");
+  await cp(frontendDist, frontendOut, { recursive: true });
+  console.log("Frontend copied to dist/public ✓");
 }
 
 buildAll().catch((err) => {
