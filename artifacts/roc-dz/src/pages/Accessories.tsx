@@ -132,7 +132,10 @@ export default function Accessories() {
   const { t } = useLang();
   const [, navigate] = useLocation();
   const [search, setSearch] = useState("");
-  const [category, setCategory] = useState("Tous");
+  const [category, setCategory] = useState(() => {
+    const cat = new URLSearchParams(window.location.search).get("category") || "";
+    return CATEGORIES_FR.includes(cat) ? cat : "Tous";
+  });
   const [addedIds, setAddedIds] = useState<Set<string>>(new Set());
   const [selected, setSelected] = useState<Accessory | null>(null);
   const { addItem } = useCart();
