@@ -7,7 +7,8 @@ export async function connectMongo(): Promise<void> {
   if (isConnected) return;
   const uri = process.env.MONGODB_URI;
   if (!uri) throw new Error("MONGODB_URI environment variable is required");
-  await mongoose.connect(uri);
+  const dbName = process.env.MONGODB_DB_NAME || "test";
+  await mongoose.connect(uri, { dbName });
   isConnected = true;
   logger.info("MongoDB connected");
 }
