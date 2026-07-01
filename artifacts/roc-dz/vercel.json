@@ -1,0 +1,7 @@
+{
+  "version": 2,
+  "installCommand": "cd ../.. && pnpm install --frozen-lockfile",
+  "buildCommand": "cd ../.. && pnpm --filter @workspace/roc-dz run build",
+  "outputDirectory": "artifacts/roc-dz/dist/public",
+  "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }]
+}
