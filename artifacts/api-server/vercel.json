@@ -4,13 +4,13 @@
   "buildCommand": "node ./build.mjs",
   "outputDirectory": ".",
   "functions": {
-    "api/index.cjs": {
+    "api/index.js": {
       "includeFiles": "dist/**",
       "memory": 512,
       "maxDuration": 30
     }
   },
   "rewrites": [
-    { "source": "/(.*)", "destination": "/api/index.cjs" }
+    { "source": "/(.*)", "destination": "/api/index" }
   ]
 }
