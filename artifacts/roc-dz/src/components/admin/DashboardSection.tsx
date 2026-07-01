@@ -138,7 +138,7 @@ export function DashboardSection() {
               (orders as any[]).slice(0, 6).map((o: any) => (
                 <div key={o.id} className="flex items-center justify-between px-5 py-3 hover:bg-muted/30 transition-colors">
                   <div className="flex items-center gap-3 min-w-0">
-                    <span className="text-xs font-mono text-muted-foreground flex-shrink-0">#{String(o.id).padStart(4, "0")}</span>
+                    <span className="text-xs font-mono text-muted-foreground flex-shrink-0">#{String(o.id).slice(-6)}</span>
                     <div className="min-w-0">
                       <p className="font-medium text-sm truncate">{o.customerName}</p>
                       <p className="text-xs text-muted-foreground truncate">{o.wilaya || o.address}</p>

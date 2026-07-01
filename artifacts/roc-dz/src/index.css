@@ -290,6 +290,8 @@
 .light-mode .spec-row { border-color: rgba(20,16,16,0.1); }
 .light-mode .spec-row .label { color: rgba(20,16,16,0.5); }
 .light-mode .pick-trust p { color: rgba(20,16,16,0.4); }
+.light-mode .btn-product { background: #141010; color: #ffffff; }
+.light-mode .btn-product:hover { box-shadow: 0 10px 40px rgba(20,16,16,0.35); }
 
 .light-mode .glass-container { background: rgba(247,7,118,0.03); border-color: rgba(199,25,93,0.15); }
 .light-mode .glass-card { background: rgba(247,7,118,0.04); border-color: rgba(199,25,93,0.12); }

@@ -257,7 +257,7 @@ export default function Models() {
                     </svg>
                   </button>
                   {sortOpen && (
-                    <div style={{ position: "absolute", top: "calc(100% + 4px)", left: 0, right: 0, background: "var(--card)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: "11px", zIndex: 50, overflow: "hidden", boxShadow: "0 8px 24px rgba(0,0,0,0.3)" }}>
+                    <div style={{ position: "absolute", top: "calc(100% + 4px)", left: 0, right: 0, background: "var(--bg-deep, #0d0218)", border: "1px solid rgba(255,255,255,0.12)", borderRadius: "11px", zIndex: 500, overflow: "hidden", boxShadow: "0 8px 32px rgba(0,0,0,0.5)" }}>
                       {([
                         { val: "default", label: "Par défaut" },
                         { val: "price-asc", label: "Prix ↑ croissant" },
@@ -266,7 +266,7 @@ export default function Models() {
                         <button
                           key={o.val}
                           onClick={() => { setSortBy(o.val); setPage(1); setSortOpen(false); }}
-                          style={{ width: "100%", textAlign: "left", padding: "9px 14px", fontSize: "0.8rem", cursor: "pointer", border: "none", background: sortBy === o.val ? "rgba(232,33,160,0.12)" : "transparent", color: sortBy === o.val ? "var(--pink)" : "var(--text)", fontWeight: sortBy === o.val ? 700 : 400, transition: "background 0.15s" }}
+                          style={{ width: "100%", textAlign: "left", padding: "9px 14px", fontSize: "0.8rem", cursor: "pointer", border: "none", background: sortBy === o.val ? "rgba(232,33,160,0.18)" : "transparent", color: sortBy === o.val ? "var(--pink)" : "#fff", fontWeight: sortBy === o.val ? 700 : 400, transition: "background 0.15s" }}
                         >
                           {o.label}
                         </button>

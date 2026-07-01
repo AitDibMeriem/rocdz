@@ -1,5 +1,5 @@
+import React, { useState, useEffect, useRef } from "react";
 import { Link, useLocation } from "wouter";
-import { useState, useEffect, useRef } from "react";
 import { useCart } from "@/context/CartContext";
 import { useLang } from "@/context/LangContext";
 import { Menu, X, Sun, Moon, Bell } from "lucide-react";
@@ -16,6 +16,7 @@ export function Navbar() {
   const [notifications, setNotifications] = useState<Notification[]>(getNotifications);
   const [unread, setUnread] = useState(getUnreadCount);
   const bellRef = useRef<HTMLDivElement>(null);
+  const [dropdownStyle, setDropdownStyle] = useState<React.CSSProperties>({});
 
   useEffect(() => {
     const handler = () => {
@@ -64,6 +65,19 @@ export function Navbar() {
       markAllRead();
       setUnread(0);
       setNotifications(getNotifications());
+      if (bellRef.current) {
+        const rect = bellRef.current.getBoundingClientRect();
+        const w = Math.min(330, window.innerWidth - 16);
+        let left = rect.right - w;
+        if (left < 8) left = 8;
+        setDropdownStyle({
+          position: "fixed",
+          top: `${rect.bottom + 10}px`,
+          left: `${left}px`,
+          width: `${w}px`,
+          zIndex: 1000,
+        });
+      }
     }
   };
 
@@ -114,7 +128,7 @@ export function Navbar() {
           </button>
 
           {bellOpen && (
-            <div style={{ position: "absolute", top: "calc(100% + 14px)", right: 0, width: "330px", background: "rgba(14,6,28,0.97)", backdropFilter: "blur(24px)", border: "1px solid rgba(232,33,160,0.18)", borderRadius: "16px", boxShadow: "0 16px 48px rgba(0,0,0,0.7), 0 0 0 1px rgba(232,33,160,0.08)", zIndex: 1000, overflow: "hidden" }}>
+            <div style={{ ...dropdownStyle, background: "rgba(14,6,28,0.97)", backdropFilter: "blur(24px)", border: "1px solid rgba(232,33,160,0.18)", borderRadius: "16px", boxShadow: "0 16px 48px rgba(0,0,0,0.7), 0 0 0 1px rgba(232,33,160,0.08)", overflow: "hidden" }}>
               <div style={{ padding: "14px 18px", borderBottom: "1px solid rgba(255,255,255,0.07)", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
                 <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
                   <Bell size={15} style={{ color: "var(--pink)" }} />
