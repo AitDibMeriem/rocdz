@@ -118,9 +118,11 @@ export default function LaptopDetail() {
                 />
               ) : (
                 <img
-                  src={currentMedia}
+                  src={currentMedia.replace(/\/upload\//, "/upload/f_auto,q_auto:good,w_900,c_fill/")}
                   alt={laptop.title}
                   className="w-full h-full object-cover transition-opacity duration-300"
+                  fetchPriority="high"
+                  decoding="async"
                 />
               )}
 
@@ -175,7 +177,7 @@ export default function LaptopDetail() {
                         <Play className="w-5 h-5 text-white" />
                       </div>
                     ) : (
-                      <img src={url} alt={`Photo ${i + 1}`} className="w-full h-full object-cover" />
+                      <img src={url.replace(/\/upload\//, "/upload/f_auto,q_auto:eco,w_120,c_fill/")} alt={`Photo ${i + 1}`} className="w-full h-full object-cover" loading="lazy" decoding="async" />
                     )}
                   </button>
                 );

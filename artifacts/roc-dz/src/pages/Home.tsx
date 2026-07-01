@@ -297,8 +297,10 @@ export default function Home() {
 
           <div className="pick-image scale-in">
             <img
-              src={featured?.imageUrl || "https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=600&q=80"}
+              src={(featured?.imageUrl || "https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=600&q=80").replace(/\/upload\//, "/upload/f_auto,q_auto:good,w_700,c_fill/")}
               alt={featured?.title || h.pickDefault}
+              fetchPriority="high"
+              decoding="async"
             />
           </div>
 

@@ -3,6 +3,14 @@ import { Laptop } from "@workspace/api-client-react";
 import { Badge } from "@/components/ui/badge";
 import { Cpu, HardDrive, MemoryStick as Memory, Tag } from "lucide-react";
 
+function clImg(url: string | undefined | null, w = 400): string {
+  if (!url) return "";
+  return url.replace(
+    /\/upload\//,
+    `/upload/f_auto,q_auto:good,w_${w},c_fill/`,
+  );
+}
+
 interface ProductCardProps {
   laptop: Laptop;
 }
@@ -16,9 +24,13 @@ export function ProductCard({ laptop }: ProductCardProps) {
     <Link href={`/laptop/${laptop.id}`} className="block group overflow-hidden border border-white/5 bg-card/50 backdrop-blur-sm hover:border-primary/50 transition-all duration-300 rounded-xl cursor-pointer">
       <div className="relative aspect-[4/3] bg-black/40 overflow-hidden">
         <img
-          src={laptop.imageUrl || "https://placehold.co/600x400/1a1a1a/e91e8c?text=ROC+DZ"}
+          src={clImg(laptop.imageUrl) || "https://placehold.co/600x400/1a1a1a/e91e8c?text=ROC+DZ"}
           alt={laptop.title}
           className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-500"
+          loading="lazy"
+          decoding="async"
+          width={400}
+          height={300}
         />
         <div className="absolute top-2 left-2 flex flex-col gap-1.5">
           {laptop.condition === "new" ? (

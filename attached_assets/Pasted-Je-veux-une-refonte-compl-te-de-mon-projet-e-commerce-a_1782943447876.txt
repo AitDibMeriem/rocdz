@@ -1,0 +1,395 @@
+Je veux une refonte complète de mon projet e-commerce afin d'obtenir un site professionnel, extrêmement rapide, évolutif et prêt pour la production.
+
+OBJECTIF
+
+Le résultat final doit être un site de niveau Amazon, Apple ou Dell en termes de performances, d'architecture, de sécurité et d'expérience utilisateur.
+
+Ne jamais casser une fonctionnalité existante.
+
+Avant chaque modification, analyser le projet puis proposer la meilleure architecture.
+
+====================================================
+1. MIGRATION MONGODB → POSTGRESQL
+====================================================
+
+Supprimer totalement MongoDB Atlas.
+
+Supprimer :
+- MongoDB
+- Mongoose
+- toutes les dépendances MongoDB
+- tous les modèles MongoDB
+- toutes les fonctions inutilisées
+- toutes les variables d'environnement MongoDB
+
+Utiliser uniquement PostgreSQL.
+
+Utiliser Medusa Framework avec PostgreSQL.
+
+Créer automatiquement :
+
+- DATABASE_URL
+- DB_HOST
+- DB_PORT
+- DB_NAME
+- DB_USER
+- DB_PASSWORD
+
+Générer un mot de passe sécurisé.
+
+Créer automatiquement toutes les tables.
+
+Créer les relations.
+
+Créer les index.
+
+Créer les clés étrangères.
+
+Créer les contraintes.
+
+Créer les migrations.
+
+Créer les seeds.
+
+Toutes les données doivent être compatibles PostgreSQL.
+
+====================================================
+2. ARCHITECTURE
+====================================================
+
+Utiliser une architecture propre.
+
+Séparer :
+
+API
+
+Services
+
+Repositories
+
+Controllers
+
+Middlewares
+
+Validation
+
+Utils
+
+Configuration
+
+Supprimer tout code mort.
+
+Supprimer tous les fichiers inutilisés.
+
+Supprimer toutes les dépendances inutilisées.
+
+Supprimer les packages lourds inutiles.
+
+Réduire au maximum la taille finale du projet.
+
+====================================================
+3. PERFORMANCE
+====================================================
+
+Le site est actuellement très lent.
+
+Je veux qu'il soit extrêmement rapide.
+
+Optimiser :
+
+Lazy Loading
+
+Dynamic Imports
+
+Tree Shaking
+
+Compression
+
+Code Splitting
+
+Caching
+
+Query Optimization
+
+Pagination
+
+Index SQL
+
+Connection Pool
+
+HTTP Keep Alive
+
+Compression Brotli
+
+Compression Gzip
+
+Minification
+
+Bundle Optimization
+
+Réduire le Time To First Byte.
+
+Réduire le Largest Contentful Paint.
+
+Réduire le CLS.
+
+Réduire le JS envoyé.
+
+Réduire le CSS.
+
+Réduire les appels API.
+
+Optimiser le SSR.
+
+Optimiser les Server Actions.
+
+====================================================
+4. IMAGES
+====================================================
+
+Aujourd'hui les images mettent plusieurs secondes à apparaître lors de la première visite.
+
+Je veux :
+
+chargement instantané
+
+lazy loading intelligent
+
+préchargement des images importantes
+
+responsive images
+
+WebP
+
+AVIF
+
+compression automatique
+
+cache CDN
+
+placeholders Blur
+
+préchargement du logo
+
+préchargement des images de la page d'accueil
+
+optimisation automatique de toutes les images.
+
+====================================================
+5. BASE DE DONNÉES
+====================================================
+
+Je veux PostgreSQL.
+
+Je ne veux plus MongoDB Atlas.
+
+Prévoir une architecture évolutive.
+
+Utiliser :
+
+PostgreSQL
+
+Load Balancer
+
+Read Replicas
+
+Connection Pool
+
+Plusieurs serveurs PostgreSQL.
+
+Architecture haute disponibilité.
+
+Préparer le projet pour gérer plusieurs millions de produits.
+
+====================================================
+6. PRODUITS
+====================================================
+
+Dans l'état d'un PC,
+
+je veux pouvoir saisir les valeurs décimales.
+
+Exemple :
+
+15,6 pouces
+
+3,5 GHz
+
+1,25 Kg
+
+0,8 mm
+
+Le système doit accepter les virgules et les décimales partout où cela est logique.
+
+====================================================
+7. MEDUSA FRAMEWORK
+====================================================
+
+Utiliser Medusa.
+
+Respecter les bonnes pratiques Medusa.
+
+Utiliser les modules Medusa.
+
+Ne pas réinventer ce que Medusa fournit déjà.
+
+====================================================
+8. UX / UI
+====================================================
+
+Je veux une interface Premium.
+
+Le site ne doit absolument pas ressembler à un template IA.
+
+S'inspirer des meilleures pratiques UX/UI.
+
+Utiliser une hiérarchie visuelle moderne.
+
+Animations fluides.
+
+Transitions discrètes.
+
+Responsive parfait.
+
+Dark Mode.
+
+Accessibilité.
+
+Navigation intuitive.
+
+Design Premium.
+
+Le résultat doit donner l'impression d'avoir été conçu par une grande agence de design.
+
+====================================================
+9. SÉCURITÉ
+====================================================
+
+Mettre en place :
+
+Helmet
+
+Rate Limiting
+
+Validation
+
+Sanitization
+
+Protection XSS
+
+Protection CSRF
+
+Protection SQL Injection
+
+Protection contre les uploads malveillants
+
+Headers de sécurité
+
+====================================================
+10. SEO
+====================================================
+
+Optimiser totalement :
+
+SEO
+
+Open Graph
+
+Twitter Cards
+
+Schema.org
+
+Sitemap
+
+Robots.txt
+
+Canonical URLs
+
+Meta Tags
+
+JSON-LD
+
+====================================================
+11. ADMIN
+====================================================
+
+Optimiser totalement le panneau d'administration.
+
+Réduire les requêtes SQL.
+
+Accélérer les tableaux.
+
+Optimiser la recherche.
+
+Optimiser les filtres.
+
+Optimiser la pagination.
+
+====================================================
+12. DÉPLOIEMENT
+====================================================
+
+Le projet doit fonctionner parfaitement sur :
+
+Vercel
+
+PostgreSQL
+
+Production
+
+Aucune erreur de build.
+
+Aucun warning inutile.
+
+Variables d'environnement générées automatiquement.
+
+====================================================
+13. QUALITÉ DU CODE
+====================================================
+
+Refactoriser tout le projet.
+
+Supprimer :
+
+code dupliqué
+
+fonctions inutilisées
+
+imports inutilisés
+
+variables inutilisées
+
+anciens commentaires
+
+anciens fichiers
+
+anciens assets
+
+anciens tests
+
+anciens logs
+
+anciens scripts
+
+====================================================
+14. LIVRABLE
+====================================================
+
+À la fin fournir :
+
+- liste complète des fichiers modifiés
+- liste des fichiers supprimés
+- liste des nouveaux fichiers
+- liste des nouvelles dépendances
+- liste des dépendances supprimées
+- commandes npm
+- commandes SQL
+- variables d'environnement
+- architecture finale
+- explication de toutes les optimisations réalisées
+- rapport des gains de performance estimés
+- checklist indiquant que toutes les fonctionnalités existantes sont toujours opérationnelles
+
+Ne modifie jamais une fonctionnalité métier sans préserver son comportement.
+
+Le résultat doit être un projet propre, optimisé, sécurisé, évolutif et prêt à supporter une forte montée en charge.
