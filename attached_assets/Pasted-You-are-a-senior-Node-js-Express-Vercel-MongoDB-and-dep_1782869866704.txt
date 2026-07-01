@@ -1,0 +1,86 @@
+You are a senior Node.js, Express, Vercel, MongoDB and deployment engineer.
+
+My goal is to make this project deploy successfully on Vercel.
+
+Current error:
+
+ReferenceError: require is not defined in ES module scope
+
+The project contains "type": "module" in package.json, but one or more files still use require().
+
+Your task is to inspect the ENTIRE project and automatically fix every deployment issue.
+
+Requirements:
+
+1. Search the whole repository for:
+   - require(...)
+   - module.exports
+   - exports.
+   - __dirname
+   - __filename
+   - app.listen()
+   - CommonJS syntax
+
+2. Convert everything to ES Modules.
+   Replace:
+   const express = require("express")
+   with
+   import express from "express"
+
+   Replace:
+   module.exports = app
+   with
+   export default app
+
+3. Fix __dirname and __filename for ES modules using:
+
+   import { fileURLToPath } from "url";
+   import path from "path";
+
+4. Make sure api/index.js exports the Express app correctly for Vercel.
+
+5. Remove any app.listen() calls from serverless functions.
+
+6. Ensure Vercel can execute the backend as a Serverless Function.
+
+7. Verify package.json.
+   Ensure:
+   - type is consistent
+   - scripts are correct
+   - dependencies are installed correctly
+   - no incompatible packages remain
+
+8. Verify vercel.json.
+   Update it if necessary for an Express API.
+
+9. Verify all imports.
+   Fix incorrect relative paths.
+   Add missing file extensions (.js) where required by ES Modules.
+
+10. Verify MongoDB connection.
+    Ensure environment variables are read from process.env.
+
+11. Verify Cloudinary configuration.
+
+12. Search for any runtime errors that would crash on startup.
+
+13. Ensure npm run build succeeds.
+
+14. Ensure npm start works locally.
+
+15. Ensure the project is fully deployable on Vercel without runtime errors.
+
+16. After fixing everything:
+    - explain every file modified
+    - explain why it was modified
+    - show every command executed
+    - do NOT stop until the project is deployment-ready.
+
+Finally, run a complete verification and confirm:
+
+✓ No CommonJS remains
+✓ No require() remains
+✓ No module.exports remains
+✓ All imports are valid
+✓ Vercel Serverless compatible
+✓ Ready for production deployment
