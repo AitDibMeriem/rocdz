@@ -83,13 +83,9 @@ router.post("/", async (req, res) => {
   try {
     const laptop = await Laptop.create(req.body);
     res.status(201).json(laptop);
-  } catch (err: any) {
+  } catch (err) {
     req.log.error(err);
-    if (err?.name === "ValidationError") {
-      res.status(400).json({ error: "Invalid laptop data", details: err.message });
-    } else {
-      res.status(500).json({ error: "Server error", details: err?.message });
-    }
+    res.status(400).json({ error: "Invalid laptop data" });
   }
 });
 
