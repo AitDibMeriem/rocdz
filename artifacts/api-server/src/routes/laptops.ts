@@ -83,9 +83,10 @@ router.post("/", async (req, res) => {
   try {
     const laptop = await Laptop.create(req.body);
     res.status(201).json(laptop);
-  } catch (err) {
+  } catch (err: unknown) {
     req.log.error(err);
-    res.status(400).json({ error: "Invalid laptop data" });
+    const msg = err instanceof Error ? err.message : "Invalid laptop data";
+    res.status(400).json({ error: msg });
   }
 });
 
