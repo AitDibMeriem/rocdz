@@ -1,0 +1,56 @@
+Jul 02 05:16:48.39
+GET
+503
+rocdz-api-server-kavv-9avlwwb33.vercel.app
+/favicon.png
+Jul 02 05:16:44.90
+GET
+503
+rocdz-api-server-kavv.vercel.app
+/favicon.ico
+Jul 02 05:16:44.86
+GET
+503
+rocdz-api-server-kavv-9avlwwb33.vercel.app
+/favicon.png
+Jul 02 05:16:44.29
+GET
+500
+rocdz-api-server-kavv.vercel.app
+/
+Error [ERR_UNSUPPORTED_DIR_IMPORT]: Directory import '/var/task/artifacts/api-server/src/routes' is not supported resolving ES modules imported from /var/task/artifacts/api-server/src/app.js at finalizeResolution (node:internal/modules/esm/resolve:269:11) at moduleResolve (node:internal/modules/esm/resolve:871:10) at moduleResolveWithNodePath (node:internal/modules/esm/resolve:997:14) at defaultResolve (node:internal/modules/esm/resolve:1040:79) at #cachedDefaultResolve (node:internal/modules/esm/loader:719:20) at #resolveAndMaybeBlockOnLoaderThread (node:internal/modules/esm/loader:736:38) at ModuleLoader.resolveSync (node:internal/modules/esm/loader:765:52) at #resolve (node:internal/modules/esm/loader:701:17) at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:621:35) at ModuleJob.syncLink (node:internal/modules/esm/module_job:160:33) { code: 'ERR_UNSUPPORTED_DIR_IMPORT', url: 'file:///var/task/artifacts/api-server/src/routes' } Node.js process exited with exit status: 1. The logs above can help with debugging the issue.
+Jul 02 05:16:44.13
+GET
+503
+rocdz-api-server-kavv-9avlwwb33.vercel.app
+/favicon.ico
+Jul 02 05:16:43.74
+GET
+500
+rocdz-api-server-kavv-9avlwwb33.vercel.app
+/
+Error [ERR_UNSUPPORTED_DIR_IMPORT]: Directory import '/var/task/artifacts/api-server/src/routes' is not supported resolving ES modules imported from /var/task/artifacts/api-server/src/app.js at finalizeResolution (node:internal/modules/esm/resolve:269:11) at moduleResolve (node:internal/modules/esm/resolve:871:10) at moduleResolveWithNodePath (node:internal/modules/esm/resolve:997:14) at defaultResolve (node:internal/modules/esm/resolve:1040:79) at #cachedDefaultResolve (node:internal/modules/esm/loader:719:20) at #resolveAndMaybeBlockOnLoaderThread (node:internal/modules/esm/loader:736:38) at ModuleLoader.resolveSync (node:internal/modules/esm/loader:765:52) at #resolve (node:internal/modules/esm/loader:701:17) at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:621:35) at ModuleJob.syncLink (node:internal/modules/esm/module_job:160:33) { code: 'ERR_UNSUPPORTED_DIR_IMPORT', url: 'file:///var/task/artifacts/api-server/src/routes' } Node.js process exited with exit status: 1. The logs above can help with debugging the issue.
+Jul 02 05:16:43.49
+GET
+503
+rocdz-api-server-kavv-9avlwwb33.vercel.app
+/favicon.ico
+Jul 02 05:16:43.07
+GET
+500
+rocdz-api-server-kavv-9avlwwb33.vercel.app
+/
+Error [ERR_UNSUPPORTED_DIR_IMPORT]: Directory import '/var/task/artifacts/api-server/src/routes' is not supported resolving ES modules imported from /var/task/artifacts/api-server/src/app.js at finalizeResolution (node:internal/modules/esm/resolve:269:11) at moduleResolve (node:internal/modules/esm/resolve:871:10) at moduleResolveWithNodePath (node:internal/modules/esm/resolve:997:14) at defaultResolve (node:internal/modules/esm/resolve:1040:79) at #cachedDefaultResolve (node:internal/modules/esm/loader:719:20) at #resolveAndMaybeBlockOnLoaderThread (node:internal/modules/esm/loader:736:38) at ModuleLoader.resolveSync (node:internal/modules/esm/loader:765:52) at #resolve (node:internal/modules/esm/loader:701:17) at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:621:35) at ModuleJob.syncLink (node:internal/modules/esm/module_job:160:33) { code: 'ERR_UNSUPPORTED_DIR_IMPORT', url: 'file:///var/task/artifacts/api-server/src/routes' } Node.js process exited with exit status: 1. The logs above can help with debugging the issue.
+Jul 02 05:13:55.93
+GET
+500
+rocdz-api-server-kavv-9avlwwb33.vercel.app
+/
+Error [ERR_UNSUPPORTED_DIR_IMPORT]: Directory import '/var/task/artifacts/api-server/src/routes' is not supported resolving ES modules imported from /var/task/artifacts/api-server/src/app.js at finalizeResolution (node:internal/modules/esm/resolve:269:11) at moduleResolve (node:internal/modules/esm/resolve:871:10) at moduleResolveWithNodePath (node:internal/modules/esm/resolve:997:14) at defaultResolve (node:internal/modules/esm/resolve:1040:79) at #cachedDefaultResolve (node:internal/modules/esm/loader:719:20) at #resolveAndMaybeBlockOnLoaderThread (node:internal/modules/esm/loader:736:38) at ModuleLoader.resolveSync (node:internal/modules/esm/loader:765:52) at #resolve (node:internal/modules/esm/loader:701:17) at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:621:35) at ModuleJob.syncLink (node:internal/modules/esm/module_job:160:33) { code: 'ERR_UNSUPPORTED_DIR_IMPORT', url: 'file:///var/task/artifacts/api-server/src/routes' } Node.js process exited with exit status: 1. The logs above can help with debugging the issue.
+Jul 02 05:13:55.58
+GET
+500
+rocdz-api-server-kavv-9avlwwb33.vercel.app
+/
+Error [ERR_UNSUPPORTED_DIR_IMPORT]: Directory import '/var/task/artifacts/api-server/src/routes' is not supported resolving ES modules imported from /var/task/artifacts/api-server/src/app.js at finalizeResolution (node:internal/modules/esm/resolve:269:11) at moduleResolve (node:internal/modules/esm/resolve:871:10) at moduleResolveWithNodePath (node:internal/modules/esm/resolve:997:14) at defaultResolve (node:internal/modules/esm/resolve:1040:79) at #cachedDefaultResolve (node:internal/modules/esm/loader:719:20) at #resolveAndMaybeBlockOnLoaderThread (node:internal/modules/esm/loader:736:38) at ModuleLoader.resolveSync (node:internal/modules/esm/loader:765:52) at #resolve (node:internal/modules/esm/loader:701:17) at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:621:35) at ModuleJob.syncLink (node:internal/modules/esm/module_job:160:33) { code: 'ERR_UNSUPPORTED_DIR_IMPORT', url: 'file:///var/task/artifacts/api-server/src/routes' } Node.js process exited with exit status: 1. The logs above can help with debugging the issue.
+No more logs to show within s
