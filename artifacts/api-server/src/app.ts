@@ -34,7 +34,15 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 const __dirname_app = path.dirname(fileURLToPath(import.meta.url));
-const publicDir = path.join(__dirname_app, "public");
+// Check multiple candidate locations so the path works regardless of how
+// Vercel resolves import.meta.url (direct dist/ vs re-exported via api/)
+const publicDirCandidates = [
+  path.join(__dirname_app, "public"),                   // dist/public  (Replit / normal)
+  path.join(__dirname_app, "..", "dist", "public"),     // api/../dist/public  (Vercel re-export)
+];
+const publicDir =
+  publicDirCandidates.find((d) => existsSync(path.join(d, "index.html"))) ??
+  publicDirCandidates[0];
 const hasFrontend = existsSync(path.join(publicDir, "index.html"));
 
 if (hasFrontend) {
