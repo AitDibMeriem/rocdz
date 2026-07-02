@@ -11,6 +11,14 @@ interface ImageUploadProps {
   accept?: string;
 }
 
+interface SignResponse {
+  timestamp: number;
+  signature: string;
+  api_key: string;
+  cloud_name: string;
+  folder: string;
+}
+
 export function ImageUpload({ value, onChange, label = "image or video", accept = "image/*,video/*" }: ImageUploadProps) {
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -24,21 +32,33 @@ export function ImageUpload({ value, onChange, label = "image or video", accept 
     setError(null);
     setUploading(true);
     try {
+      // Step 1 — get a server-side Cloudinary signature (tiny request, no file)
+      const signRes = await fetch(`${BASE}/api/upload/sign`);
+      if (!signRes.ok) throw new Error("Erreur de signature");
+      const { timestamp, signature, api_key, cloud_name, folder } =
+        await signRes.json() as SignResponse;
+
+      // Step 2 — upload directly from browser to Cloudinary (bypasses Vercel limits)
+      const resourceType = file.type.startsWith("video/") ? "video" : "image";
       const formData = new FormData();
       formData.append("file", file);
+      formData.append("timestamp", String(timestamp));
+      formData.append("signature", signature);
+      formData.append("api_key", api_key);
+      formData.append("folder", folder);
 
-      const res = await fetch(`${BASE}/api/upload`, {
-        method: "POST",
-        body: formData,
-      });
+      const uploadRes = await fetch(
+        `https://api.cloudinary.com/v1_1/${cloud_name}/${resourceType}/upload`,
+        { method: "POST", body: formData },
+      );
 
-      if (!res.ok) {
-        const body = await res.json().catch(() => ({})) as { error?: string };
-        throw new Error(body?.error ?? "Échec de l'upload");
+      if (!uploadRes.ok) {
+        const body = await uploadRes.json().catch(() => ({})) as { error?: { message?: string } };
+        throw new Error(body?.error?.message ?? "Échec de l'upload");
       }
 
-      const { url } = await res.json() as { url: string };
-      onChange(url);
+      const data = await uploadRes.json() as { secure_url: string };
+      onChange(data.secure_url);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Erreur d'upload");
     } finally {
