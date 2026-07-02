@@ -44,30 +44,30 @@ const BRAND_LOGOS = [
 ];
 
 const LAPTOP_GRID = [
-  { img: "/brand-hp.png", tag: "tag-gaming", tagKey: "tagGaming", name: "HP", href: "/models?brand=HP" },
-  { img: "/brand-apple-hero.png", tag: "tag-premium", tagKey: "tagPremium", name: "Apple", href: "/models?brand=Apple" },
-  { img: "/brand-lenovo3.png", tag: "tag-pro", tagKey: "tagPro", name: "Lenovo", href: "/models?brand=Lenovo" },
-  { img: "/brand-msi.png", tag: "tag-gaming", tagKey: "tagGaming", name: "MSI", href: "/models?brand=MSI" },
-  { img: "/brand-asus.png", tag: "tag-performance", tagKey: "tagPerformance", name: "ASUS", href: "/models?brand=ASUS" },
-  { img: "/brand-acer.png", tag: "tag-polyvalent", tagKey: "tagPolyvalent", name: "Acer", href: "/models?brand=Acer" },
-  { img: "/brand-dell3.png", tag: "tag-fiabilite", tagKey: "tagFiabilite", name: "Dell", href: "/models?brand=Dell" },
-  { img: "/brand-surface.png", tag: "tag-premium", tagKey: "tagPremium", name: "Microsoft", href: "/models?brand=Microsoft" },
-  { img: "/brand-samsung.png", tag: "tag-performance", tagKey: "tagPerformance", name: "Samsung", href: "/models?brand=Samsung" },
-  { img: "/brand-huawei.png", tag: "tag-pro", tagKey: "tagPro", name: "Huawei", href: "/models?brand=Huawei" },
+  { img: "/brand-hp.webp", tag: "tag-gaming", tagKey: "tagGaming", name: "HP", href: "/models?brand=HP" },
+  { img: "/brand-apple-hero.webp", tag: "tag-premium", tagKey: "tagPremium", name: "Apple", href: "/models?brand=Apple" },
+  { img: "/brand-lenovo3.webp", tag: "tag-pro", tagKey: "tagPro", name: "Lenovo", href: "/models?brand=Lenovo" },
+  { img: "/brand-msi.webp", tag: "tag-gaming", tagKey: "tagGaming", name: "MSI", href: "/models?brand=MSI" },
+  { img: "/brand-asus.webp", tag: "tag-performance", tagKey: "tagPerformance", name: "ASUS", href: "/models?brand=ASUS" },
+  { img: "/brand-acer.webp", tag: "tag-polyvalent", tagKey: "tagPolyvalent", name: "Acer", href: "/models?brand=Acer" },
+  { img: "/brand-dell3.webp", tag: "tag-fiabilite", tagKey: "tagFiabilite", name: "Dell", href: "/models?brand=Dell" },
+  { img: "/brand-surface.webp", tag: "tag-premium", tagKey: "tagPremium", name: "Microsoft", href: "/models?brand=Microsoft" },
+  { img: "/brand-samsung.webp", tag: "tag-performance", tagKey: "tagPerformance", name: "Samsung", href: "/models?brand=Samsung" },
+  { img: "/brand-huawei.webp", tag: "tag-pro", tagKey: "tagPro", name: "Huawei", href: "/models?brand=Huawei" },
 ];
 
 const ACC_GRID = [
-  { img: "/acc-support.png", tag: "tag-setup", tagKey: "tagSetup", nameKey: "accSupports", href: "/accessories?category=Hubs & Adapters" },
-  { img: "/acc-cables.png", tag: "tag-connect", tagKey: "tagConnect", nameKey: "accCables", href: "/accessories?category=Hubs & Adapters" },
-  { img: "/acc-chargeur.png", tag: "tag-power", tagKey: "tagPower", nameKey: "accChargeurs", href: "/accessories?category=Chargers" },
-  { img: "/acc-manette2.png", tag: "tag-gaming", tagKey: "tagGaming", nameKey: "accManettes", href: "/accessories?category=Controllers" },
-  { img: "/acc-stockage.png", tag: "tag-storage", tagKey: "tagStorage", nameKey: "accStockage", href: "/accessories?category=Other" },
-  { img: "/acc-webcam.png", tag: "tag-video", tagKey: "tagVideo", nameKey: "accWebcams", href: "/accessories?category=Other" },
-  { img: "/acc-sacados.png", tag: "tag-transport", tagKey: "tagTransport", nameKey: "accSacados", href: "/accessories?category=Bags" },
-  { img: "/acc-headset3.png", tag: "tag-audio", tagKey: "tagAudio", nameKey: "accCasques", href: "/accessories?category=Headsets" },
-  { img: "/acc-mouse3.png", tag: "tag-precision", tagKey: "tagPrecision", nameKey: "accSouris", href: "/accessories?category=Mice" },
-  { img: "/acc-clavier3.png", tag: "tag-saisie", tagKey: "tagSaisie", nameKey: "accClaviers", href: "/accessories?category=Keyboards" },
-  { img: "/acc-monitor2.png", tag: "tag-display", tagKey: "tagDisplay", nameKey: "accMoniteurs", href: "/accessories?category=Monitors" },
+  { img: "/acc-support.webp", tag: "tag-setup", tagKey: "tagSetup", nameKey: "accSupports", href: "/accessories?category=Hubs & Adapters" },
+  { img: "/acc-cables.webp", tag: "tag-connect", tagKey: "tagConnect", nameKey: "accCables", href: "/accessories?category=Hubs & Adapters" },
+  { img: "/acc-chargeur.webp", tag: "tag-power", tagKey: "tagPower", nameKey: "accChargeurs", href: "/accessories?category=Chargers" },
+  { img: "/acc-manette2.webp", tag: "tag-gaming", tagKey: "tagGaming", nameKey: "accManettes", href: "/accessories?category=Controllers" },
+  { img: "/acc-stockage.webp", tag: "tag-storage", tagKey: "tagStorage", nameKey: "accStockage", href: "/accessories?category=Other" },
+  { img: "/acc-webcam.webp", tag: "tag-video", tagKey: "tagVideo", nameKey: "accWebcams", href: "/accessories?category=Other" },
+  { img: "/acc-sacados.webp", tag: "tag-transport", tagKey: "tagTransport", nameKey: "accSacados", href: "/accessories?category=Bags" },
+  { img: "/acc-headset3.webp", tag: "tag-audio", tagKey: "tagAudio", nameKey: "accCasques", href: "/accessories?category=Headsets" },
+  { img: "/acc-mouse3.webp", tag: "tag-precision", tagKey: "tagPrecision", nameKey: "accSouris", href: "/accessories?category=Mice" },
+  { img: "/acc-clavier3.webp", tag: "tag-saisie", tagKey: "tagSaisie", nameKey: "accClaviers", href: "/accessories?category=Keyboards" },
+  { img: "/acc-monitor2.webp", tag: "tag-display", tagKey: "tagDisplay", nameKey: "accMoniteurs", href: "/accessories?category=Monitors" },
 ];
 
 const REVIEWS = [
@@ -135,7 +135,7 @@ export default function Home() {
             <div className="hero-glow" />
             <div className="hero-glow-2" />
             <img
-              src="/laptop-nobg.png"
+              src="/laptop-nobg.webp"
               alt="Laptop"
               onError={(e) => {
                 (e.currentTarget as HTMLImageElement).src =
@@ -225,7 +225,7 @@ export default function Home() {
         <div className="looking-grid">
           <Link href="/models?condition=new" className="tilt-card fade-left">
             <div className="badge badge-new">{h.newBadge}</div>
-            <img src="/laptop-occasion.png" alt={h.newTitle} onError={e => { (e.currentTarget as HTMLImageElement).src = "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=600&q=80"; }} />
+            <img src="/laptop-occasion.webp" alt={h.newTitle} loading="lazy" decoding="async" />
             <div className="tilt-card-body">
               <h3>{h.newTitle}</h3>
               <div className="sub">{h.newCardSub}</div>
@@ -238,7 +238,7 @@ export default function Home() {
           </Link>
           <Link href="/models?condition=refurbished" className="tilt-card fade-right">
             <div className="badge badge-refurb" style={{ background: "linear-gradient(135deg,#f59e0b,#d97706)" }}>{h.occasionBadge}</div>
-            <img src="/laptop-neuf.png" alt={h.occasionTitle} onError={e => { (e.currentTarget as HTMLImageElement).src = "https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=600&q=80"; }} />
+            <img src="/laptop-neuf.webp" alt={h.occasionTitle} loading="lazy" decoding="async" />
             <div className="tilt-card-body">
               <h3>{h.occasionTitle}</h3>
               <div className="sub">{h.occasionCardSub}</div>
@@ -299,7 +299,7 @@ export default function Home() {
             <img
               src={(featured?.imageUrl || "https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=600&q=80").replace(/\/upload\//, "/upload/f_auto,q_auto:good,w_700,c_fill/")}
               alt={featured?.title || h.pickDefault}
-              fetchPriority="high"
+              fetchpriority="high"
               decoding="async"
             />
           </div>

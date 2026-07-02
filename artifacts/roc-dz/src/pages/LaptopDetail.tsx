@@ -121,7 +121,7 @@ export default function LaptopDetail() {
                   src={currentMedia.replace(/\/upload\//, "/upload/f_auto,q_auto:good,w_900,c_fill/")}
                   alt={laptop.title}
                   className="w-full h-full object-cover transition-opacity duration-300"
-                  fetchPriority="high"
+                  fetchpriority="high"
                   decoding="async"
                 />
               )}
