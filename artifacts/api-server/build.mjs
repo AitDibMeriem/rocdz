@@ -144,6 +144,11 @@ globalThis.__dirname = __bannerPath.dirname(globalThis.__filename);
   const frontendOut = path.resolve(distDir, "public");
   await cp(frontendDist, frontendOut, { recursive: true });
   console.log("Frontend copied to dist/public ✓");
+
+  // Also copy to root of artifact dir so Vercel CDN can serve static assets directly
+  // (avoids routing every /assets/* request through the serverless function)
+  await cp(frontendDist, artifactDir, { recursive: true });
+  console.log("Frontend copied to artifact root for Vercel static serving ✓");
 }
 
 buildAll().catch((err) => {
