@@ -3,13 +3,19 @@ import app from "./app";
 import type { IncomingMessage, ServerResponse } from "http";
 
 // Start connecting immediately — result is cached for warm invocations
-const mongoReady = connectMongo().catch(console.error);
+const mongoReady = connectMongo();
 
 export default async function handler(
   req: IncomingMessage,
   res: ServerResponse,
 ) {
-  // Ensure MongoDB is connected before handling any request
-  await mongoReady;
+  try {
+    await mongoReady;
+  } catch (err) {
+    (res as any).statusCode = 503;
+    res.setHeader("Content-Type", "application/json");
+    res.end(JSON.stringify({ error: "Database unavailable", details: String(err) }));
+    return;
+  }
   return app(req, res);
 }
